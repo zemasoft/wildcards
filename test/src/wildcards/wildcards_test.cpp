@@ -86,6 +86,18 @@ TEST_CASE("WildCards", "wildcards")
     }
   }
 
+  SECTION("char16_t[]")
+  {
+    REQUIRE(wildcards::match(u"Hallo, World!", u"H?llo,*W*!"));
+    REQUIRE(!wildcards::match(u"Hllo, World!", u"H?llo,*W*!"));
+  }
+
+  SECTION("char32_t[]")
+  {
+    REQUIRE(wildcards::match(U"Hallo, World!", U"H?llo,*W*!"));
+    REQUIRE(!wildcards::match(U"Hllo, World!", U"H?llo,*W*!"));
+  }
+
   SECTION("wchar_t[]")
   {
     REQUIRE(wildcards::match(L"Hallo, World!", L"H?llo,*W*!"));
