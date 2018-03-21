@@ -3,7 +3,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <string>  // std::string
+#include <string>  // std::string, std::wstring
 
 #include <catch.hpp>
 
@@ -90,5 +90,11 @@ TEST_CASE("WildCards", "wildcards")
   {
     REQUIRE(wildcards::match(std::string("Hallo, World!"), std::string("H?llo,*W*!")));
     REQUIRE(!wildcards::match(std::string("Hllo, World!"), std::string("H?llo,*W*!")));
+  }
+
+  SECTION("std::wstring")
+  {
+    REQUIRE(wildcards::match(std::wstring(L"Hallo, World!"), std::wstring(L"H?llo,*W*!")));
+    REQUIRE(!wildcards::match(std::wstring(L"Hllo, World!"), std::wstring(L"H?llo,*W*!")));
   }
 }
