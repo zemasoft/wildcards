@@ -14,39 +14,35 @@ namespace wildcards
 {
 
 template <typename T>
-class cards;
+struct cards;
 
 template <>
-class cards<char> : public std::pair<char, char>
+struct cards<char> : public std::pair<char, char>
 {
- public:
   constexpr cards() : std::pair<char, char>{'*', '?'}
   {
   }
 };
 
 template <>
-class cards<char16_t> : public std::pair<char16_t, char16_t>
+struct cards<char16_t> : public std::pair<char16_t, char16_t>
 {
- public:
   constexpr cards() : std::pair<char16_t, char16_t>{u'*', u'?'}
   {
   }
 };
 
 template <>
-class cards<char32_t> : public std::pair<char32_t, char32_t>
+struct cards<char32_t> : public std::pair<char32_t, char32_t>
 {
- public:
   constexpr cards() : std::pair<char32_t, char32_t>{U'*', U'?'}
   {
   }
 };
 
 template <>
-class cards<wchar_t> : public std::pair<wchar_t, wchar_t>
+struct cards<wchar_t> : public std::pair<wchar_t, wchar_t>
 {
- public:
   constexpr cards() : std::pair<wchar_t, wchar_t>{L'*', L'?'}
   {
   }
