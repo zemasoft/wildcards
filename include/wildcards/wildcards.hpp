@@ -8,7 +8,7 @@
 
 #include <iterator>     // std::begin, std::end, std::next
 #include <type_traits>  // std::remove_reference
-#include <utility>      // std::declval, std::forward
+#include <utility>      // std::declval, std::forward, std::pair
 
 namespace wildcards
 {
@@ -70,9 +70,9 @@ struct value_type
 template <typename T>
 using value_type_t = typename value_type<T>::type;
 
-template <typename SequenceIterator, typename PatternIterator>
+template <typename SequenceIterator, typename PatternIterator, typename Cards>
 /*constexpr*/ bool match(SequenceIterator s, SequenceIterator send, PatternIterator p,
-                         PatternIterator pend)
+                         PatternIterator pend, const Cards& cards)
 {
   if (!is_asterisk(*p))
   {
@@ -80,7 +80,7 @@ template <typename SequenceIterator, typename PatternIterator>
     {
       if (is_question_mark(*p) || equal(*s, *p))
       {
-        return match(std::next(s), send, std::next(p), pend);
+        return match(std::next(s), send, std::next(p), pend, cards);
       }
 
       return false;
@@ -89,17 +89,20 @@ template <typename SequenceIterator, typename PatternIterator>
     return p == pend;
   }
 
-  return match(s, send, std::next(p), pend) || ((s != send) && match(std::next(s), send, p, pend));
+  return match(s, send, std::next(p), pend, cards) ||
+         ((s != send) && match(std::next(s), send, p, pend, cards));
 }
 
 }  // namespace detail
 
-template <typename Sequence, typename Pattern>
-/*constexpr*/ bool match(Sequence&& sequence, Pattern&& pattern)
+template <typename Sequence, typename Pattern,
+          typename Cards = std::pair<detail::value_type_t<Pattern>, detail::value_type_t<Pattern>>>
+/*constexpr*/ bool match(Sequence&& sequence, Pattern&& pattern, Cards&& cards = Cards())
 {
-  return detail::match(
-      std::begin(std::forward<Sequence>(sequence)), std::end(std::forward<Sequence>(sequence)),
-      std::begin(std::forward<Pattern>(pattern)), std::end(std::forward<Pattern>(pattern)));
+  return detail::match(std::begin(std::forward<Sequence>(sequence)),
+                       std::end(std::forward<Sequence>(sequence)),
+                       std::begin(std::forward<Pattern>(pattern)),
+                       std::end(std::forward<Pattern>(pattern)), std::forward<Cards>(cards));
 }
 
 }  // namespace wildcards
