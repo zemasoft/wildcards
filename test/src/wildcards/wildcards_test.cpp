@@ -86,6 +86,12 @@ TEST_CASE("WildCards", "wildcards")
     }
   }
 
+  SECTION("wchar_t[]")
+  {
+    REQUIRE(wildcards::match(L"Hallo, World!", L"H?llo,*W*!"));
+    REQUIRE(!wildcards::match(L"Hllo, World!", L"H?llo,*W*!"));
+  }
+
   SECTION("std::string")
   {
     REQUIRE(wildcards::match(std::string("Hallo, World!"), std::string("H?llo,*W*!")));
