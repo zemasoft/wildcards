@@ -53,6 +53,15 @@ namespace detail
 {
 
 template <typename T>
+struct iterator_type
+{
+  using type = typename std::remove_reference<decltype(std::begin(std::declval<T>()))>::type;
+};
+
+template <typename T>
+using iterator_type_t = typename iterator_type<T>::type;
+
+template <typename T>
 struct value_type
 {
   using type = typename std::remove_reference<decltype(*std::begin(std::declval<T>()))>::type;
@@ -61,37 +70,49 @@ struct value_type
 template <typename T>
 using value_type_t = typename value_type<T>::type;
 
-template <typename SequenceIterator, typename PatternIterator>
-/*constexpr*/ bool match(SequenceIterator s, SequenceIterator send, PatternIterator p,
-                         PatternIterator pend)
+template <typename SequenceContainer, typename PatternContainer>
+class matcher
 {
-  if (!is_asterisk(*p))
+ public:
+  using sequence_container_type = SequenceContainer;
+  using pattern_container_type = PatternContainer;
+
+  using sequence_iterator_type = iterator_type_t<sequence_container_type>;
+  using pattern_iterator_type = iterator_type_t<pattern_container_type>;
+
+  /*constexpr*/ bool match(sequence_iterator_type s, sequence_iterator_type send,
+                           pattern_iterator_type p, pattern_iterator_type pend)
   {
-    if (s != send)
+    if (!is_asterisk(*p))
     {
-      if (is_question_mark(*p) || equal(*s, *p))
+      if (s != send)
       {
-        return match(std::next(s), send, std::next(p), pend);
+        if (is_question_mark(*p) || equal(*s, *p))
+        {
+          return match(std::next(s), send, std::next(p), pend);
+        }
+
+        return false;
       }
 
-      return false;
+      return p == pend;
     }
 
-    return p == pend;
+    return match(s, send, std::next(p), pend) ||
+           ((s != send) && match(std::next(s), send, p, pend));
   }
-
-  return match(s, send, std::next(p), pend) || ((s != send) && match(std::next(s), send, p, pend));
-}
+};
 
 }  // namespace detail
 
-template <typename SequenceContainter, typename PatternContainter>
-constexpr bool match(SequenceContainter&& sequence, PatternContainter&& pattern)
+template <typename SequenceContainer, typename PatternContainer>
+/*constexpr*/ bool match(SequenceContainer&& sequence, PatternContainer&& pattern)
 {
-  return detail::match(std::begin(std::forward<SequenceContainter>(sequence)),
-                       std::end(std::forward<SequenceContainter>(sequence)),
-                       std::begin(std::forward<PatternContainter>(pattern)),
-                       std::end(std::forward<PatternContainter>(pattern)));
+  detail::matcher<SequenceContainer, PatternContainer> matcher;
+  return matcher.match(std::begin(std::forward<SequenceContainer>(sequence)),
+                       std::end(std::forward<SequenceContainer>(sequence)),
+                       std::begin(std::forward<PatternContainer>(pattern)),
+                       std::end(std::forward<PatternContainer>(pattern)));
 }
 
 }  // namespace wildcards
