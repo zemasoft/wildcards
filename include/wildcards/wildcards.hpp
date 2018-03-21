@@ -70,15 +70,15 @@ struct value_type
 template <typename T>
 using value_type_t = typename value_type<T>::type;
 
-template <typename SequenceContainer, typename PatternContainer>
+template <typename Sequence, typename Pattern>
 class matcher
 {
  public:
-  using sequence_container_type = SequenceContainer;
-  using pattern_container_type = PatternContainer;
+  using sequence_type = Sequence;
+  using pattern_type = Pattern;
 
-  using sequence_iterator_type = iterator_type_t<sequence_container_type>;
-  using pattern_iterator_type = iterator_type_t<pattern_container_type>;
+  using sequence_iterator_type = iterator_type_t<sequence_type>;
+  using pattern_iterator_type = iterator_type_t<pattern_type>;
 
   /*constexpr*/ bool match(sequence_iterator_type s, sequence_iterator_type send,
                            pattern_iterator_type p, pattern_iterator_type pend)
@@ -105,14 +105,13 @@ class matcher
 
 }  // namespace detail
 
-template <typename SequenceContainer, typename PatternContainer>
-/*constexpr*/ bool match(SequenceContainer&& sequence, PatternContainer&& pattern)
+template <typename Sequence, typename Pattern>
+/*constexpr*/ bool match(Sequence&& sequence, Pattern&& pattern)
 {
-  detail::matcher<SequenceContainer, PatternContainer> matcher;
-  return matcher.match(std::begin(std::forward<SequenceContainer>(sequence)),
-                       std::end(std::forward<SequenceContainer>(sequence)),
-                       std::begin(std::forward<PatternContainer>(pattern)),
-                       std::end(std::forward<PatternContainer>(pattern)));
+  detail::matcher<Sequence, Pattern> matcher;
+  return matcher.match(
+      std::begin(std::forward<Sequence>(sequence)), std::end(std::forward<Sequence>(sequence)),
+      std::begin(std::forward<Pattern>(pattern)), std::end(std::forward<Pattern>(pattern)));
 }
 
 }  // namespace wildcards
