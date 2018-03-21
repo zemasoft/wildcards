@@ -7,47 +7,32 @@
 #define WILDCARDS_WILDCARDS_HPP
 
 #include <iterator>     // std::begin, std::end, std::next
-#include <type_traits>  // std::remove_reference
-#include <utility>      // std::declval, std::forward, std::pair
+#include <type_traits>  // std::remove_cv, std::remove_reference
+#include <utility>      // std::declval, std::forward, std::get, std::pair
 
 namespace wildcards
 {
 
-template <typename T, typename U>
-constexpr bool equal(const T& lhs, const U& rhs)
-{
-  return lhs == rhs;
-}
-
 template <typename T>
-constexpr bool is_asterisk(T val);
+class cards;
 
 template <>
-constexpr bool is_asterisk(char val)
+class cards<char> : public std::pair<char, char>
 {
-  return val == '*';
-}
+ public:
+  constexpr cards() : std::pair<char, char>{'*', '?'}
+  {
+  }
+};
 
 template <>
-constexpr bool is_asterisk(wchar_t val)
+class cards<wchar_t> : public std::pair<wchar_t, wchar_t>
 {
-  return val == '*';
-}
-
-template <typename T>
-constexpr bool is_question_mark(T val);
-
-template <>
-constexpr bool is_question_mark(char val)
-{
-  return val == '?';
-}
-
-template <>
-constexpr bool is_question_mark(wchar_t val)
-{
-  return val == '?';
-}
+ public:
+  constexpr cards() : std::pair<wchar_t, wchar_t>{L'*', L'?'}
+  {
+  }
+};
 
 namespace detail
 {
@@ -64,7 +49,8 @@ using iterator_type_t = typename iterator_type<T>::type;
 template <typename T>
 struct value_type
 {
-  using type = typename std::remove_reference<decltype(*std::begin(std::declval<T>()))>::type;
+  using type = typename std::remove_cv<
+      typename std::remove_reference<decltype(*std::begin(std::declval<T>()))>::type>::type;
 };
 
 template <typename T>
@@ -74,11 +60,11 @@ template <typename SequenceIterator, typename PatternIterator, typename Cards>
 /*constexpr*/ bool match(SequenceIterator s, SequenceIterator send, PatternIterator p,
                          PatternIterator pend, const Cards& cards)
 {
-  if (!is_asterisk(*p))
+  if (*p != std::get<0>(cards))
   {
     if (s != send)
     {
-      if (is_question_mark(*p) || equal(*s, *p))
+      if (*p == std::get<1>(cards) || *s == *p)
       {
         return match(std::next(s), send, std::next(p), pend, cards);
       }
@@ -96,7 +82,7 @@ template <typename SequenceIterator, typename PatternIterator, typename Cards>
 }  // namespace detail
 
 template <typename Sequence, typename Pattern,
-          typename Cards = std::pair<detail::value_type_t<Pattern>, detail::value_type_t<Pattern>>>
+          typename Cards = cards<detail::value_type_t<Pattern>>>
 /*constexpr*/ bool match(Sequence&& sequence, Pattern&& pattern, Cards&& cards = Cards())
 {
   return detail::match(std::begin(std::forward<Sequence>(sequence)),
