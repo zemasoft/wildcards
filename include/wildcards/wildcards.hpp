@@ -48,6 +48,15 @@ struct cards<wchar_t> : public std::pair<wchar_t, wchar_t>
   }
 };
 
+template <typename T, typename U>
+struct equal
+{
+  constexpr bool operator()(const T& lhs, const U& rhs) const
+  {
+    return lhs == rhs;
+  }
+};
+
 namespace detail
 {
 
@@ -55,17 +64,17 @@ template <typename T>
 using value_type = typename std::remove_cv<
     typename std::remove_reference<decltype(*std::begin(std::declval<T>()))>::type>::type;
 
-template <typename SequenceIterator, typename PatternIterator, typename Cards>
+template <typename SequenceIterator, typename PatternIterator, typename Cards, typename Equal>
 /*constexpr*/ bool match(SequenceIterator s, SequenceIterator send, PatternIterator p,
-                         PatternIterator pend, const Cards& cards)
+                         PatternIterator pend, const Cards& cards, const Equal& equal)
 {
   if (*p != std::get<0>(cards))
   {
     if (s != send)
     {
-      if (*p == std::get<1>(cards) || *s == *p)
+      if (*p == std::get<1>(cards) || equal(*s, *p))
       {
-        return match(std::next(s), send, std::next(p), pend, cards);
+        return match(std::next(s), send, std::next(p), pend, cards, equal);
       }
 
       return false;
@@ -74,19 +83,21 @@ template <typename SequenceIterator, typename PatternIterator, typename Cards>
     return p == pend;
   }
 
-  return match(s, send, std::next(p), pend, cards) ||
-         ((s != send) && match(std::next(s), send, p, pend, cards));
+  return match(s, send, std::next(p), pend, cards, equal) ||
+         ((s != send) && match(std::next(s), send, p, pend, cards, equal));
 }
 
 }  // namespace detail
 
-template <typename Sequence, typename Pattern, typename Cards = cards<detail::value_type<Pattern>>>
-/*constexpr*/ bool match(Sequence&& sequence, Pattern&& pattern, Cards&& cards = Cards())
+template <typename Sequence, typename Pattern, typename Cards = cards<detail::value_type<Pattern>>,
+          typename Equal = equal<detail::value_type<Sequence>, detail::value_type<Pattern>>>
+/*constexpr*/ bool match(Sequence&& sequence, Pattern&& pattern, Cards&& cards = Cards(),
+                         Equal&& equal = Equal())
 {
-  return detail::match(std::begin(std::forward<Sequence>(sequence)),
-                       std::end(std::forward<Sequence>(sequence)),
-                       std::begin(std::forward<Pattern>(pattern)),
-                       std::end(std::forward<Pattern>(pattern)), std::forward<Cards>(cards));
+  return detail::match(
+      std::begin(std::forward<Sequence>(sequence)), std::end(std::forward<Sequence>(sequence)),
+      std::begin(std::forward<Pattern>(pattern)), std::end(std::forward<Pattern>(pattern)),
+      std::forward<Cards>(cards), std::forward<Equal>(equal));
 }
 
 }  // namespace wildcards
