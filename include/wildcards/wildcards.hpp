@@ -38,23 +38,8 @@ namespace detail
 {
 
 template <typename T>
-struct iterator_type
-{
-  using type = typename std::remove_reference<decltype(std::begin(std::declval<T>()))>::type;
-};
-
-template <typename T>
-using iterator_type_t = typename iterator_type<T>::type;
-
-template <typename T>
-struct value_type
-{
-  using type = typename std::remove_cv<
-      typename std::remove_reference<decltype(*std::begin(std::declval<T>()))>::type>::type;
-};
-
-template <typename T>
-using value_type_t = typename value_type<T>::type;
+using value_type = typename std::remove_cv<
+    typename std::remove_reference<decltype(*std::begin(std::declval<T>()))>::type>::type;
 
 template <typename SequenceIterator, typename PatternIterator, typename Cards>
 /*constexpr*/ bool match(SequenceIterator s, SequenceIterator send, PatternIterator p,
@@ -81,8 +66,7 @@ template <typename SequenceIterator, typename PatternIterator, typename Cards>
 
 }  // namespace detail
 
-template <typename Sequence, typename Pattern,
-          typename Cards = cards<detail::value_type_t<Pattern>>>
+template <typename Sequence, typename Pattern, typename Cards = cards<detail::value_type<Pattern>>>
 /*constexpr*/ bool match(Sequence&& sequence, Pattern&& pattern, Cards&& cards = Cards())
 {
   return detail::match(std::begin(std::forward<Sequence>(sequence)),
