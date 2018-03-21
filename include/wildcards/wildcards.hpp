@@ -70,46 +70,34 @@ struct value_type
 template <typename T>
 using value_type_t = typename value_type<T>::type;
 
-template <typename Sequence, typename Pattern>
-class matcher
+template <typename SequenceIterator, typename PatternIterator>
+/*constexpr*/ bool match(SequenceIterator s, SequenceIterator send, PatternIterator p,
+                         PatternIterator pend)
 {
- public:
-  using sequence_type = Sequence;
-  using pattern_type = Pattern;
-
-  using sequence_iterator_type = iterator_type_t<sequence_type>;
-  using pattern_iterator_type = iterator_type_t<pattern_type>;
-
-  /*constexpr*/ bool match(sequence_iterator_type s, sequence_iterator_type send,
-                           pattern_iterator_type p, pattern_iterator_type pend)
+  if (!is_asterisk(*p))
   {
-    if (!is_asterisk(*p))
+    if (s != send)
     {
-      if (s != send)
+      if (is_question_mark(*p) || equal(*s, *p))
       {
-        if (is_question_mark(*p) || equal(*s, *p))
-        {
-          return match(std::next(s), send, std::next(p), pend);
-        }
-
-        return false;
+        return match(std::next(s), send, std::next(p), pend);
       }
 
-      return p == pend;
+      return false;
     }
 
-    return match(s, send, std::next(p), pend) ||
-           ((s != send) && match(std::next(s), send, p, pend));
+    return p == pend;
   }
-};
+
+  return match(s, send, std::next(p), pend) || ((s != send) && match(std::next(s), send, p, pend));
+}
 
 }  // namespace detail
 
 template <typename Sequence, typename Pattern>
 /*constexpr*/ bool match(Sequence&& sequence, Pattern&& pattern)
 {
-  detail::matcher<Sequence, Pattern> matcher;
-  return matcher.match(
+  return detail::match(
       std::begin(std::forward<Sequence>(sequence)), std::end(std::forward<Sequence>(sequence)),
       std::begin(std::forward<Pattern>(pattern)), std::end(std::forward<Pattern>(pattern)));
 }
