@@ -46,9 +46,9 @@ TEST_CASE("WildCards", "wildcards")
     }
   }
 
-  SECTION("char[]")
+  SECTION("wildcards::match(char[], char[])")
   {
-    SECTION("Match with an empty pattern")
+    SECTION("match with an empty pattern")
     {
       char pattern[] = "";
 
@@ -57,7 +57,7 @@ TEST_CASE("WildCards", "wildcards")
       REQUIRE(!wildcards::match("Anything", pattern));
     }
 
-    SECTION("Match with 'A'")
+    SECTION("match with \"A\"")
     {
       char pattern[] = "A";
 
@@ -69,7 +69,7 @@ TEST_CASE("WildCards", "wildcards")
       REQUIRE(!wildcards::match("Something", pattern));
     }
 
-    SECTION("Match with 'Hallo!'")
+    SECTION("match with \"Hallo!\"")
     {
       char pattern[] = "Hallo!";
 
@@ -82,7 +82,7 @@ TEST_CASE("WildCards", "wildcards")
       REQUIRE(!wildcards::match("Hallo!Hallo!", pattern));
     }
 
-    SECTION("Match with '*'")
+    SECTION("match with \"*\"")
     {
       char pattern[] = "*";
 
@@ -90,7 +90,7 @@ TEST_CASE("WildCards", "wildcards")
       REQUIRE(wildcards::match("Anything", pattern));
     }
 
-    SECTION("Match with '?'")
+    SECTION("match with \"?\"")
     {
       char pattern[] = "?";
 
@@ -101,7 +101,7 @@ TEST_CASE("WildCards", "wildcards")
       REQUIRE(!wildcards::match("Something", pattern));
     }
 
-    SECTION("Match with 'H?llo,*W*!'")
+    SECTION("match with \"H?llo,*W*!\"")
     {
       char pattern[] = "H?llo,*W*!";
 
@@ -121,31 +121,31 @@ TEST_CASE("WildCards", "wildcards")
     }
   }
 
-  SECTION("char16_t[]")
+  SECTION("wildcards::match(char16_t[], char16_t[])")
   {
     REQUIRE(wildcards::match(u"Hallo, World!", u"H?llo,*W*!"));
     REQUIRE(!wildcards::match(u"Hllo, World!", u"H?llo,*W*!"));
   }
 
-  SECTION("char32_t[]")
+  SECTION("wildcards::match(char32_t[], char32_t[])")
   {
     REQUIRE(wildcards::match(U"Hallo, World!", U"H?llo,*W*!"));
     REQUIRE(!wildcards::match(U"Hllo, World!", U"H?llo,*W*!"));
   }
 
-  SECTION("wchar_t[]")
+  SECTION("wildcards::match(wchar_t[], wchar_t[])")
   {
     REQUIRE(wildcards::match(L"Hallo, World!", L"H?llo,*W*!"));
     REQUIRE(!wildcards::match(L"Hllo, World!", L"H?llo,*W*!"));
   }
 
-  SECTION("std::string")
+  SECTION("wildcards::match(std::string, std::string)")
   {
     REQUIRE(wildcards::match(std::string("Hallo, World!"), std::string("H?llo,*W*!")));
     REQUIRE(!wildcards::match(std::string("Hllo, World!"), std::string("H?llo,*W*!")));
   }
 
-  SECTION("std::wstring")
+  SECTION("wildcards::match(std::wstring, std::wstring)")
   {
     REQUIRE(wildcards::match(std::wstring(L"Hallo, World!"), std::wstring(L"H?llo,*W*!")));
     REQUIRE(!wildcards::match(std::wstring(L"Hllo, World!"), std::wstring(L"H?llo,*W*!")));
