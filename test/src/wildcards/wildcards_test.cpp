@@ -11,6 +11,19 @@
 
 TEST_CASE("WildCards", "wildcards")
 {
+  SECTION("wildcards::detail::value_type")
+  {
+    using wildcards::detail::value_type;
+
+    static_assert(std::is_same<value_type<decltype("test")>, char>::value, "");
+    static_assert(std::is_same<value_type<decltype(u"test")>, char16_t>::value, "");
+    static_assert(std::is_same<value_type<decltype(U"test")>, char32_t>::value, "");
+    static_assert(std::is_same<value_type<decltype(L"test")>, wchar_t>::value, "");
+
+    static_assert(std::is_same<value_type<decltype(std::string("test"))>, char>::value, "");
+    static_assert(std::is_same<value_type<decltype(std::wstring(L"test"))>, wchar_t>::value, "");
+  }
+
   SECTION("wildcards::cards")
   {
     SECTION("wildcards::cards<char>")
