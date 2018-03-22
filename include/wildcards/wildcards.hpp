@@ -60,118 +60,124 @@ struct equal
 namespace detail
 {
 
+// constexpr since C++17
 template <typename C>
-constexpr auto begin(C& c) -> decltype(std::begin(c))
+constexpr auto begin(C& c) noexcept(noexcept(std::begin(c))) -> decltype(std::begin(c))
 {
   return std::begin(c);
 }
 
+// constexpr since C++17
 template <typename C>
-constexpr auto begin(const C& c) -> decltype(std::begin(c))
+constexpr auto begin(const C& c) noexcept(noexcept(std::begin(c))) -> decltype(std::begin(c))
 {
   return std::begin(c);
 }
 
+// constexpr since C++14
 template <typename T, std::size_t N>
-constexpr T* begin(T (&array)[N])
+constexpr T* begin(T (&array)[N]) noexcept
 {
   return array;
 }
 
-constexpr char* begin(char& c)
+constexpr char* begin(char& c) noexcept
 {
   return &c;
 }
 
-constexpr const char* begin(const char& c)
+constexpr const char* begin(const char& c) noexcept
 {
   return &c;
 }
 
-constexpr char16_t* begin(char16_t& c)
+constexpr char16_t* begin(char16_t& c) noexcept
 {
   return &c;
 }
 
-constexpr const char16_t* begin(const char16_t& c)
+constexpr const char16_t* begin(const char16_t& c) noexcept
 {
   return &c;
 }
 
-constexpr char32_t* begin(char32_t& c)
+constexpr char32_t* begin(char32_t& c) noexcept
 {
   return &c;
 }
 
-constexpr const char32_t* begin(const char32_t& c)
+constexpr const char32_t* begin(const char32_t& c) noexcept
 {
   return &c;
 }
 
-constexpr wchar_t* begin(wchar_t& c)
+constexpr wchar_t* begin(wchar_t& c) noexcept
 {
   return &c;
 }
 
-constexpr const wchar_t* begin(const wchar_t& c)
+constexpr const wchar_t* begin(const wchar_t& c) noexcept
 {
   return &c;
 }
 
+// constexpr since C++17
 template <typename C>
-constexpr auto end(C& c) -> decltype(std::end(c))
+constexpr auto end(C& c) noexcept(noexcept(std::end(c))) -> decltype(std::end(c))
 {
   return std::end(c);
 }
 
+// constexpr since C++17
 template <typename C>
-constexpr auto end(const C& c) -> decltype(std::end(c))
+constexpr auto end(const C& c) noexcept(noexcept(std::end(c))) -> decltype(std::end(c))
 {
   return std::end(c);
 }
 
+// constexpr since C++14
 template <typename T, std::size_t N>
-constexpr T* end(T (&array)[N])
+constexpr T* end(T (&array)[N]) noexcept
 {
   return array + N;
 }
 
-constexpr char* end(char& c)
+constexpr char* end(char& c) noexcept
 {
   return &c + 1;
 }
 
-constexpr const char* end(const char& c)
+constexpr const char* end(const char& c) noexcept
 {
   return &c + 1;
 }
 
-constexpr char16_t* end(char16_t& c)
+constexpr char16_t* end(char16_t& c) noexcept
 {
   return &c + 1;
 }
 
-constexpr const char16_t* end(const char16_t& c)
+constexpr const char16_t* end(const char16_t& c) noexcept
 {
   return &c + 1;
 }
 
-constexpr char32_t* end(char32_t& c)
+constexpr char32_t* end(char32_t& c) noexcept
 {
   return &c + 1;
 }
 
-constexpr const char32_t* end(const char32_t& c)
+constexpr const char32_t* end(const char32_t& c) noexcept
 {
   return &c + 1;
 }
 
-constexpr wchar_t* end(wchar_t& c)
+constexpr wchar_t* end(wchar_t& c) noexcept
 {
   return &c + 1;
 }
 
-constexpr const wchar_t* end(const wchar_t& c)
+constexpr const wchar_t* end(const wchar_t& c) noexcept
 {
   return &c + 1;
 }
