@@ -60,9 +60,9 @@ struct equal
 namespace detail
 {
 
-template <typename T>
+template <typename C>
 using value_type = typename std::remove_cv<
-    typename std::remove_reference<decltype(*std::begin(std::declval<T>()))>::type>::type;
+    typename std::remove_reference<decltype(*std::begin(std::declval<C>()))>::type>::type;
 
 template <typename SequenceIterator, typename PatternIterator, typename Cards, typename Equal>
 /*constexpr*/ bool match(SequenceIterator s, SequenceIterator send, PatternIterator p,
