@@ -72,10 +72,50 @@ constexpr auto begin(const C& c) -> decltype(std::begin(c))
   return std::begin(c);
 }
 
-template <class T, std::size_t N>
+template <typename T, std::size_t N>
 constexpr T* begin(T (&array)[N])
 {
   return array;
+}
+
+constexpr char* begin(char& c)
+{
+  return &c;
+}
+
+constexpr const char* begin(const char& c)
+{
+  return &c;
+}
+
+constexpr char16_t* begin(char16_t& c)
+{
+  return &c;
+}
+
+constexpr const char16_t* begin(const char16_t& c)
+{
+  return &c;
+}
+
+constexpr char32_t* begin(char32_t& c)
+{
+  return &c;
+}
+
+constexpr const char32_t* begin(const char32_t& c)
+{
+  return &c;
+}
+
+constexpr wchar_t* begin(wchar_t& c)
+{
+  return &c;
+}
+
+constexpr const wchar_t* begin(const wchar_t& c)
+{
+  return &c;
 }
 
 template <typename C>
@@ -90,10 +130,50 @@ constexpr auto end(const C& c) -> decltype(std::end(c))
   return std::end(c);
 }
 
-template <class T, std::size_t N>
+template <typename T, std::size_t N>
 constexpr T* end(T (&array)[N])
 {
   return array + N;
+}
+
+constexpr char* end(char& c)
+{
+  return &c + 1;
+}
+
+constexpr const char* end(const char& c)
+{
+  return &c + 1;
+}
+
+constexpr char16_t* end(char16_t& c)
+{
+  return &c + 1;
+}
+
+constexpr const char16_t* end(const char16_t& c)
+{
+  return &c + 1;
+}
+
+constexpr char32_t* end(char32_t& c)
+{
+  return &c + 1;
+}
+
+constexpr const char32_t* end(const char32_t& c)
+{
+  return &c + 1;
+}
+
+constexpr wchar_t* end(wchar_t& c)
+{
+  return &c + 1;
+}
+
+constexpr const wchar_t* end(const wchar_t& c)
+{
+  return &c + 1;
 }
 
 template <typename C>
