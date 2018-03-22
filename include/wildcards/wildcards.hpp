@@ -61,8 +61,44 @@ namespace detail
 {
 
 template <typename C>
+constexpr auto begin(C& c) -> decltype(std::begin(c))
+{
+  return std::begin(c);
+}
+
+template <typename C>
+constexpr auto begin(const C& c) -> decltype(std::begin(c))
+{
+  return std::begin(c);
+}
+
+template <class T, std::size_t N>
+constexpr T* begin(T (&array)[N])
+{
+  return array;
+}
+
+template <typename C>
+constexpr auto end(C& c) -> decltype(std::end(c))
+{
+  return std::end(c);
+}
+
+template <typename C>
+constexpr auto end(const C& c) -> decltype(std::end(c))
+{
+  return std::end(c);
+}
+
+template <class T, std::size_t N>
+constexpr T* end(T (&array)[N])
+{
+  return array + N;
+}
+
+template <typename C>
 using value_type = typename std::remove_cv<
-    typename std::remove_reference<decltype(*std::begin(std::declval<C>()))>::type>::type;
+    typename std::remove_reference<decltype(*detail::begin(std::declval<C>()))>::type>::type;
 
 template <typename SequenceIterator, typename PatternIterator, typename Cards, typename Equal>
 /*constexpr*/ bool match(SequenceIterator s, SequenceIterator send, PatternIterator p,
@@ -94,10 +130,11 @@ template <typename Sequence, typename Pattern, typename Cards = cards<detail::va
 /*constexpr*/ bool match(Sequence&& sequence, Pattern&& pattern, Cards&& cards = Cards(),
                          Equal&& equal = Equal())
 {
-  return detail::match(
-      std::begin(std::forward<Sequence>(sequence)), std::end(std::forward<Sequence>(sequence)),
-      std::begin(std::forward<Pattern>(pattern)), std::end(std::forward<Pattern>(pattern)),
-      std::forward<Cards>(cards), std::forward<Equal>(equal));
+  return detail::match(detail::begin(std::forward<Sequence>(sequence)),
+                       detail::end(std::forward<Sequence>(sequence)),
+                       detail::begin(std::forward<Pattern>(pattern)),
+                       detail::end(std::forward<Pattern>(pattern)), std::forward<Cards>(cards),
+                       std::forward<Equal>(equal));
 }
 
 }  // namespace wildcards
