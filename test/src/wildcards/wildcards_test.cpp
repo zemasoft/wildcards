@@ -11,6 +11,41 @@
 
 TEST_CASE("WildCards", "wildcards")
 {
+  SECTION("wildcards::cards")
+  {
+    SECTION("wildcards::cards<char>")
+    {
+      constexpr wildcards::cards<char> cards;
+
+      static_assert(std::get<0>(cards) == '*', "");
+      static_assert(std::get<1>(cards) == '?', "");
+    }
+
+    SECTION("wildcards::cards<char16_t>")
+    {
+      constexpr wildcards::cards<char16_t> cards;
+
+      static_assert(std::get<0>(cards) == u'*', "");
+      static_assert(std::get<1>(cards) == u'?', "");
+    }
+
+    SECTION("wildcards::cards<char32_t>")
+    {
+      constexpr wildcards::cards<char32_t> cards;
+
+      static_assert(std::get<0>(cards) == U'*', "");
+      static_assert(std::get<1>(cards) == U'?', "");
+    }
+
+    SECTION("wildcards::cards<wchar_t>")
+    {
+      constexpr wildcards::cards<wchar_t> cards;
+
+      static_assert(std::get<0>(cards) == L'*', "");
+      static_assert(std::get<1>(cards) == L'?', "");
+    }
+  }
+
   SECTION("char[]")
   {
     SECTION("Match with an empty pattern")
