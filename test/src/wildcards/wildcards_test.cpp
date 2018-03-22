@@ -3,7 +3,10 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <string>  // std::string, std::wstring
+#include <string>       // std::string, std::wstring
+#include <type_traits>  // std::is_same
+#include <utility>      // std::get
+#include <vector>       // std::vector
 
 #include <catch.hpp>
 
@@ -15,13 +18,20 @@ TEST_CASE("WildCards", "wildcards")
   {
     using wildcards::detail::value_type;
 
-    static_assert(std::is_same<value_type<decltype("test")>, char>::value, "");
-    static_assert(std::is_same<value_type<decltype(u"test")>, char16_t>::value, "");
-    static_assert(std::is_same<value_type<decltype(U"test")>, char32_t>::value, "");
-    static_assert(std::is_same<value_type<decltype(L"test")>, wchar_t>::value, "");
+    static_assert(std::is_same<value_type<char[3]>, char>::value, "");
+    static_assert(std::is_same<value_type<char16_t[3]>, char16_t>::value, "");
+    static_assert(std::is_same<value_type<char32_t[3]>, char32_t>::value, "");
+    static_assert(std::is_same<value_type<wchar_t[3]>, wchar_t>::value, "");
 
-    static_assert(std::is_same<value_type<decltype(std::string("test"))>, char>::value, "");
-    static_assert(std::is_same<value_type<decltype(std::wstring(L"test"))>, wchar_t>::value, "");
+    static_assert(std::is_same<value_type<std::string>, char>::value, "");
+    static_assert(std::is_same<value_type<std::wstring>, wchar_t>::value, "");
+
+    static_assert(std::is_same<value_type<char>, char>::value, "");
+    static_assert(std::is_same<value_type<char16_t>, char16_t>::value, "");
+    static_assert(std::is_same<value_type<char32_t>, char32_t>::value, "");
+    static_assert(std::is_same<value_type<wchar_t>, wchar_t>::value, "");
+
+    static_assert(std::is_same<value_type<std::vector<int>>, int>::value, "");
   }
 
   SECTION("wildcards::cards")
