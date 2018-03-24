@@ -234,8 +234,8 @@ using value_type = typename std::remove_cv<
     typename std::remove_reference<decltype(*detail::begin(std::declval<C>()))>::type>::type;
 
 template <typename SequenceIterator, typename PatternIterator, typename Cards, typename Equal>
-/*constexpr*/ bool match(SequenceIterator s, SequenceIterator send, PatternIterator p,
-                         PatternIterator pend, const Cards& cards, const Equal& equal)
+wc_constexpr14 bool match(SequenceIterator s, SequenceIterator send, PatternIterator p,
+                          PatternIterator pend, const Cards& cards, const Equal& equal)
 {
   if (*p != std::get<0>(cards))
   {
@@ -260,8 +260,8 @@ template <typename SequenceIterator, typename PatternIterator, typename Cards, t
 
 template <typename Sequence, typename Pattern, typename Cards = cards<detail::value_type<Pattern>>,
           typename Equal = equal<detail::value_type<Sequence>, detail::value_type<Pattern>>>
-/*constexpr*/ bool match(Sequence&& sequence, Pattern&& pattern, Cards&& cards = Cards(),
-                         Equal&& equal = Equal())
+wc_constexpr14 bool match(Sequence&& sequence, Pattern&& pattern, Cards&& cards = Cards(),
+                          Equal&& equal = Equal())
 {
   return detail::match(detail::begin(std::forward<Sequence>(sequence)),
                        detail::end(std::forward<Sequence>(sequence)),
