@@ -10,6 +10,51 @@
 #include <type_traits>  // std::remove_cv, std::remove_reference
 #include <utility>      // std::declval, std::forward, std::get, std::pair
 
+// Compiler detection:
+// Note: MSVC supports C++14 since it supports C++17.
+
+#ifdef _MSVC_LANG
+#define wc_MSVC_LANG _MSVC_LANG
+#else
+#define wc_MSVC_LANG 0
+#endif
+
+#define wc_CPP11_OR_GREATER (__cplusplus >= 201103L || wc_MSVC_LANG >= 201103L)
+#define wc_CPP14_OR_GREATER (__cplusplus >= 201402L || wc_MSVC_LANG >= 201703L)
+#define wc_CPP17_OR_GREATER (__cplusplus >= 201703L || wc_MSVC_LANG >= 201703L)
+
+#if defined(_MSC_VER) && !defined(__clang__)
+#define wc_COMPILER_MSVC_VERSION (_MSC_VER / 100 - 5 - (_MSC_VER < 1900))
+#else
+#define wc_COMPILER_MSVC_VERSION 0
+#endif
+
+// Presence of C++11 language features:
+
+#define wc_CPP11_10 (wc_CPP11_OR_GREATER || wc_COMPILER_MSVC_VERSION >= 10)
+#define wc_CPP11_11 (wc_CPP11_OR_GREATER || wc_COMPILER_MSVC_VERSION >= 11)
+#define wc_CPP11_12 (wc_CPP11_OR_GREATER || wc_COMPILER_MSVC_VERSION >= 12)
+#define wc_CPP11_14 (wc_CPP11_OR_GREATER || wc_COMPILER_MSVC_VERSION >= 14)
+
+// Presence of C++14 language features:
+
+#define wc_CPP14_00 (wc_CPP14_OR_GREATER)
+#define wc_CPP14_14 (wc_CPP14_OR_GREATER || wc_COMPILER_MSVC_VERSION >= 14)
+
+#define wc_HAVE_CONSTEXPR_14 wc_CPP14_00
+
+// Presence of C++17 language features:
+
+#define wc_CPP17_00 (wc_CPP17_OR_GREATER)
+
+// C++ feature usage:
+
+#if wc_HAVE_CONSTEXPR_14
+#define wc_constexpr14 constexpr
+#else
+#define wc_constexpr14 /*constexpr*/
+#endif
+
 namespace wildcards
 {
 
@@ -19,7 +64,7 @@ struct cards;
 template <>
 struct cards<char> : public std::pair<char, char>
 {
-  constexpr cards() : std::pair<char, char>{'*', '?'}
+  wc_constexpr14 cards() : std::pair<char, char>{'*', '?'}
   {
   }
 };
@@ -27,7 +72,7 @@ struct cards<char> : public std::pair<char, char>
 template <>
 struct cards<char16_t> : public std::pair<char16_t, char16_t>
 {
-  constexpr cards() : std::pair<char16_t, char16_t>{u'*', u'?'}
+  wc_constexpr14 cards() : std::pair<char16_t, char16_t>{u'*', u'?'}
   {
   }
 };
@@ -35,7 +80,7 @@ struct cards<char16_t> : public std::pair<char16_t, char16_t>
 template <>
 struct cards<char32_t> : public std::pair<char32_t, char32_t>
 {
-  constexpr cards() : std::pair<char32_t, char32_t>{U'*', U'?'}
+  wc_constexpr14 cards() : std::pair<char32_t, char32_t>{U'*', U'?'}
   {
   }
 };
@@ -43,7 +88,7 @@ struct cards<char32_t> : public std::pair<char32_t, char32_t>
 template <>
 struct cards<wchar_t> : public std::pair<wchar_t, wchar_t>
 {
-  constexpr cards() : std::pair<wchar_t, wchar_t>{L'*', L'?'}
+  wc_constexpr14 cards() : std::pair<wchar_t, wchar_t>{L'*', L'?'}
   {
   }
 };
@@ -51,7 +96,7 @@ struct cards<wchar_t> : public std::pair<wchar_t, wchar_t>
 template <typename T, typename U>
 struct equal
 {
-  constexpr bool operator()(const T& lhs, const U& rhs) const
+  wc_constexpr14 bool operator()(const T& lhs, const U& rhs) const
   {
     return lhs == rhs;
   }

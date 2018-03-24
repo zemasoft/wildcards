@@ -40,34 +40,54 @@ TEST_CASE("WildCards", "wildcards")
   {
     SECTION("wildcards::cards<char>")
     {
-      constexpr wildcards::cards<char> cards;
+      wc_constexpr14 wildcards::cards<char> cards;
 
+#if wc_HAVE_CONSTEXPR_14
       static_assert(std::get<0>(cards) == '*', "");
       static_assert(std::get<1>(cards) == '?', "");
+#endif
+
+      REQUIRE(std::get<0>(cards) == '*');
+      REQUIRE(std::get<1>(cards) == '?');
     }
 
     SECTION("wildcards::cards<char16_t>")
     {
-      constexpr wildcards::cards<char16_t> cards;
+      wc_constexpr14 wildcards::cards<char16_t> cards;
 
+#if wc_HAVE_CONSTEXPR_14
       static_assert(std::get<0>(cards) == u'*', "");
       static_assert(std::get<1>(cards) == u'?', "");
+#endif
+
+      REQUIRE(std::get<0>(cards) == u'*');
+      REQUIRE(std::get<1>(cards) == u'?');
     }
 
     SECTION("wildcards::cards<char32_t>")
     {
-      constexpr wildcards::cards<char32_t> cards;
+      wc_constexpr14 wildcards::cards<char32_t> cards;
 
+#if wc_HAVE_CONSTEXPR_14
       static_assert(std::get<0>(cards) == U'*', "");
       static_assert(std::get<1>(cards) == U'?', "");
+#endif
+
+      REQUIRE(std::get<0>(cards) == U'*');
+      REQUIRE(std::get<1>(cards) == U'?');
     }
 
     SECTION("wildcards::cards<wchar_t>")
     {
-      constexpr wildcards::cards<wchar_t> cards;
+      wc_constexpr14 wildcards::cards<wchar_t> cards;
 
+#if wc_HAVE_CONSTEXPR_14
       static_assert(std::get<0>(cards) == L'*', "");
       static_assert(std::get<1>(cards) == L'?', "");
+#endif
+
+      REQUIRE(std::get<0>(cards) == L'*');
+      REQUIRE(std::get<1>(cards) == L'?');
     }
   }
 
