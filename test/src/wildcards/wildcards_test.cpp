@@ -24,6 +24,8 @@ TEST_CASE("WildCards", "wildcards")
     static_assert(std::is_same<value_type<wchar_t[3]>, wchar_t>::value, "");
 
     static_assert(std::is_same<value_type<std::string>, char>::value, "");
+    static_assert(std::is_same<value_type<std::u16string>, char16_t>::value, "");
+    static_assert(std::is_same<value_type<std::u32string>, char32_t>::value, "");
     static_assert(std::is_same<value_type<std::wstring>, wchar_t>::value, "");
 
     static_assert(std::is_same<value_type<char>, char>::value, "");
@@ -166,6 +168,18 @@ TEST_CASE("WildCards", "wildcards")
   {
     REQUIRE(wildcards::match(std::string("Hallo, World!"), std::string("H?llo,*W*!")));
     REQUIRE(!wildcards::match(std::string("Hllo, World!"), std::string("H?llo,*W*!")));
+  }
+
+  SECTION("wildcards::match(std::u16string, std::u16string)")
+  {
+    REQUIRE(wildcards::match(std::u16string(u"Hallo, World!"), std::u16string(u"H?llo,*W*!")));
+    REQUIRE(!wildcards::match(std::u16string(u"Hllo, World!"), std::u16string(u"H?llo,*W*!")));
+  }
+
+  SECTION("wildcards::match(std::u32string, std::u32string)")
+  {
+    REQUIRE(wildcards::match(std::u32string(U"Hallo, World!"), std::u32string(U"H?llo,*W*!")));
+    REQUIRE(!wildcards::match(std::u32string(U"Hllo, World!"), std::u32string(U"H?llo,*W*!")));
   }
 
   SECTION("wildcards::match(std::wstring, std::wstring)")
