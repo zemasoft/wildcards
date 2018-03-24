@@ -7,6 +7,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 option(WILDCARDS_BUILD_TESTS "Build unit tests" ON)
 option(WILDCARDS_ENABLE_WERROR "Enable all warnings as errors" OFF)
 
+option(WILDCARDS_USE_CXX_17 "Build using C++17" OFF)
+option(WILDCARDS_USE_CXX_14 "Build using C++14" OFF)
+
 if(WILDCARDS_BUILD_TESTS)
   include(CTest)
 

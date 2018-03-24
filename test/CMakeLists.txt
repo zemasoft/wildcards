@@ -4,8 +4,17 @@ add_executable(selftest src/wildcards/wildcards_test.cpp
                         src/catch.cpp)
 target_include_directories(selftest PRIVATE ../include include)
 
-set_target_properties(selftest PROPERTIES CXX_STANDARD 11
-                                          CXX_STANDARD_REQUIRED ON
+if(WILDCARDS_USE_CXX_17)
+  message(STATUS "Enabling C++17")
+  set_target_properties(selftest PROPERTIES CXX_STANDARD 17)
+elseif(WILDCARDS_USE_CXX_14)
+  message(STATUS "Enabling C++14")
+  set_target_properties(selftest PROPERTIES CXX_STANDARD 14)
+else()
+  set_target_properties(selftest PROPERTIES CXX_STANDARD 11)
+endif()
+
+set_target_properties(selftest PROPERTIES CXX_STANDARD_REQUIRED ON
                                           CXX_EXTENSIONS OFF)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
