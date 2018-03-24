@@ -75,7 +75,7 @@ TEST_CASE("WildCards", "wildcards")
   {
     SECTION("match with an empty pattern")
     {
-      char pattern[] = "";
+      const char pattern[] = "";
 
       REQUIRE(wildcards::match("", pattern));
 
@@ -84,7 +84,7 @@ TEST_CASE("WildCards", "wildcards")
 
     SECTION("match with \"A\"")
     {
-      char pattern[] = "A";
+      const char pattern[] = "A";
 
       REQUIRE(wildcards::match("A", pattern));
 
@@ -96,7 +96,7 @@ TEST_CASE("WildCards", "wildcards")
 
     SECTION("match with \"Hallo!\"")
     {
-      char pattern[] = "Hallo!";
+      const char pattern[] = "Hallo!";
 
       REQUIRE(wildcards::match("Hallo!", pattern));
 
@@ -109,7 +109,7 @@ TEST_CASE("WildCards", "wildcards")
 
     SECTION("match with \"*\"")
     {
-      char pattern[] = "*";
+      const char pattern[] = "*";
 
       REQUIRE(wildcards::match("", pattern));
       REQUIRE(wildcards::match("Anything", pattern));
@@ -117,7 +117,7 @@ TEST_CASE("WildCards", "wildcards")
 
     SECTION("match with \"?\"")
     {
-      char pattern[] = "?";
+      const char pattern[] = "?";
 
       REQUIRE(wildcards::match("A", pattern));
       REQUIRE(wildcards::match("a", pattern));
@@ -128,7 +128,7 @@ TEST_CASE("WildCards", "wildcards")
 
     SECTION("match with \"H?llo,*W*!\"")
     {
-      char pattern[] = "H?llo,*W*!";
+      const char pattern[] = "H?llo,*W*!";
 
       REQUIRE(wildcards::match("Hallo, World!", pattern));
       REQUIRE(wildcards::match("Hello, World!", pattern));
