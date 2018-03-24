@@ -96,7 +96,7 @@ struct cards<wchar_t> : public std::pair<wchar_t, wchar_t>
 template <typename T, typename U>
 struct equal
 {
-  wc_constexpr14 bool operator()(const T& lhs, const U& rhs) const
+  constexpr bool operator()(const T& lhs, const U& rhs) const
   {
     return lhs == rhs;
   }

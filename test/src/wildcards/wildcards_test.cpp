@@ -14,28 +14,6 @@
 
 TEST_CASE("WildCards", "wildcards")
 {
-  SECTION("wildcards::detail::value_type")
-  {
-    using wildcards::detail::value_type;
-
-    static_assert(std::is_same<value_type<char[3]>, char>::value, "");
-    static_assert(std::is_same<value_type<char16_t[3]>, char16_t>::value, "");
-    static_assert(std::is_same<value_type<char32_t[3]>, char32_t>::value, "");
-    static_assert(std::is_same<value_type<wchar_t[3]>, wchar_t>::value, "");
-
-    static_assert(std::is_same<value_type<std::string>, char>::value, "");
-    static_assert(std::is_same<value_type<std::u16string>, char16_t>::value, "");
-    static_assert(std::is_same<value_type<std::u32string>, char32_t>::value, "");
-    static_assert(std::is_same<value_type<std::wstring>, wchar_t>::value, "");
-
-    static_assert(std::is_same<value_type<char>, char>::value, "");
-    static_assert(std::is_same<value_type<char16_t>, char16_t>::value, "");
-    static_assert(std::is_same<value_type<char32_t>, char32_t>::value, "");
-    static_assert(std::is_same<value_type<wchar_t>, wchar_t>::value, "");
-
-    static_assert(std::is_same<value_type<std::vector<int>>, int>::value, "");
-  }
-
   SECTION("wildcards::cards")
   {
     SECTION("wildcards::cards<char>")
@@ -89,6 +67,55 @@ TEST_CASE("WildCards", "wildcards")
       REQUIRE(std::get<0>(cards) == L'*');
       REQUIRE(std::get<1>(cards) == L'?');
     }
+  }
+
+  SECTION("wildcards::equal")
+  {
+    SECTION("wildcards::equal<char, char>")
+    {
+      static_assert(wildcards::equal<char, char>{}('A', 'A'), "");
+      static_assert(!wildcards::equal<char, char>{}('A', 'a'), "");
+    }
+
+    SECTION("wildcards::equal<char16_t, char16_t>")
+    {
+      static_assert(wildcards::equal<char16_t, char16_t>{}(u'A', u'A'), "");
+      static_assert(!wildcards::equal<char16_t, char16_t>{}(u'A', u'a'), "");
+    }
+
+    SECTION("wildcards::equal<char32_t, char32_t>")
+    {
+      static_assert(wildcards::equal<char32_t, char32_t>{}(U'A', U'A'), "");
+      static_assert(!wildcards::equal<char32_t, char32_t>{}(U'A', U'a'), "");
+    }
+
+    SECTION("wildcards::equal<wchar_t, wchar_t>")
+    {
+      static_assert(wildcards::equal<wchar_t, wchar_t>{}(L'A', L'A'), "");
+      static_assert(!wildcards::equal<wchar_t, wchar_t>{}(L'A', L'a'), "");
+    }
+  }
+
+  SECTION("wildcards::detail::value_type")
+  {
+    using wildcards::detail::value_type;
+
+    static_assert(std::is_same<value_type<char[3]>, char>::value, "");
+    static_assert(std::is_same<value_type<char16_t[3]>, char16_t>::value, "");
+    static_assert(std::is_same<value_type<char32_t[3]>, char32_t>::value, "");
+    static_assert(std::is_same<value_type<wchar_t[3]>, wchar_t>::value, "");
+
+    static_assert(std::is_same<value_type<std::string>, char>::value, "");
+    static_assert(std::is_same<value_type<std::u16string>, char16_t>::value, "");
+    static_assert(std::is_same<value_type<std::u32string>, char32_t>::value, "");
+    static_assert(std::is_same<value_type<std::wstring>, wchar_t>::value, "");
+
+    static_assert(std::is_same<value_type<char>, char>::value, "");
+    static_assert(std::is_same<value_type<char16_t>, char16_t>::value, "");
+    static_assert(std::is_same<value_type<char32_t>, char32_t>::value, "");
+    static_assert(std::is_same<value_type<wchar_t>, wchar_t>::value, "");
+
+    static_assert(std::is_same<value_type<std::vector<int>>, int>::value, "");
   }
 
   SECTION("wildcards::match(char[], char[])")
