@@ -1,0 +1,168 @@
+# Based on https://github.com/Microsoft/GSL/blob/master/.travis.yml
+
+language: cpp
+sudo: false
+
+matrix:
+  include:
+    - env: BUILD_TYPE=Debug
+      os: osx
+      osx_image: xcode8
+      compiler: clang
+    - env: BUILD_TYPE=Release
+      os: osx
+      osx_image: xcode8
+      compiler: clang
+    - env: CLANG_VERSION=3.8 BUILD_TYPE=Debug
+      os: linux
+      addons: &clang38
+        apt:
+          packages:
+            - clang-3.8
+            - g++-5
+          sources: &sources
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-3.8
+    - env: CLANG_VERSION=3.8 BUILD_TYPE=Release
+      os: linux
+      addons: *clang38
+#   - env: CLANG_VERSION=3.9 BUILD_TYPE=Debug
+#     os: linux
+#     addons: &clang39
+#       apt:
+#         packages:
+#           - clang-3.9
+#           - g++-5
+#         sources: &sources
+#           - ubuntu-toolchain-r-test
+#           - llvm-toolchain-trusty-3.9
+#   - env: CLANG_VERSION=3.9 BUILD_TYPE=Release
+#     os: linux
+#     addons: *clang39
+#   - env: CLANG_VERSION=4.0 BUILD_TYPE=Debug
+#     os: linux
+#     addons: &clang40
+#       apt:
+#         packages:
+#           - clang-4.0
+#           - g++-5
+#         sources: &sources
+#           - ubuntu-toolchain-r-test
+#           - llvm-toolchain-trusty-4.0
+#   - env: CLANG_VERSION=4.0 BUILD_TYPE=Release
+#     os: linux
+#     addons: *clang40
+#   - env: CLANG_VERSION=5.0 BUILD_TYPE=Debug
+#     os: linux
+#     addons: &clang50
+#       apt:
+#         packages:
+#           - clang-5.0
+#           - g++-5
+#         sources: &sources
+#           - ubuntu-toolchain-r-test
+#           - llvm-toolchain-trusty-5.0
+#   - env: CLANG_VERSION=5.0 BUILD_TYPE=Release
+#     os: linux
+#     addons: *clang50
+    - env: GCC_VERSION=5 BUILD_TYPE=Debug
+      os: linux
+      addons: &gcc5
+        apt:
+          packages:
+            - g++-5
+          sources: *sources
+    - env: GCC_VERSION=5 BUILD_TYPE=Release
+      os: linux
+      addons: *gcc5
+    - env: GCC_VERSION=6 BUILD_TYPE=Debug
+      os: linux
+      addons: &gcc6
+        apt:
+          packages:
+            - g++-6
+          sources: *sources
+    - env: GCC_VERSION=6 BUILD_TYPE=Release
+      os: linux
+      addons: *gcc6
+
+env:
+  global:
+    - DEPS_DIR=$TRAVIS_BUILD_DIR/deps
+    - CMAKE_VERSION=3.9.2
+
+cache:
+  directories:
+    - $DEPS_DIR/cmake-$CMAKE_VERSION
+    - $DEPS_DIR/llvm-3.8.1/install
+    - $DEPS_DIR/llvm-3.9.1/install
+    - $DEPS_DIR/llvm-4.0.0/install
+    - $DEPS_DIR/llvm-5.0.0/install
+
+install:
+  - |
+    if [[ -n "$CLANG_VERSION" ]]; then
+      export CXX=clang++-$CLANG_VERSION
+      export CC=clang-$CLANG_VERSION
+    fi
+    if [[ -n "$GCC_VERSION" ]]; then
+      export CXX=g++-$GCC_VERSION
+      export CC=gcc-$GCC_VERSION
+    fi
+    $CXX --version
+    $CC --version
+
+  - JOBS=2
+  - mkdir -p $DEPS_DIR && cd $DEPS_DIR
+
+  ############################################################################
+  # Install a recent CMake (unless already installed on OS X)
+  ############################################################################
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      CMAKE_ROOT=$DEPS_DIR/cmake-$CMAKE_VERSION
+      if [[ -z "$(ls -A $CMAKE_ROOT/bin)" ]]; then
+        CMAKE_URL=https://cmake.org/files/v${CMAKE_VERSION%.*}/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz
+        mkdir -p $CMAKE_ROOT && travis_retry wget --no-check-certificate --quiet -O - $CMAKE_URL | tar --strip-components=1 -xz -C $CMAKE_ROOT
+      fi
+      export PATH=$PATH:$CMAKE_ROOT/bin
+    else
+      if ! brew ls --version cmake &>/dev/null; then brew install cmake; fi
+    fi
+
+  ############################################################################
+  # [linux] Install the right version of libc++
+  ############################################################################
+  - |
+    if [[ -n "$CLANG_VERSION" && "$TRAVIS_OS_NAME" == "linux" && "$STDLIB" != "libstdc++" ]]; then
+      if [[ "$CLANG_VERSION" == "3.8" ]]; then LLVM_VERSION=3.8.1; fi
+      if [[ "$CLANG_VERSION" == "3.9" ]]; then LLVM_VERSION=3.9.1; fi
+      if [[ "$CLANG_VERSION" == "4.0" ]]; then LLVM_VERSION=4.0.0; fi
+      if [[ "$CLANG_VERSION" == "5.0" ]]; then LLVM_VERSION=5.0.0; fi
+      LLVM_ROOT=$DEPS_DIR/llvm-$LLVM_VERSION
+      LLVM_URL=http://llvm.org/releases/$LLVM_VERSION/llvm-${LLVM_VERSION}.src.tar.xz
+      LIBCXX_URL=http://llvm.org/releases/$LLVM_VERSION/libcxx-${LLVM_VERSION}.src.tar.xz
+      LIBCXXABI_URL=http://llvm.org/releases/$LLVM_VERSION/libcxxabi-${LLVM_VERSION}.src.tar.xz
+      if [[ -z "$(ls -A $LLVM_ROOT/install/include)" ]]; then
+        mkdir -p $LLVM_ROOT $LLVM_ROOT/build $LLVM_ROOT/projects/libcxx $LLVM_ROOT/projects/libcxxabi
+        travis_retry wget --quiet -O - $LLVM_URL | tar --strip-components=1 -xJ -C $LLVM_ROOT
+        travis_retry wget --quiet -O - $LIBCXX_URL | tar --strip-components=1 -xJ -C $LLVM_ROOT/projects/libcxx
+        travis_retry wget --quiet -O - $LIBCXXABI_URL | tar --strip-components=1 -xJ -C $LLVM_ROOT/projects/libcxxabi
+        (cd $LLVM_ROOT/build && cmake .. -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$LLVM_ROOT/install)
+        (cd $LLVM_ROOT/build/projects/libcxx && make install -j$JOBS)
+        (cd $LLVM_ROOT/build/projects/libcxxabi && make install -j$JOBS)
+      fi
+      export CXXFLAGS="-I $LLVM_ROOT/install/include/c++/v1"
+      export LDFLAGS="-L $LLVM_ROOT/install/lib -lc++ -lc++abi"
+      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LLVM_ROOT/install/lib
+    fi
+
+before_script:
+  - |
+    cd $TRAVIS_BUILD_DIR
+    cmake . -Bbuild -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+    cmake --build build -- -j$JOBS
+
+script:
+  - cd build
+  - ctest --output-on-failure -j$JOBS
