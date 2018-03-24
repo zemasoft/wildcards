@@ -47,12 +47,20 @@
 
 #define wc_CPP17_00 (wc_CPP17_OR_GREATER)
 
+#define wc_HAVE_CONSTEXPR_17 wc_CPP17_00
+
 // C++ feature usage:
 
 #if wc_HAVE_CONSTEXPR_14
 #define wc_constexpr14 constexpr
 #else
 #define wc_constexpr14 /*constexpr*/
+#endif
+
+#if wc_HAVE_CONSTEXPR_17
+#define wc_constexpr17 constexpr
+#else
+#define wc_constexpr17 /*constexpr*/
 #endif
 
 namespace wildcards
@@ -105,21 +113,18 @@ struct equal
 namespace detail
 {
 
-// constexpr since C++17
 template <typename C>
-constexpr auto begin(C& c) noexcept(noexcept(std::begin(c))) -> decltype(std::begin(c))
+wc_constexpr17 auto begin(C& c) noexcept(noexcept(std::begin(c))) -> decltype(std::begin(c))
 {
   return std::begin(c);
 }
 
-// constexpr since C++17
 template <typename C>
-constexpr auto begin(const C& c) noexcept(noexcept(std::begin(c))) -> decltype(std::begin(c))
+wc_constexpr17 auto begin(const C& c) noexcept(noexcept(std::begin(c))) -> decltype(std::begin(c))
 {
   return std::begin(c);
 }
 
-// constexpr since C++14
 template <typename T, std::size_t N>
 constexpr T* begin(T (&array)[N]) noexcept
 {
@@ -166,21 +171,18 @@ constexpr const wchar_t* begin(const wchar_t& c) noexcept
   return &c;
 }
 
-// constexpr since C++17
 template <typename C>
-constexpr auto end(C& c) noexcept(noexcept(std::end(c))) -> decltype(std::end(c))
+wc_constexpr17 auto end(C& c) noexcept(noexcept(std::end(c))) -> decltype(std::end(c))
 {
   return std::end(c);
 }
 
-// constexpr since C++17
 template <typename C>
-constexpr auto end(const C& c) noexcept(noexcept(std::end(c))) -> decltype(std::end(c))
+wc_constexpr17 auto end(const C& c) noexcept(noexcept(std::end(c))) -> decltype(std::end(c))
 {
   return std::end(c);
 }
 
-// constexpr since C++14
 template <typename T, std::size_t N>
 constexpr T* end(T (&array)[N]) noexcept
 {
