@@ -186,7 +186,7 @@ wc_constexpr17 auto end(const C& c) noexcept(noexcept(std::end(c))) -> decltype(
 template <typename T, std::size_t N>
 constexpr T* end(T (&array)[N]) noexcept
 {
-  return array + N;
+  return array + N - 1;
 }
 
 constexpr char* end(char& c) noexcept
