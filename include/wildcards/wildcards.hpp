@@ -237,19 +237,24 @@ template <typename SequenceIterator, typename PatternIterator, typename Cards, t
 wc_constexpr14 bool match(SequenceIterator s, SequenceIterator send, PatternIterator p,
                           PatternIterator pend, const Cards& cards, const Equal& equal)
 {
+  if (p == pend)
+  {
+    return s == send;
+  }
+
   if (*p != std::get<0>(cards))
   {
-    if (s != send)
+    if (s == send)
     {
-      if (*p == std::get<1>(cards) || equal(*s, *p))
-      {
-        return match(std::next(s), send, std::next(p), pend, cards, equal);
-      }
-
       return false;
     }
 
-    return p == pend;
+    if (*p == std::get<1>(cards) || equal(*s, *p))
+    {
+      return match(std::next(s), send, std::next(p), pend, cards, equal);
+    }
+
+    return false;
   }
 
   return match(s, send, std::next(p), pend, cards, equal) ||
