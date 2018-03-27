@@ -7,11 +7,11 @@ matrix:
   include:
     - env: BUILD_TYPE=Debug
       os: osx
-      osx_image: xcode8
+      osx_image: xcode9
       compiler: clang
     - env: BUILD_TYPE=Release
       os: osx
-      osx_image: xcode8
+      osx_image: xcode9
       compiler: clang
     - env: CLANG_VERSION=3.8 BUILD_TYPE=Debug
       os: linux
