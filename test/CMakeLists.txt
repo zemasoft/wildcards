@@ -23,8 +23,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
                                           -Wpedantic
                                           -Wconversion
                                           -Wsign-conversion
-                                          -Wsign-promo -Wdouble-promotion
-                                          $<$<CONFIG:Release>:-s>)
+                                          -Wsign-promo -Wdouble-promotion)
 
   if(WILDCARDS_ENABLE_WERROR)
     target_compile_options(selftest PRIVATE -Werror)
