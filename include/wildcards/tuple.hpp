@@ -14,6 +14,8 @@ namespace wildcards
 template <typename First, typename... Rest>
 struct tuple : public tuple<Rest...>
 {
+  constexpr tuple() = default;
+
   constexpr tuple(First first, Rest... rest)
       : tuple<Rest...>{std::move(rest)...}, first{std::move(first)}
   {
@@ -25,6 +27,8 @@ struct tuple : public tuple<Rest...>
 template <typename First>
 struct tuple<First>
 {
+  constexpr tuple() = default;
+
   constexpr tuple(First first) : first{std::move(first)}
   {
   }
@@ -48,6 +52,12 @@ struct tuple_element
   {
     return tuple_element<Index - 1, Rest...>::get(t);
   }
+
+  constexpr static typename tuple_element<Index - 1, Rest...>::type& get(
+      tuple<First, Rest...>& t)
+  {
+    return tuple_element<Index - 1, Rest...>::get(t);
+  }
 };
 
 template <typename First, typename... Rest>
@@ -59,6 +69,11 @@ struct tuple_element<0, First, Rest...>
   {
     return t.first;
   }
+
+  constexpr static First& get(tuple<First, Rest...>& t)
+  {
+    return t.first;
+  }
 };
 
 template <std::size_t Index, typename First, typename... Rest>
@@ -66,6 +81,12 @@ using tuple_element_t = typename tuple_element<Index, First, Rest...>::type;
 
 template <std::size_t Index, typename First, typename... Rest>
 constexpr const tuple_element_t<Index, First, Rest...>& get(const tuple<First, Rest...>& t)
+{
+  return tuple_element<Index, First, Rest...>::get(t);
+}
+
+template <std::size_t Index, typename First, typename... Rest>
+constexpr tuple_element_t<Index, First, Rest...>& get(tuple<First, Rest...>& t)
 {
   return tuple_element<Index, First, Rest...>::get(t);
 }
