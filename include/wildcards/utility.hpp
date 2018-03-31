@@ -14,6 +14,11 @@ namespace wildcards
 template <typename First, typename Second>
 struct pair
 {
+  using first_type = First;
+  using second_type = Second;
+
+  constexpr pair() = default;
+
   constexpr pair(First first, Second second) : first{std::move(first)}, second{std::move(second)}
   {
   }
@@ -40,6 +45,11 @@ struct pair_element<0, First, Second>
   {
     return p.first;
   }
+
+  constexpr static First& get(pair<First, Second>& p)
+  {
+    return p.first;
+  }
 };
 
 template <typename First, typename Second>
@@ -51,6 +61,11 @@ struct pair_element<1, First, Second>
   {
     return p.second;
   }
+
+  constexpr static Second& get(pair<First, Second>& p)
+  {
+    return p.second;
+  }
 };
 
 template <std::size_t Index, typename First, typename Second>
@@ -58,6 +73,12 @@ using pair_element_t = typename pair_element<Index, First, Second>::type;
 
 template <std::size_t Index, typename First, typename Second>
 constexpr const pair_element_t<Index, First, Second>& get(const pair<First, Second>& p)
+{
+  return pair_element<Index, First, Second>::get(p);
+}
+
+template <std::size_t Index, typename First, typename Second>
+constexpr pair_element_t<Index, First, Second>& get(pair<First, Second>& p)
 {
   return pair_element<Index, First, Second>::get(p);
 }
