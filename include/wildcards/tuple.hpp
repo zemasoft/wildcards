@@ -53,8 +53,7 @@ struct tuple_element
     return tuple_element<Index - 1, Rest...>::get(t);
   }
 
-  constexpr static typename tuple_element<Index - 1, Rest...>::type& get(
-      tuple<First, Rest...>& t)
+  constexpr static typename tuple_element<Index - 1, Rest...>::type& get(tuple<First, Rest...>& t)
   {
     return tuple_element<Index - 1, Rest...>::get(t);
   }
