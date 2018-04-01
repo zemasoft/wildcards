@@ -83,6 +83,30 @@ constexpr pair_element_t<Index, First, Second>& get(pair<First, Second>& p)
   return pair_element<Index, First, Second>::get(p);
 }
 
+template <typename T, typename U>
+constexpr const T& get(const pair<T, U>& p)
+{
+  return p.first;
+}
+
+template <typename T, typename U>
+constexpr T& get(pair<T, U>& p)
+{
+  return p.first;
+}
+
+template <typename T, typename U>
+constexpr const T& get(const pair<U, T>& p)
+{
+  return p.second;
+}
+
+template <typename T, typename U>
+constexpr T& get(pair<U, T>& p)
+{
+  return p.second;
+}
+
 }  // namespace wildcards
 
 #endif  // WILDCARDS_UTILITY_HPP
