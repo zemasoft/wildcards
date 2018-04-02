@@ -34,7 +34,7 @@ constexpr bool match(SequenceIterator s, SequenceIterator send, PatternIterator 
 
     if (*p == '?' || *s == *p)
     {
-      return match(++s, send, ++p, pend);
+      return match(s + 1, send, p + 1, pend);
     }
 
     return false;
