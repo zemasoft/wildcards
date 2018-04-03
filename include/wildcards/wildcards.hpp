@@ -3,17 +3,70 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef WILDCARDS_MATCH_HPP
-#define WILDCARDS_MATCH_HPP
+#ifndef WILDCARDS_WILDCARDS_HPP
+#define WILDCARDS_WILDCARDS_HPP
 
 #include <type_traits>  // std::remove_cv, std::remove_reference
-#include <utility>      // std::declval, std::forward
+#include <utility>      // std::declval, std::forward, std::move
 
-#include <cx/iterator.hpp>      // cx::begin, cx::end
-#include <wildcards/cards.hpp>  // cx::get, wildcards::cards
+#include <cx/iterator.hpp>  // cx::begin, cx::end
+#include <cx/utility.hpp>   // cx::get, cx::pair
 
 namespace wildcards
 {
+
+template <typename T>
+struct cards;
+
+template <>
+struct cards<char> : public cx::pair<char, char>
+{
+  constexpr cards() : cx::pair<char, char>{'*', '?'}
+  {
+  }
+
+  constexpr cards(char c1, char c2) : cx::pair<char, char>{std::move(c1), std::move(c2)}
+  {
+  }
+};
+
+template <>
+struct cards<char16_t> : public cx::pair<char16_t, char16_t>
+{
+  constexpr cards() : cx::pair<char16_t, char16_t>{u'*', u'?'}
+  {
+  }
+
+  constexpr cards(char16_t c1, char16_t c2)
+      : cx::pair<char16_t, char16_t>{std::move(c1), std::move(c2)}
+  {
+  }
+};
+
+template <>
+struct cards<char32_t> : public cx::pair<char32_t, char32_t>
+{
+  constexpr cards() : cx::pair<char32_t, char32_t>{U'*', U'?'}
+  {
+  }
+
+  constexpr cards(char32_t c1, char32_t c2)
+      : cx::pair<char32_t, char32_t>{std::move(c1), std::move(c2)}
+  {
+  }
+};
+
+template <>
+struct cards<wchar_t> : public cx::pair<wchar_t, wchar_t>
+{
+  constexpr cards() : cx::pair<wchar_t, wchar_t>{L'*', L'?'}
+  {
+  }
+
+  constexpr cards(wchar_t c1, wchar_t c2) : cx::pair<wchar_t, wchar_t>{std::move(c1), std::move(c2)}
+  {
+  }
+};
 
 namespace detail
 {
@@ -79,4 +132,4 @@ constexpr bool match(
 
 }  // namespace wildcards
 
-#endif  // WILDCARDS_MATCH_HPP
+#endif  // WILDCARDS_WILDCARDS_HPP
