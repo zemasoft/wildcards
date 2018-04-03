@@ -17,5 +17,7 @@ TEST_CASE("wildcards", "wildcards")
   static_assert(wildcards::match("test"_sv, "t?st"_sv), "");
   static_assert(wildcards::match("test"_sv, "t*t"_sv), "");
 
+  constexpr auto cards = wildcards::make_cards(u'*', u'.');
+  static_assert(wildcards::match(u"Ahoj, jak se mas?"_sv, u"Ahoj, *m..?"_sv, cards), "");
   static_assert(wildcards::match(u"Ahoj, jak se mas?"_sv, u"Ahoj, *m..?"_sv, {u'*', u'.'}), "");
 }

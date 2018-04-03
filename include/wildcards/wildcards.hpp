@@ -16,7 +16,10 @@ namespace wildcards
 {
 
 template <typename T>
-struct cards;
+struct cards : public cx::pair<T, T>
+{
+  using cx::pair<T, T>::pair;
+};
 
 template <>
 struct cards<char> : public cx::pair<char, char>
@@ -67,6 +70,12 @@ struct cards<wchar_t> : public cx::pair<wchar_t, wchar_t>
   {
   }
 };
+
+template <typename T>
+constexpr cards<T> make_cards(T&& c1, T&& c2)
+{
+  return cards<T>{std::forward<T>(c1), std::forward<T>(c2)};
+}
 
 namespace detail
 {
