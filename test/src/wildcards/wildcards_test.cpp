@@ -5,8 +5,8 @@
 
 #include <catch.hpp>
 
-#include <cx/string_view.hpp>       // cx::literals
-#include <wildcards/wildcards.hpp>  // wildcards::match
+#include <cx/string_view.hpp>
+#include <wildcards/wildcards.hpp>
 
 TEST_CASE("wildcards", "wildcards")
 {
