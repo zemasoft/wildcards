@@ -10,7 +10,7 @@
 #include <utility>      // std::declval, std::forward
 
 #include <cx/iterator.hpp>      // cx::begin, cx::end
-#include <wildcards/cards.hpp>  // wildcards::cards
+#include <wildcards/cards.hpp>  // cx::get, wildcards::cards
 
 namespace wildcards
 {
