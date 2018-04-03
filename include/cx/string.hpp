@@ -3,14 +3,14 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef WILDCARDS_STRING_HPP
-#define WILDCARDS_STRING_HPP
+#ifndef CX_STRING_HPP
+#define CX_STRING_HPP
 
 #include <cstddef>
 
-#include <wildcards/algorithm.hpp>
+#include <cx/algorithm.hpp>
 
-namespace wildcards
+namespace cx
 {
 
 template <typename T>
@@ -109,6 +109,6 @@ constexpr wstring operator"" _cs(const wchar_t* str, std::size_t s)
 
 }  // namespace literals
 
-}  // namespace wildcards
+}  // namespace cx
 
-#endif  // WILDCARDS_STRING_HPP
+#endif  // CX_STRING_HPP

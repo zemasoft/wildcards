@@ -6,7 +6,7 @@
 #ifndef WILDCARDS_CARDS_HPP
 #define WILDCARDS_CARDS_HPP
 
-#include <wildcards/utility.hpp>  // wildcards::pair
+#include <cx/utility.hpp>  // cx::pair
 
 namespace wildcards
 {
@@ -15,33 +15,33 @@ template <typename T>
 struct cards;
 
 template <>
-struct cards<char> : public pair<char, char>
+struct cards<char> : public cx::pair<char, char>
 {
-  constexpr cards() : pair<char, char>{'*', '?'}
+  constexpr cards() : cx::pair<char, char>{'*', '?'}
   {
   }
 };
 
 template <>
-struct cards<char16_t> : public pair<char16_t, char16_t>
+struct cards<char16_t> : public cx::pair<char16_t, char16_t>
 {
-  constexpr cards() : pair<char16_t, char16_t>{u'*', u'?'}
+  constexpr cards() : cx::pair<char16_t, char16_t>{u'*', u'?'}
   {
   }
 };
 
 template <>
-struct cards<char32_t> : public pair<char32_t, char32_t>
+struct cards<char32_t> : public cx::pair<char32_t, char32_t>
 {
-  constexpr cards() : pair<char32_t, char32_t>{U'*', U'?'}
+  constexpr cards() : cx::pair<char32_t, char32_t>{U'*', U'?'}
   {
   }
 };
 
 template <>
-struct cards<wchar_t> : public pair<wchar_t, wchar_t>
+struct cards<wchar_t> : public cx::pair<wchar_t, wchar_t>
 {
-  constexpr cards() : pair<wchar_t, wchar_t>{L'*', L'?'}
+  constexpr cards() : cx::pair<wchar_t, wchar_t>{L'*', L'?'}
   {
   }
 };

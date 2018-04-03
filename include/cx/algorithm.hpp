@@ -3,10 +3,10 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef WILDCARDS_ALGORITHM_HPP
-#define WILDCARDS_ALGORITHM_HPP
+#ifndef CX_ALGORITHM_HPP
+#define CX_ALGORITHM_HPP
 
-namespace wildcards
+namespace cx
 {
 
 template <typename Iterator1, typename Iterator2>
@@ -20,6 +20,6 @@ constexpr bool equal(Iterator1 first1, Iterator1 last1, Iterator2 first2, Iterat
   return first1 == last1 && first2 == last2;
 }
 
-}  // namespace wildcards
+}  // namespace cx
 
-#endif  // WILDCARDS_ALGORITHM_HPP
+#endif  // CX_ALGORITHM_HPP

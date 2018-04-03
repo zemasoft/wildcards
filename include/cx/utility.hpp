@@ -3,12 +3,12 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef WILDCARDS_UTILITY_HPP
-#define WILDCARDS_UTILITY_HPP
+#ifndef CX_UTILITY_HPP
+#define CX_UTILITY_HPP
 
 #include <utility>  // std::forward, std::move
 
-namespace wildcards
+namespace cx
 {
 
 template <typename First, typename Second>
@@ -107,6 +107,6 @@ constexpr T& get(pair<U, T>& p)
   return p.second;
 }
 
-}  // namespace wildcards
+}  // namespace cx
 
-#endif  // WILDCARDS_UTILITY_HPP
+#endif  // CX_UTILITY_HPP

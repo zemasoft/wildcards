@@ -3,12 +3,12 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef WILDCARDS_TUPLE_HPP
-#define WILDCARDS_TUPLE_HPP
+#ifndef CX_TUPLE_HPP
+#define CX_TUPLE_HPP
 
 #include <utility>  // std::forward, std::move
 
-namespace wildcards
+namespace cx
 {
 
 template <typename First, typename... Rest>
@@ -90,6 +90,6 @@ constexpr tuple_element_t<Index, First, Rest...>& get(tuple<First, Rest...>& t)
   return tuple_element<Index, First, Rest...>::get(t);
 }
 
-}  // namespace wildcards
+}  // namespace cx
 
-#endif  // WILDCARDS_TUPLE_HPP
+#endif  // CX_TUPLE_HPP

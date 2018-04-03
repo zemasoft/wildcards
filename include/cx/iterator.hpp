@@ -3,10 +3,10 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef WILDCARDS_ITERATOR_HPP
-#define WILDCARDS_ITERATOR_HPP
+#ifndef CX_ITERATOR_HPP
+#define CX_ITERATOR_HPP
 
-namespace wildcards
+namespace cx
 {
 
 template <typename C>
@@ -33,6 +33,6 @@ constexpr auto end(C& c) -> decltype(c.end())
   return c.end();
 }
 
-}  // namespace wildcards
+}  // namespace cx
 
-#endif  // WILDCARDS_ITERATOR_HPP
+#endif  // CX_ITERATOR_HPP

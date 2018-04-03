@@ -9,8 +9,8 @@
 #include <type_traits>  // std::remove_cv, std::remove_reference
 #include <utility>      // std::declval, std::forward
 
-#include <wildcards/cards.hpp>     // wildcards::cards
-#include <wildcards/iterator.hpp>  // wildcards::begin, wildcards::end
+#include <cx/iterator.hpp>      // cx::begin, cx::end
+#include <wildcards/cards.hpp>  // wildcards::cards
 
 namespace wildcards
 {
@@ -47,14 +47,14 @@ constexpr bool match(SequenceIterator s, SequenceIterator send, PatternIterator 
     return s == send;
   }
 
-  if (*p != get<0>(c))
+  if (*p != cx::get<0>(c))
   {
     if (s == send)
     {
       return false;
     }
 
-    if (*p == get<1>(c) || *s == *p)
+    if (*p == cx::get<1>(c) || *s == *p)
     {
       return match(s + 1, send, p + 1, pend, c);
     }
@@ -72,9 +72,9 @@ constexpr bool match(
     Sequence&& sequence, Pattern&& pattern,
     const cards<detail::container_item_t<Pattern>>& c = cards<detail::container_item_t<Pattern>>())
 {
-  return detail::match(begin(std::forward<Sequence>(sequence)),
-                       end(std::forward<Sequence>(sequence)), begin(std::forward<Pattern>(pattern)),
-                       end(std::forward<Pattern>(pattern)), c);
+  return detail::match(
+      cx::begin(std::forward<Sequence>(sequence)), cx::end(std::forward<Sequence>(sequence)),
+      cx::begin(std::forward<Pattern>(pattern)), cx::end(std::forward<Pattern>(pattern)), c);
 }
 
 }  // namespace wildcards
