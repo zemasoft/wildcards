@@ -20,12 +20,20 @@ struct cards<char> : public cx::pair<char, char>
   constexpr cards() : cx::pair<char, char>{'*', '?'}
   {
   }
+
+  constexpr cards(char c1, char c2) : cx::pair<char, char>{c1, c2}
+  {
+  }
 };
 
 template <>
 struct cards<char16_t> : public cx::pair<char16_t, char16_t>
 {
   constexpr cards() : cx::pair<char16_t, char16_t>{u'*', u'?'}
+  {
+  }
+
+  constexpr cards(char16_t c1, char16_t c2) : cx::pair<char16_t, char16_t>{c1, c2}
   {
   }
 };
@@ -36,12 +44,20 @@ struct cards<char32_t> : public cx::pair<char32_t, char32_t>
   constexpr cards() : cx::pair<char32_t, char32_t>{U'*', U'?'}
   {
   }
+
+  constexpr cards(char32_t c1, char32_t c2) : cx::pair<char32_t, char32_t>{c1, c2}
+  {
+  }
 };
 
 template <>
 struct cards<wchar_t> : public cx::pair<wchar_t, wchar_t>
 {
   constexpr cards() : cx::pair<wchar_t, wchar_t>{L'*', L'?'}
+  {
+  }
+
+  constexpr cards(wchar_t c1, wchar_t c2) : cx::pair<wchar_t, wchar_t>{c1, c2}
   {
   }
 };
