@@ -6,6 +6,7 @@
 #ifndef CX_TUPLE_HPP
 #define CX_TUPLE_HPP
 
+#include <cstddef>  // std::size_t
 #include <utility>  // std::forward, std::move
 
 namespace cx

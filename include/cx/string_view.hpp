@@ -6,9 +6,9 @@
 #ifndef CX_STRING_VIEW_HPP
 #define CX_STRING_VIEW_HPP
 
-#include <cstddef>
+#include <cstddef>  // std::size_t
 
-#include <cx/algorithm.hpp>
+#include <cx/algorithm.hpp>  // cx::equal
 
 namespace cx
 {

@@ -6,6 +6,7 @@
 #ifndef CX_UTILITY_HPP
 #define CX_UTILITY_HPP
 
+#include <cstddef>  // std::size_t
 #include <utility>  // std::forward, std::move
 
 namespace cx
