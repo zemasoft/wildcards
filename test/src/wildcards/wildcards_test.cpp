@@ -5,7 +5,7 @@
 
 #include <catch.hpp>
 
-#include <cx/string.hpp>
+#include <cx/string_view.hpp>
 #include <wildcards/match.hpp>
 
 TEST_CASE("wildcards", "wildcards")
