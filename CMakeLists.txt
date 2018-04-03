@@ -9,7 +9,7 @@ option(WILDCARDS_BUILD_EXAMPLES "Build examples" OFF)
 option(WILDCARDS_ENABLE_WERROR "Enable all warnings as errors" OFF)
 
 option(WILDCARDS_USE_CXX_17 "Build using C++17" OFF)
-option(WILDCARDS_USE_CXX_14 "Build using C++14" OFF)
+option(WILDCARDS_USE_CXX_14 "Build using C++14" ON)
 
 if(WILDCARDS_BUILD_TESTS)
   include(CTest)
