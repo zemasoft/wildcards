@@ -16,7 +16,7 @@ TEST_CASE("cx", "cx")
   constexpr auto s1 = cx::basic_string_view<char>("test");
   constexpr auto s2 = cx::make_string_view("test");
   constexpr auto s3 = cx::string_view("test");
-  constexpr auto s4 = "test"_cs;
+  constexpr auto s4 = "test"_sv;
   constexpr auto s5 = cx::make_string_view("testt", 4);
 
   static_assert(s1 == s2, "");

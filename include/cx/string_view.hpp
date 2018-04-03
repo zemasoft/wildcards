@@ -87,22 +87,22 @@ using wstring_view = basic_string_view<wchar_t>;
 namespace literals
 {
 
-constexpr string_view operator"" _cs(const char* str, std::size_t s)
+constexpr string_view operator"" _sv(const char* str, std::size_t s)
 {
   return string_view{str, s};
 }
 
-constexpr u16string_view operator"" _cs(const char16_t* str, std::size_t s)
+constexpr u16string_view operator"" _sv(const char16_t* str, std::size_t s)
 {
   return u16string_view{str, s};
 }
 
-constexpr u32string_view operator"" _cs(const char32_t* str, std::size_t s)
+constexpr u32string_view operator"" _sv(const char32_t* str, std::size_t s)
 {
   return u32string_view{str, s};
 }
 
-constexpr wstring_view operator"" _cs(const wchar_t* str, std::size_t s)
+constexpr wstring_view operator"" _sv(const wchar_t* str, std::size_t s)
 {
   return wstring_view{str, s};
 }

@@ -12,10 +12,10 @@ TEST_CASE("wildcards", "wildcards")
 {
   using namespace cx::literals;
 
-  static_assert(wildcards::match("test"_cs, "test"_cs), "");
-  static_assert(wildcards::match("test"_cs, "t*st"_cs), "");
-  static_assert(wildcards::match("test"_cs, "t?st"_cs), "");
-  static_assert(wildcards::match("test"_cs, "t*t"_cs), "");
+  static_assert(wildcards::match("test"_sv, "test"_sv), "");
+  static_assert(wildcards::match("test"_sv, "t*st"_sv), "");
+  static_assert(wildcards::match("test"_sv, "t?st"_sv), "");
+  static_assert(wildcards::match("test"_sv, "t*t"_sv), "");
 
-  static_assert(wildcards::match(u"Ahoj, jak se mas?"_cs, u"Ahoj, *m..?"_cs, {u'*', u'.'}), "");
+  static_assert(wildcards::match(u"Ahoj, jak se mas?"_sv, u"Ahoj, *m..?"_sv, {u'*', u'.'}), "");
 }
