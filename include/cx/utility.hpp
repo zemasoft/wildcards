@@ -28,6 +28,18 @@ struct pair
   Second second;
 };
 
+template <typename First1, typename Second1, typename First2, typename Second2>
+constexpr bool operator==(const pair<First1, Second1>& lhs, const pair<First2, Second2>& rhs)
+{
+  return lhs.first == rhs.first && lhs.second == rhs.second;
+}
+
+template <typename First1, typename Second1, typename First2, typename Second2>
+constexpr bool operator!=(const pair<First1, Second1>& lhs, const pair<First2, Second2>& rhs)
+{
+  return !(lhs == rhs);
+}
+
 template <typename First, typename Second>
 constexpr pair<First, Second> make_pair(First&& first, Second&& second)
 {
