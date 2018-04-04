@@ -37,6 +37,19 @@ struct tuple<First>
   First first;
 };
 
+template <typename... Types1, typename... Types2>
+constexpr bool operator==(const tuple<Types1...>& lhs, const tuple<Types2...>& rhs)
+{
+  // TODO
+  return true;
+}
+
+template <typename... Types1, typename... Types2>
+constexpr bool operator!=(const tuple<Types1...>& lhs, const tuple<Types2...>& rhs)
+{
+  return !(lhs == rhs);
+}
+
 template <typename... Types>
 constexpr tuple<Types...> make_tuple(Types&&... types)
 {
