@@ -3,10 +3,10 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <catch.hpp>
-
 #include <cx/string_view.hpp>
 #include <wildcards/wildcards.hpp>
+
+#include <catch.hpp>
 
 TEST_CASE("wildcards", "wildcards")
 {
