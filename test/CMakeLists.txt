@@ -3,7 +3,6 @@ project(SelfTest)
 add_executable(selftest src/cx/string_view_test.cpp
                         src/cx/tuple_test.cpp
                         src/cx/utility_test.cpp
-                        src/cx/cx_test.cpp
                         src/wildcards/wildcards_test.cpp
                         src/catch.cpp)
 target_include_directories(selftest PRIVATE ../include include)
