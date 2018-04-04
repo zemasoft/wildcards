@@ -1,6 +1,7 @@
 project(SelfTest)
 
-add_executable(selftest src/cx/cx_test.cpp
+add_executable(selftest src/cx/string_view_test.cpp
+                        src/cx/cx_test.cpp
                         src/wildcards/wildcards_test.cpp
                         src/catch.cpp)
 target_include_directories(selftest PRIVATE ../include include)
