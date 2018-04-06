@@ -43,25 +43,29 @@ constexpr tuple<Types...> make_tuple(Types&&... types)
   return tuple<Types...>{std::forward<Types>(types)...};
 }
 
-template <std::size_t Index, typename First, typename... Rest>
-struct tuple_element
-{
-  using type = typename tuple_element<Index - 1, Rest...>::type;
+template <std::size_t Index, typename T>
+struct tuple_element;
 
-  constexpr static const typename tuple_element<Index - 1, Rest...>::type& get(
+template <std::size_t Index, typename First, typename... Rest>
+struct tuple_element<Index, tuple<First, Rest...>>
+{
+  using type = typename tuple_element<Index - 1, tuple<Rest...>>::type;
+
+  constexpr static const typename tuple_element<Index - 1, tuple<Rest...>>::type& get(
       const tuple<First, Rest...>& t)
   {
-    return tuple_element<Index - 1, Rest...>::get(t);
+    return tuple_element<Index - 1, tuple<Rest...>>::get(t);
   }
 
-  constexpr static typename tuple_element<Index - 1, Rest...>::type& get(tuple<First, Rest...>& t)
+  constexpr static typename tuple_element<Index - 1, tuple<Rest...>>::type& get(
+      tuple<First, Rest...>& t)
   {
-    return tuple_element<Index - 1, Rest...>::get(t);
+    return tuple_element<Index - 1, tuple<Rest...>>::get(t);
   }
 };
 
 template <typename First, typename... Rest>
-struct tuple_element<0, First, Rest...>
+struct tuple_element<0, tuple<First, Rest...>>
 {
   using type = First;
 
@@ -76,19 +80,19 @@ struct tuple_element<0, First, Rest...>
   }
 };
 
-template <std::size_t Index, typename First, typename... Rest>
-using tuple_element_t = typename tuple_element<Index, First, Rest...>::type;
+template <std::size_t Index, typename T>
+using tuple_element_t = typename tuple_element<Index, T>::type;
 
 template <std::size_t Index, typename First, typename... Rest>
-constexpr const tuple_element_t<Index, First, Rest...>& get(const tuple<First, Rest...>& t)
+constexpr const tuple_element_t<Index, tuple<First, Rest...>>& get(const tuple<First, Rest...>& t)
 {
-  return tuple_element<Index, First, Rest...>::get(t);
+  return tuple_element<Index, tuple<First, Rest...>>::get(t);
 }
 
 template <std::size_t Index, typename First, typename... Rest>
-constexpr tuple_element_t<Index, First, Rest...>& get(tuple<First, Rest...>& t)
+constexpr tuple_element_t<Index, tuple<First, Rest...>>& get(tuple<First, Rest...>& t)
 {
-  return tuple_element<Index, First, Rest...>::get(t);
+  return tuple_element<Index, tuple<First, Rest...>>::get(t);
 }
 
 namespace detail

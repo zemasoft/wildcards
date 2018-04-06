@@ -46,11 +46,11 @@ constexpr pair<First, Second> make_pair(First&& first, Second&& second)
   return pair<First, Second>{std::forward<First>(first), std::forward<Second>(second)};
 }
 
-template <std::size_t Index, typename First, typename Second>
-struct pair_element;
+template <std::size_t Index, typename T>
+struct tuple_element;
 
 template <typename First, typename Second>
-struct pair_element<0, First, Second>
+struct tuple_element<0, pair<First, Second>>
 {
   using type = First;
 
@@ -66,7 +66,7 @@ struct pair_element<0, First, Second>
 };
 
 template <typename First, typename Second>
-struct pair_element<1, First, Second>
+struct tuple_element<1, pair<First, Second>>
 {
   using type = Second;
 
@@ -81,19 +81,19 @@ struct pair_element<1, First, Second>
   }
 };
 
-template <std::size_t Index, typename First, typename Second>
-using pair_element_t = typename pair_element<Index, First, Second>::type;
+template <std::size_t Index, typename T>
+using tuple_element_t = typename tuple_element<Index, T>::type;
 
 template <std::size_t Index, typename First, typename Second>
-constexpr const pair_element_t<Index, First, Second>& get(const pair<First, Second>& p)
+constexpr const tuple_element_t<Index, pair<First, Second>>& get(const pair<First, Second>& p)
 {
-  return pair_element<Index, First, Second>::get(p);
+  return tuple_element<Index, pair<First, Second>>::get(p);
 }
 
 template <std::size_t Index, typename First, typename Second>
-constexpr pair_element_t<Index, First, Second>& get(pair<First, Second>& p)
+constexpr tuple_element_t<Index, pair<First, Second>>& get(pair<First, Second>& p)
 {
-  return pair_element<Index, First, Second>::get(p);
+  return tuple_element<Index, pair<First, Second>>::get(p);
 }
 
 template <typename T, typename U>
