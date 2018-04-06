@@ -18,12 +18,16 @@ namespace wildcards
 template <typename T>
 struct cards : public cx::pair<T, T>
 {
+  using base_type = cx::pair<T, T>;
+
   using cx::pair<T, T>::pair;
 };
 
 template <>
 struct cards<char> : public cx::pair<char, char>
 {
+  using base_type = cx::pair<char, char>;
+
   constexpr cards() : cx::pair<char, char>{'*', '?'}
   {
   }
@@ -36,6 +40,8 @@ struct cards<char> : public cx::pair<char, char>
 template <>
 struct cards<char16_t> : public cx::pair<char16_t, char16_t>
 {
+  using base_type = cx::pair<char16_t, char16_t>;
+
   constexpr cards() : cx::pair<char16_t, char16_t>{u'*', u'?'}
   {
   }
@@ -49,6 +55,8 @@ struct cards<char16_t> : public cx::pair<char16_t, char16_t>
 template <>
 struct cards<char32_t> : public cx::pair<char32_t, char32_t>
 {
+  using base_type = cx::pair<char32_t, char32_t>;
+
   constexpr cards() : cx::pair<char32_t, char32_t>{U'*', U'?'}
   {
   }
@@ -62,6 +70,8 @@ struct cards<char32_t> : public cx::pair<char32_t, char32_t>
 template <>
 struct cards<wchar_t> : public cx::pair<wchar_t, wchar_t>
 {
+  using base_type = cx::pair<wchar_t, wchar_t>;
+
   constexpr cards() : cx::pair<wchar_t, wchar_t>{L'*', L'?'}
   {
   }
@@ -109,14 +119,16 @@ constexpr bool match(SequenceIterator s, SequenceIterator send, PatternIterator 
     return s == send;
   }
 
-  if (*p != cx::get<0>(c))
+  const typename cards<iterated_item_t<PatternIterator>>::base_type& cb = c;
+
+  if (*p != cx::get<0>(cb))
   {
     if (s == send)
     {
       return false;
     }
 
-    if (*p == cx::get<1>(c) || *s == *p)
+    if (*p == cx::get<1>(cb) || *s == *p)
     {
       return match(s + 1, send, p + 1, pend, c);
     }
