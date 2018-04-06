@@ -37,19 +37,6 @@ struct tuple<First>
   First first;
 };
 
-template <typename... Types1, typename... Types2>
-constexpr bool operator==(const tuple<Types1...>& lhs, const tuple<Types2...>& rhs)
-{
-  // TODO
-  return true;
-}
-
-template <typename... Types1, typename... Types2>
-constexpr bool operator!=(const tuple<Types1...>& lhs, const tuple<Types2...>& rhs)
-{
-  return !(lhs == rhs);
-}
-
 template <typename... Types>
 constexpr tuple<Types...> make_tuple(Types&&... types)
 {
@@ -102,6 +89,45 @@ template <std::size_t Index, typename First, typename... Rest>
 constexpr tuple_element_t<Index, First, Rest...>& get(tuple<First, Rest...>& t)
 {
   return tuple_element<Index, First, Rest...>::get(t);
+}
+
+namespace detail
+{
+
+template <std::size_t Index>
+struct tuples
+{
+  template <typename... Types1, typename... Types2>
+  constexpr static bool equal(const tuple<Types1...>& lhs, const tuple<Types2...>& rhs)
+  {
+    return get<Index>(lhs) == get<Index>(rhs) && tuples<Index - 1>::equal(lhs, rhs);
+  }
+};
+
+template <>
+struct tuples<0>
+{
+  template <typename... Types1, typename... Types2>
+  constexpr static bool equal(const tuple<Types1...>& lhs, const tuple<Types2...>& rhs)
+  {
+    return get<0>(lhs) == get<0>(rhs);
+  }
+};
+
+}  // namespace detail
+
+template <typename... Types1, typename... Types2>
+constexpr bool operator==(const tuple<Types1...>& lhs, const tuple<Types2...>& rhs)
+{
+  static_assert(sizeof...(Types1) == sizeof...(Types2), "");
+
+  return detail::tuples<sizeof...(Types1) -1>::equal(lhs, rhs);
+}
+
+template <typename... Types1, typename... Types2>
+constexpr bool operator!=(const tuple<Types1...>& lhs, const tuple<Types2...>& rhs)
+{
+  return !(lhs == rhs);
 }
 
 }  // namespace cx

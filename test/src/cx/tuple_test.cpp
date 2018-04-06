@@ -24,7 +24,7 @@ TEST_CASE("tuple", "[tuple]")
 
     static_assert(cx::get<0>(t2) == 10, "");
 
-    // static_assert(cx::make_tuple(10) != cx::make_tuple(20), "");
+    static_assert(cx::make_tuple(10) != cx::make_tuple(20), "");
   }
 
   SECTION("tuple<int, char>")
@@ -41,9 +41,9 @@ TEST_CASE("tuple", "[tuple]")
     static_assert(cx::get<0>(t2) == 10, "");
     static_assert(cx::get<1>(t2) == 'a', "");
 
-    // static_assert(cx::make_tuple(10, 'a') != cx::make_tuple(20, 'a'), "");
-    // static_assert(cx::make_tuple(10, 'a') != cx::make_tuple(10, 'b'), "");
-    // static_assert(cx::make_tuple(10, 'a') != cx::make_tuple(20, 'b'), "");
+    static_assert(cx::make_tuple(10, 'a') != cx::make_tuple(20, 'a'), "");
+    static_assert(cx::make_tuple(10, 'a') != cx::make_tuple(10, 'b'), "");
+    static_assert(cx::make_tuple(10, 'a') != cx::make_tuple(20, 'b'), "");
   }
 
   SECTION("tuple<int, char, double>")
@@ -61,12 +61,12 @@ TEST_CASE("tuple", "[tuple]")
     static_assert(cx::get<1>(t2) == 'a', "");
     static_assert(cx::get<2>(t2) == 5.5, "");
 
-    // static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(20, 'a', 5.5), "");
-    // static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(10, 'b', 5.5), "");
-    // static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(10, 'a', 5.6), "");
-    // static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(20, 'b', 5.5), "");
-    // static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(20, 'a', 5.6), "");
-    // static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(10, 'b', 5.6), "");
-    // static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(20, 'b', 5.6), "");
+    static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(20, 'a', 5.5), "");
+    static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(10, 'b', 5.5), "");
+    static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(10, 'a', 5.6), "");
+    static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(20, 'b', 5.5), "");
+    static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(20, 'a', 5.6), "");
+    static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(10, 'b', 5.6), "");
+    static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(20, 'b', 5.6), "");
   }
 }
