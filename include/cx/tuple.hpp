@@ -15,6 +15,9 @@ namespace cx
 template <typename First, typename... Rest>
 struct tuple : public tuple<Rest...>
 {
+  template <std::size_t Index, typename T>
+  friend struct tuple_element;
+
   constexpr tuple() = default;
 
   constexpr tuple(First first, Rest... rest)
@@ -22,18 +25,23 @@ struct tuple : public tuple<Rest...>
   {
   }
 
+ private:
   First first;
 };
 
 template <typename First>
 struct tuple<First>
 {
+  template <std::size_t Index, typename T>
+  friend struct tuple_element;
+
   constexpr tuple() = default;
 
   constexpr tuple(First first) : first{std::move(first)}
   {
   }
 
+ private:
   First first;
 };
 
