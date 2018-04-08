@@ -21,12 +21,12 @@ struct tuple : public tuple<Rest...>
   constexpr tuple() = default;
 
   constexpr tuple(First first, Rest... rest)
-      : tuple<Rest...>{std::move(rest)...}, first{std::move(first)}
+      : tuple<Rest...>{std::move(rest)...}, first_{std::move(first)}
   {
   }
 
  private:
-  First first;
+  First first_;
 };
 
 template <typename First>
@@ -37,12 +37,12 @@ struct tuple<First>
 
   constexpr tuple() = default;
 
-  constexpr tuple(First first) : first{std::move(first)}
+  constexpr tuple(First first) : first_{std::move(first)}
   {
   }
 
  private:
-  First first;
+  First first_;
 };
 
 template <typename... Types>
@@ -79,12 +79,12 @@ struct tuple_element<0, tuple<First, Rest...>>
 
   constexpr static const First& get(const tuple<First, Rest...>& t)
   {
-    return t.first;
+    return t.first_;
   }
 
   constexpr static First& get(tuple<First, Rest...>& t)
   {
-    return t.first;
+    return t.first_;
   }
 };
 

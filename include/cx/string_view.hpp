@@ -22,37 +22,37 @@ class basic_string_view
   constexpr basic_string_view() = default;
 
   template <std::size_t N>
-  constexpr basic_string_view(const T (&str)[N]) : m_data{&str[0]}, m_size{N - 1}
+  constexpr basic_string_view(const T (&str)[N]) : data_{&str[0]}, size_{N - 1}
   {
   }
 
-  constexpr basic_string_view(const T* str, std::size_t s) : m_data{str}, m_size{s}
+  constexpr basic_string_view(const T* str, std::size_t s) : data_{str}, size_{s}
   {
   }
 
   constexpr const T* data() const
   {
-    return m_data;
+    return data_;
   }
 
   constexpr std::size_t size() const
   {
-    return m_size;
+    return size_;
   }
 
   constexpr const T* begin() const
   {
-    return m_data;
+    return data_;
   }
 
   constexpr const T* end() const
   {
-    return m_data + m_size;
+    return data_ + size_;
   }
 
  private:
-  const T* m_data{nullptr};
-  std::size_t m_size{0};
+  const T* data_{nullptr};
+  std::size_t size_{0};
 };
 
 template <typename T, typename U>
