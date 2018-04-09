@@ -12,8 +12,11 @@
 namespace cx
 {
 
+template <typename... Types>
+struct tuple;
+
 template <typename First, typename... Rest>
-struct tuple : public tuple<Rest...>
+struct tuple<First, Rest...> : public tuple<Rest...>
 {
   template <std::size_t Index, typename T>
   friend struct tuple_element;
@@ -29,20 +32,9 @@ struct tuple : public tuple<Rest...>
   First first_;
 };
 
-template <typename First>
-struct tuple<First>
+template <>
+struct tuple<>
 {
-  template <std::size_t Index, typename T>
-  friend struct tuple_element;
-
-  constexpr tuple() = default;
-
-  constexpr tuple(First first) : first_{std::move(first)}
-  {
-  }
-
- private:
-  First first_;
 };
 
 template <typename... Types>
@@ -134,6 +126,12 @@ constexpr bool operator==(const tuple<Types1...>& lhs, const tuple<Types2...>& r
   static_assert(sizeof...(Types1) == sizeof...(Types2), "");
 
   return detail::tuples<sizeof...(Types1) -1>::equal(lhs, rhs);
+}
+
+template <>
+constexpr bool operator==(const tuple<>& lhs, const tuple<>& rhs)
+{
+  return true;
 }
 
 template <typename... Types1, typename... Types2>

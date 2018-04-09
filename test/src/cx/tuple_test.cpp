@@ -11,6 +11,16 @@
 
 TEST_CASE("tuple", "[tuple]")
 {
+  SECTION("tuple<>")
+  {
+    constexpr auto t1 = cx::tuple<>{};
+    constexpr auto t2 = cx::make_tuple();
+
+    static_assert(std::is_same<decltype(t1), decltype(t2)>::value, "");
+
+    static_assert(t1 == t2, "");
+  }
+
   SECTION("tuple<int>")
   {
     constexpr auto t1 = cx::tuple<int>{};
