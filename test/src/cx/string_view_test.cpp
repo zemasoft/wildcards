@@ -30,12 +30,31 @@ TEST_CASE("string_view", "[string_view]")
     static_assert(std::is_same<decltype(s1), decltype(s6)>::value, "");
     static_assert(std::is_same<decltype(s1), decltype(s7)>::value, "");
 
+    static_assert(s1.size() == 4, "");
+    static_assert(s2.size() == 4, "");
+    static_assert(s3.size() == 4, "");
+    static_assert(s4.size() == 4, "");
+    static_assert(s5.size() == 4, "");
+    static_assert(s6.size() == 4, "");
+    static_assert(s7.size() == 4, "");
+
+    static_assert(!s1.empty(), "");
+    static_assert(!s2.empty(), "");
+    static_assert(!s3.empty(), "");
+    static_assert(!s4.empty(), "");
+    static_assert(!s5.empty(), "");
+    static_assert(!s6.empty(), "");
+    static_assert(!s7.empty(), "");
+
     static_assert(s1 == s2, "");
     static_assert(s1 == s3, "");
     static_assert(s1 == s4, "");
     static_assert(s1 == s5, "");
     static_assert(s1 == s6, "");
     static_assert(s1 == s7, "");
+
+    static_assert(""_sv.size() == 0, "");
+    static_assert(""_sv.empty(), "");
 
     static_assert(""_sv == ""_sv, "");
     static_assert("test"_sv != ""_sv, "");
@@ -61,12 +80,31 @@ TEST_CASE("string_view", "[string_view]")
     static_assert(std::is_same<decltype(s1), decltype(s6)>::value, "");
     static_assert(std::is_same<decltype(s1), decltype(s7)>::value, "");
 
+    static_assert(s1.size() == 4, "");
+    static_assert(s2.size() == 4, "");
+    static_assert(s3.size() == 4, "");
+    static_assert(s4.size() == 4, "");
+    static_assert(s5.size() == 4, "");
+    static_assert(s6.size() == 4, "");
+    static_assert(s7.size() == 4, "");
+
+    static_assert(!s1.empty(), "");
+    static_assert(!s2.empty(), "");
+    static_assert(!s3.empty(), "");
+    static_assert(!s4.empty(), "");
+    static_assert(!s5.empty(), "");
+    static_assert(!s6.empty(), "");
+    static_assert(!s7.empty(), "");
+
     static_assert(s1 == s2, "");
     static_assert(s1 == s3, "");
     static_assert(s1 == s4, "");
     static_assert(s1 == s5, "");
     static_assert(s1 == s6, "");
     static_assert(s1 == s7, "");
+
+    static_assert(u""_sv.size() == 0, "");
+    static_assert(u""_sv.empty(), "");
 
     static_assert(u""_sv == u""_sv, "");
     static_assert(u"test"_sv != u""_sv, "");
@@ -92,12 +130,31 @@ TEST_CASE("string_view", "[string_view]")
     static_assert(std::is_same<decltype(s1), decltype(s6)>::value, "");
     static_assert(std::is_same<decltype(s1), decltype(s7)>::value, "");
 
+    static_assert(s1.size() == 4, "");
+    static_assert(s2.size() == 4, "");
+    static_assert(s3.size() == 4, "");
+    static_assert(s4.size() == 4, "");
+    static_assert(s5.size() == 4, "");
+    static_assert(s6.size() == 4, "");
+    static_assert(s7.size() == 4, "");
+
+    static_assert(!s1.empty(), "");
+    static_assert(!s2.empty(), "");
+    static_assert(!s3.empty(), "");
+    static_assert(!s4.empty(), "");
+    static_assert(!s5.empty(), "");
+    static_assert(!s6.empty(), "");
+    static_assert(!s7.empty(), "");
+
     static_assert(s1 == s2, "");
     static_assert(s1 == s3, "");
     static_assert(s1 == s4, "");
     static_assert(s1 == s5, "");
     static_assert(s1 == s6, "");
     static_assert(s1 == s7, "");
+
+    static_assert(U""_sv.size() == 0, "");
+    static_assert(U""_sv.empty(), "");
 
     static_assert(U""_sv == U""_sv, "");
     static_assert(U"test"_sv != U""_sv, "");
@@ -123,12 +180,31 @@ TEST_CASE("string_view", "[string_view]")
     static_assert(std::is_same<decltype(s1), decltype(s6)>::value, "");
     static_assert(std::is_same<decltype(s1), decltype(s7)>::value, "");
 
+    static_assert(s1.size() == 4, "");
+    static_assert(s2.size() == 4, "");
+    static_assert(s3.size() == 4, "");
+    static_assert(s4.size() == 4, "");
+    static_assert(s5.size() == 4, "");
+    static_assert(s6.size() == 4, "");
+    static_assert(s7.size() == 4, "");
+
+    static_assert(!s1.empty(), "");
+    static_assert(!s2.empty(), "");
+    static_assert(!s3.empty(), "");
+    static_assert(!s4.empty(), "");
+    static_assert(!s5.empty(), "");
+    static_assert(!s6.empty(), "");
+    static_assert(!s7.empty(), "");
+
     static_assert(s1 == s2, "");
     static_assert(s1 == s3, "");
     static_assert(s1 == s4, "");
     static_assert(s1 == s5, "");
     static_assert(s1 == s6, "");
     static_assert(s1 == s7, "");
+
+    static_assert(L""_sv.size() == 0, "");
+    static_assert(L""_sv.empty(), "");
 
     static_assert(L""_sv == L""_sv, "");
     static_assert(L"test"_sv != L""_sv, "");
