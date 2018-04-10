@@ -6,6 +6,9 @@
 #ifndef CX_ITERATOR_HPP
 #define CX_ITERATOR_HPP
 
+#include <cstddef>           // std::size_t
+#include <initializer_list>  // std::initializer_list
+
 namespace cx
 {
 
@@ -48,7 +51,7 @@ constexpr auto empty(const C& c) -> decltype(c.empty())
 }
 
 template <typename T, std::size_t N>
-constexpr bool empty(const T (&array)[N])
+constexpr bool empty(const T (&)[N])
 {
   return false;
 }

@@ -129,7 +129,7 @@ constexpr bool operator==(const tuple<Types1...>& lhs, const tuple<Types2...>& r
 }
 
 template <>
-constexpr bool operator==(const tuple<>& lhs, const tuple<>& rhs)
+constexpr bool operator==(const tuple<>&, const tuple<>&)
 {
   return true;
 }
