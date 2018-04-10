@@ -10,75 +10,43 @@
 #include <utility>      // std::declval, std::forward, std::move
 
 #include <cx/iterator.hpp>  // cx::begin, cx::end, cx::next
-#include <cx/utility.hpp>   // cx::get, cx::pair
 
 namespace wildcards
 {
 
 template <typename T>
-struct cards : public cx::pair<T, T>
+struct cards
 {
-  using base_type = cx::pair<T, T>;
-
-  using cx::pair<T, T>::pair;
+  T asterisk;
+  T question_mark;
 };
 
 template <>
-struct cards<char> : public cx::pair<char, char>
+struct cards<char>
 {
-  using base_type = cx::pair<char, char>;
-
-  constexpr cards() : cx::pair<char, char>{'*', '?'}
-  {
-  }
-
-  constexpr cards(char c1, char c2) : cx::pair<char, char>{std::move(c1), std::move(c2)}
-  {
-  }
+  char asterisk{'*'};
+  char question_mark{'?'};
 };
 
 template <>
-struct cards<char16_t> : public cx::pair<char16_t, char16_t>
+struct cards<char16_t>
 {
-  using base_type = cx::pair<char16_t, char16_t>;
-
-  constexpr cards() : cx::pair<char16_t, char16_t>{u'*', u'?'}
-  {
-  }
-
-  constexpr cards(char16_t c1, char16_t c2)
-      : cx::pair<char16_t, char16_t>{std::move(c1), std::move(c2)}
-  {
-  }
+  char16_t asterisk{u'*'};
+  char16_t question_mark{u'?'};
 };
 
 template <>
-struct cards<char32_t> : public cx::pair<char32_t, char32_t>
+struct cards<char32_t>
 {
-  using base_type = cx::pair<char32_t, char32_t>;
-
-  constexpr cards() : cx::pair<char32_t, char32_t>{U'*', U'?'}
-  {
-  }
-
-  constexpr cards(char32_t c1, char32_t c2)
-      : cx::pair<char32_t, char32_t>{std::move(c1), std::move(c2)}
-  {
-  }
+  char32_t asterisk{U'*'};
+  char32_t question_mark{U'?'};
 };
 
 template <>
-struct cards<wchar_t> : public cx::pair<wchar_t, wchar_t>
+struct cards<wchar_t>
 {
-  using base_type = cx::pair<wchar_t, wchar_t>;
-
-  constexpr cards() : cx::pair<wchar_t, wchar_t>{L'*', L'?'}
-  {
-  }
-
-  constexpr cards(wchar_t c1, wchar_t c2) : cx::pair<wchar_t, wchar_t>{std::move(c1), std::move(c2)}
-  {
-  }
+  wchar_t asterisk{L'*'};
+  wchar_t question_mark{L'?'};
 };
 
 template <typename T>
@@ -119,16 +87,14 @@ constexpr bool match(SequenceIterator s, SequenceIterator send, PatternIterator 
     return s == send;
   }
 
-  const typename cards<iterated_item_t<PatternIterator>>::base_type& cb = c;
-
-  if (*p != cx::get<0>(cb))
+  if (*p != c.asterisk)
   {
     if (s == send)
     {
       return false;
     }
 
-    if (*p == cx::get<1>(cb) || *s == *p)
+    if (*p == c.question_mark || *s == *p)
     {
       return match(cx::next(s), send, cx::next(p), pend, c);
     }
