@@ -30,6 +30,36 @@ constexpr It prev(It it)
 }
 
 template <typename C>
+constexpr auto size(const C& c) -> decltype(c.size())
+{
+  return c.size();
+}
+
+template <typename T, std::size_t N>
+constexpr std::size_t size(const T (&array)[N])
+{
+  return N;
+}
+
+template <typename C>
+constexpr auto empty(const C& c) -> decltype(c.empty())
+{
+  return c.empty();
+}
+
+template <typename T, std::size_t N>
+constexpr bool empty(const T (&array)[N])
+{
+  return false;
+}
+
+template <typename E>
+constexpr bool empty(std::initializer_list<E> il)
+{
+  return il.size() == 0;
+}
+
+template <typename C>
 constexpr auto begin(const C& c) -> decltype(c.begin())
 {
   return c.begin();

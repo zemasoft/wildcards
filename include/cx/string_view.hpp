@@ -40,6 +40,11 @@ class basic_string_view
     return size_;
   }
 
+  constexpr bool empty() const
+  {
+    return size() == 0;
+  }
+
   constexpr const T* begin() const
   {
     return data_;
