@@ -9,6 +9,26 @@
 namespace cx
 {
 
+template <typename It, typename Distance>
+constexpr void advance(It& it, Distance d)
+{
+  it += d;
+}
+
+template <typename It>
+constexpr It next(It it)
+{
+  advance(it, 1);
+  return it;
+}
+
+template <typename It>
+constexpr It prev(It it)
+{
+  advance(it, -1);
+  return it;
+}
+
 template <typename C>
 constexpr auto begin(const C& c) -> decltype(c.begin())
 {

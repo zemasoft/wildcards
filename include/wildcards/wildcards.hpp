@@ -9,7 +9,7 @@
 #include <type_traits>  // std::remove_cv, std::remove_reference
 #include <utility>      // std::declval, std::forward, std::move
 
-#include <cx/iterator.hpp>  // cx::begin, cx::end
+#include <cx/iterator.hpp>  // cx::begin, cx::end, cx::next
 #include <cx/utility.hpp>   // cx::get, cx::pair
 
 namespace wildcards
@@ -90,15 +90,15 @@ constexpr cards<T> make_cards(T&& c1, T&& c2)
 namespace detail
 {
 
-template <typename I>
+template <typename It>
 struct iterated_item
 {
   using type = typename std::remove_cv<
-      typename std::remove_reference<decltype(*std::declval<I>())>::type>::type;
+      typename std::remove_reference<decltype(*std::declval<It>())>::type>::type;
 };
 
-template <typename I>
-using iterated_item_t = typename iterated_item<I>::type;
+template <typename It>
+using iterated_item_t = typename iterated_item<It>::type;
 
 template <typename C>
 struct container_item
@@ -130,13 +130,14 @@ constexpr bool match(SequenceIterator s, SequenceIterator send, PatternIterator 
 
     if (*p == cx::get<1>(cb) || *s == *p)
     {
-      return match(s + 1, send, p + 1, pend, c);
+      return match(cx::next(s), send, cx::next(p), pend, c);
     }
 
     return false;
   }
 
-  return match(s, send, p + 1, pend, c) || ((s != send) && match(s + 1, send, p, pend, c));
+  return match(s, send, cx::next(p), pend, c) ||
+         ((s != send) && match(cx::next(s), send, p, pend, c));
 }
 
 }  // namespace detail
