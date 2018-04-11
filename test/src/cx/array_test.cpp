@@ -27,7 +27,7 @@ TEST_CASE("array", "[array]")
   SECTION("array<int, 1>")
   {
     constexpr auto a1 = cx::array<int, 1>{};
-    constexpr auto a2 = cx::array<int, 1>{10};
+    constexpr auto a2 = cx::array<int, 1>{{10}};
 
     static_assert(a1.size() == 1, "");
     static_assert(a2.size() == 1, "");
@@ -44,15 +44,15 @@ TEST_CASE("array", "[array]")
 
     static_assert(cx::get<0>(a2) == 10, "");
 
-    static_assert(cx::array<int, 1>{10} == cx::array<int, 1>{10}, "");
-    static_assert(cx::array<int, 1>{10} != cx::array<int, 1>{20}, "");
+    static_assert(cx::array<int, 1>{{10}} == cx::array<int, 1>{{10}}, "");
+    static_assert(cx::array<int, 1>{{10}} != cx::array<int, 1>{{20}}, "");
   }
 
   SECTION("array<int, 2>")
   {
     constexpr auto a1 = cx::array<int, 2>{};
-    constexpr auto a2 = cx::array<int, 2>{10};
-    constexpr auto a3 = cx::array<int, 2>{10, 20};
+    constexpr auto a2 = cx::array<int, 2>{{10}};
+    constexpr auto a3 = cx::array<int, 2>{{10, 20}};
 
     static_assert(a1.size() == 2, "");
     static_assert(a2.size() == 2, "");
@@ -78,7 +78,7 @@ TEST_CASE("array", "[array]")
     static_assert(cx::get<0>(a3) == 10, "");
     static_assert(cx::get<1>(a3) == 20, "");
 
-    static_assert(cx::array<int, 2>{10, 20} == cx::array<int, 2>{10, 20}, "");
-    static_assert(cx::array<int, 2>{10, 20} != cx::array<int, 2>{20, 10}, "");
+    static_assert(cx::array<int, 2>{{10, 20}} == cx::array<int, 2>{{10, 20}}, "");
+    static_assert(cx::array<int, 2>{{10, 20}} != cx::array<int, 2>{{20, 10}}, "");
   }
 }
