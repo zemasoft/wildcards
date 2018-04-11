@@ -6,8 +6,9 @@
 #ifndef CX_TUPLE_HPP
 #define CX_TUPLE_HPP
 
-#include <cstddef>  // std::size_t
-#include <utility>  // std::forward, std::move
+#include <cstddef>      // std::size_t
+#include <type_traits>  // std::integral_constant
+#include <utility>      // std::forward, std::move
 
 namespace cx
 {
@@ -42,6 +43,19 @@ constexpr tuple<Types...> make_tuple(Types&&... types)
 {
   return tuple<Types...>{std::forward<Types>(types)...};
 }
+
+template <typename T>
+struct tuple_size;
+
+template <typename... Types>
+struct tuple_size<tuple<Types...>> : std::integral_constant<std::size_t, sizeof...(Types)>
+{
+};
+
+template <typename T>
+struct tuple_size<const T> : std::integral_constant<std::size_t, tuple_size<T>::value>
+{
+};
 
 template <std::size_t Index, typename T>
 struct tuple_element;

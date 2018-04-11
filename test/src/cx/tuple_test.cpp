@@ -18,6 +18,8 @@ TEST_CASE("tuple", "[tuple]")
 
     static_assert(std::is_same<decltype(t1), decltype(t2)>::value, "");
 
+    static_assert(cx::tuple_size<decltype(t1)>::value == 0, "");
+
     static_assert(t1 == t2, "");
   }
 
@@ -29,6 +31,8 @@ TEST_CASE("tuple", "[tuple]")
 
     static_assert(std::is_same<decltype(t1), decltype(t2)>::value, "");
     static_assert(std::is_same<decltype(t1), decltype(t3)>::value, "");
+
+    static_assert(cx::tuple_size<decltype(t1)>::value == 1, "");
 
     static_assert(t2 == t3, "");
 
@@ -45,6 +49,8 @@ TEST_CASE("tuple", "[tuple]")
 
     static_assert(std::is_same<decltype(t1), decltype(t2)>::value, "");
     static_assert(std::is_same<decltype(t1), decltype(t3)>::value, "");
+
+    static_assert(cx::tuple_size<decltype(t1)>::value == 2, "");
 
     static_assert(t2 == t3, "");
 
@@ -64,6 +70,8 @@ TEST_CASE("tuple", "[tuple]")
 
     static_assert(std::is_same<decltype(t1), decltype(t2)>::value, "");
     static_assert(std::is_same<decltype(t1), decltype(t3)>::value, "");
+
+    static_assert(cx::tuple_size<decltype(t1)>::value == 3, "");
 
     static_assert(t2 == t3, "");
 

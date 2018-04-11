@@ -18,6 +18,8 @@ TEST_CASE("pair", "[pair]")
   static_assert(std::is_same<decltype(p1), decltype(p2)>::value, "");
   static_assert(std::is_same<decltype(p1), decltype(p3)>::value, "");
 
+  static_assert(cx::tuple_size<decltype(p1)>::value == 2, "");
+
   static_assert(p2 == p3, "");
 
   static_assert(cx::get<0>(p2) == 10, "");
