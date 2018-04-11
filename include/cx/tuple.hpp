@@ -123,7 +123,9 @@ struct tuples<0>
 template <typename... Types1, typename... Types2>
 constexpr bool operator==(const tuple<Types1...>& lhs, const tuple<Types2...>& rhs)
 {
-  static_assert(sizeof...(Types1) == sizeof...(Types2), "");
+  static_assert(
+      sizeof...(Types1) == sizeof...(Types2),
+      "Tuples size is not equal in cx::operator==(const cx::tuple<>&, const cx::tuple<>&)");
 
   return detail::tuples<sizeof...(Types1) -1>::equal(lhs, rhs);
 }

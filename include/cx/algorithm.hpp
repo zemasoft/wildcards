@@ -6,7 +6,7 @@
 #ifndef CX_ALGORITHM_HPP
 #define CX_ALGORITHM_HPP
 
-#include <cx/iterator.hpp>
+#include <cx/iterator.hpp>  // cx::next
 
 namespace cx
 {

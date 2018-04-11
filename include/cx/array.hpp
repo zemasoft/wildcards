@@ -90,7 +90,7 @@ struct tuple_element;
 template <std::size_t Index, typename T, std::size_t N>
 struct tuple_element<Index, array<T, N>>
 {
-  static_assert(Index < N, "");
+  static_assert(Index < N, "Index out of bounds in cx::tuple_element<>");
 
   using type = T;
 
@@ -111,7 +111,7 @@ using tuple_element_t = typename tuple_element<Index, T>::type;
 template <std::size_t Index, typename T, std::size_t N>
 constexpr const T& get(const array<T, N>& a)
 {
-  static_assert(Index < N, "");
+  static_assert(Index < N, "Index out of bounds in cx::get<>(const cx::array<>&)");
 
   return a[Index];
 }
@@ -119,7 +119,7 @@ constexpr const T& get(const array<T, N>& a)
 template <std::size_t Index, typename T, std::size_t N>
 constexpr T& get(array<T, N>& a)
 {
-  static_assert(Index < N, "");
+  static_assert(Index < N, "Index out of bounds in cx::get<>(cx::array<>&)");
 
   return a[Index];
 }
