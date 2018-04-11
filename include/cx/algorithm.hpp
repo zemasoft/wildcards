@@ -6,6 +6,8 @@
 #ifndef CX_ALGORITHM_HPP
 #define CX_ALGORITHM_HPP
 
+#include <cx/iterator.hpp>
+
 namespace cx
 {
 
@@ -13,7 +15,7 @@ template <typename Iterator1, typename Iterator2>
 constexpr bool equal(Iterator1 first1, Iterator1 last1, Iterator2 first2, Iterator2 last2)
 {
   return first1 != last1 && first2 != last2 && *first1 == *first2
-             ? equal(first1 + 1, last1, first2 + 1, last2)
+             ? equal(next(first1), last1, next(first2), last2)
              : first1 == last1 && first2 == last2;
 }
 

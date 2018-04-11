@@ -21,15 +21,13 @@ constexpr void advance(It& it, Distance d)
 template <typename It>
 constexpr It next(It it)
 {
-  advance(it, 1);
-  return it;
+  return it + 1;
 }
 
 template <typename It>
 constexpr It prev(It it)
 {
-  advance(it, -1);
-  return it;
+  return it - 1;
 }
 
 template <typename C>
