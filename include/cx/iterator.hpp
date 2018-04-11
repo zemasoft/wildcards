@@ -74,6 +74,18 @@ constexpr auto begin(C& c) -> decltype(c.begin())
   return c.begin();
 }
 
+template <typename T, std::size_t N>
+constexpr T* begin(T (&array)[N])
+{
+  return &array[0];
+}
+
+template <typename E>
+constexpr const E* begin(std::initializer_list<E> il)
+{
+  return il.begin();
+}
+
 template <typename C>
 constexpr auto end(const C& c) -> decltype(c.end())
 {
@@ -84,6 +96,18 @@ template <typename C>
 constexpr auto end(C& c) -> decltype(c.end())
 {
   return c.end();
+}
+
+template <typename T, std::size_t N>
+constexpr T* end(T (&array)[N])
+{
+  return &array[N];
+}
+
+template <typename E>
+constexpr const E* end(std::initializer_list<E> il)
+{
+  return il.end();
 }
 
 }  // namespace cx
