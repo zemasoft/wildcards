@@ -29,14 +29,14 @@ struct pair
   Second second;
 };
 
-template <typename First1, typename Second1, typename First2, typename Second2>
-constexpr bool operator==(const pair<First1, Second1>& lhs, const pair<First2, Second2>& rhs)
+template <typename First, typename Second>
+constexpr bool operator==(const pair<First, Second>& lhs, const pair<First, Second>& rhs)
 {
   return lhs.first == rhs.first && lhs.second == rhs.second;
 }
 
-template <typename First1, typename Second1, typename First2, typename Second2>
-constexpr bool operator!=(const pair<First1, Second1>& lhs, const pair<First2, Second2>& rhs)
+template <typename First, typename Second>
+constexpr bool operator!=(const pair<First, Second>& lhs, const pair<First, Second>& rhs)
 {
   return !(lhs == rhs);
 }
