@@ -60,14 +60,14 @@ class basic_string_view
   std::size_t size_{0};
 };
 
-template <typename T, typename U>
-constexpr bool operator==(const basic_string_view<T>& lhs, const basic_string_view<U>& rhs)
+template <typename T>
+constexpr bool operator==(const basic_string_view<T>& lhs, const basic_string_view<T>& rhs)
 {
   return equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
 
-template <typename T, typename U>
-constexpr bool operator!=(const basic_string_view<T>& lhs, const basic_string_view<U>& rhs)
+template <typename T>
+constexpr bool operator!=(const basic_string_view<T>& lhs, const basic_string_view<T>& rhs)
 {
   return !(lhs == rhs);
 }
