@@ -3,13 +3,13 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <type_traits>
+#include <type_traits>  // std::is_same
 
-#include <cx/utility.hpp>
+#include <cx/utility.hpp>  // cx::get, cx::make_pair, cx::pair, cx::tuple_size
 
 #include <catch.hpp>
 
-TEST_CASE("pair", "[pair]")
+TEST_CASE("cx::pair<int, char> is compliant", "[cx::pair]")
 {
   constexpr auto p1 = cx::pair<int, char>{};
   constexpr auto p2 = cx::pair<int, char>{10, 'a'};
