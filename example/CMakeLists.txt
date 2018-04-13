@@ -46,7 +46,7 @@ add_example(example01 example01.cpp)
 if(CLANGFORMAT)
   include(ClangFormat)
 
-  file(GLOB_RECURSE clangformat_srcs include/wildcards/*.hpp src/wildcards/*.cpp)
+  file(GLOB_RECURSE clangformat_srcs *.cpp)
 
   clangformat_setup("${clangformat_srcs}")
 endif()
