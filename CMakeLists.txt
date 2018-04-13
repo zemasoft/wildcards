@@ -24,7 +24,7 @@ endif()
 if(CLANGFORMAT)
   include(ClangFormat)
 
-  file(GLOB_RECURSE clangformat_srcs include/cx/*.hpp include/wildcards/*.hpp)
+  file(GLOB_RECURSE clangformat_srcs include/*.hpp)
 
   clangformat_setup("${clangformat_srcs}")
 endif()
