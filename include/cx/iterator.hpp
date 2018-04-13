@@ -12,12 +12,6 @@
 namespace cx
 {
 
-template <typename It, typename Distance>
-constexpr void advance(It& it, Distance d)
-{
-  it += d;
-}
-
 template <typename It>
 constexpr It next(It it)
 {
