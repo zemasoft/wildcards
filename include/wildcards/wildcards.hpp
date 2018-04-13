@@ -19,6 +19,7 @@ struct cards
 {
   T asterisk;
   T question_mark;
+  T escape;
 };
 
 template <>
@@ -26,6 +27,7 @@ struct cards<char>
 {
   char asterisk{'*'};
   char question_mark{'?'};
+  char escape{'\\'};
 };
 
 template <>
@@ -33,6 +35,7 @@ struct cards<char16_t>
 {
   char16_t asterisk{u'*'};
   char16_t question_mark{u'?'};
+  char16_t escape{u'\\'};
 };
 
 template <>
@@ -40,6 +43,7 @@ struct cards<char32_t>
 {
   char32_t asterisk{U'*'};
   char32_t question_mark{U'?'};
+  char32_t escape{U'\\'};
 };
 
 template <>
@@ -47,6 +51,7 @@ struct cards<wchar_t>
 {
   wchar_t asterisk{L'*'};
   wchar_t question_mark{L'?'};
+  wchar_t escape{L'\\'};
 };
 
 template <typename T>
@@ -80,30 +85,36 @@ using container_item_t = typename container_item<C>::type;
 
 template <typename SequenceIterator, typename PatternIterator>
 constexpr bool match(SequenceIterator s, SequenceIterator send, PatternIterator p,
-                     PatternIterator pend, const cards<iterated_item_t<PatternIterator>>& c)
+                     PatternIterator pend, const cards<iterated_item_t<PatternIterator>>& c,
+                     bool escape)
 {
   if (p == pend)
   {
     return s == send;
   }
 
-  if (*p != c.asterisk)
+  if (!escape && *p == c.escape)
+  {
+    return match(s, send, cx::next(p), pend, c, true);
+  }
+
+  if (escape || *p != c.asterisk)
   {
     if (s == send)
     {
       return false;
     }
 
-    if (*p == c.question_mark || *s == *p)
+    if ((!escape && *p == c.question_mark) || *s == *p)
     {
-      return match(cx::next(s), send, cx::next(p), pend, c);
+      return match(cx::next(s), send, cx::next(p), pend, c, false);
     }
 
     return false;
   }
 
-  return match(s, send, cx::next(p), pend, c) ||
-         ((s != send) && match(cx::next(s), send, p, pend, c));
+  return match(s, send, cx::next(p), pend, c, false) ||
+         ((s != send) && match(cx::next(s), send, p, pend, c, false));
 }
 
 }  // namespace detail
@@ -115,7 +126,7 @@ constexpr bool match(
 {
   return detail::match(
       cx::begin(std::forward<Sequence>(sequence)), cx::end(std::forward<Sequence>(sequence)),
-      cx::begin(std::forward<Pattern>(pattern)), cx::end(std::forward<Pattern>(pattern)), c);
+      cx::begin(std::forward<Pattern>(pattern)), cx::end(std::forward<Pattern>(pattern)), c, false);
 }
 
 }  // namespace wildcards
