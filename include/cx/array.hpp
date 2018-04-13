@@ -9,9 +9,8 @@
 #include <cstddef>    // std::size_t
 #include <stdexcept>  // std::out_of_range
 
+#include <configuration.hpp>
 #include <cx/algorithm.hpp>  // cx::equal
-
-#define cx_constexpr14
 
 namespace cx
 {
@@ -36,7 +35,7 @@ struct array
     return &data[0];
   }
 
-  cx_constexpr14 T* begin()
+  cfg_constexpr14 T* begin()
   {
     return &data[0];
   }
@@ -46,7 +45,7 @@ struct array
     return &data[N];
   }
 
-  cx_constexpr14 T* end()
+  cfg_constexpr14 T* end()
   {
     return &data[N];
   }
@@ -56,7 +55,7 @@ struct array
     return data[pos];
   }
 
-  cx_constexpr14 T& operator[](std::size_t pos)
+  cfg_constexpr14 T& operator[](std::size_t pos)
   {
     return data[pos];
   }
@@ -66,7 +65,7 @@ struct array
     return pos < size() ? data[pos] : throw std::out_of_range("");
   }
 
-  cx_constexpr14 T& at(std::size_t pos)
+  cfg_constexpr14 T& at(std::size_t pos)
   {
     return pos < size() ? data[pos] : throw std::out_of_range("");
   }
