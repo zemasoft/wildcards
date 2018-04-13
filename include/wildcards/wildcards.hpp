@@ -88,33 +88,18 @@ constexpr bool match(SequenceIterator s, SequenceIterator send, PatternIterator 
                      PatternIterator pend, const cards<iterated_item_t<PatternIterator>>& c,
                      bool escape)
 {
-  if (p == pend)
-  {
-    return s == send;
-  }
+  return p == pend ? s == send
+                   : !escape && *p == c.escape
+                         ? match(s, send, cx::next(p), pend, c, true)
+                         :
 
-  if (!escape && *p == c.escape)
-  {
-    return match(s, send, cx::next(p), pend, c, true);
-  }
+                         escape || *p != c.asterisk
+                             ? s != send && ((!escape && *p == c.question_mark) || *s == *p) &&
+                                   match(cx::next(s), send, cx::next(p), pend, c, false)
+                             :
 
-  if (escape || *p != c.asterisk)
-  {
-    if (s == send)
-    {
-      return false;
-    }
-
-    if ((!escape && *p == c.question_mark) || *s == *p)
-    {
-      return match(cx::next(s), send, cx::next(p), pend, c, false);
-    }
-
-    return false;
-  }
-
-  return match(s, send, cx::next(p), pend, c, false) ||
-         ((s != send) && match(cx::next(s), send, p, pend, c, false));
+                             match(s, send, cx::next(p), pend, c, false) ||
+                                 ((s != send) && match(cx::next(s), send, p, pend, c, false));
 }
 
 }  // namespace detail
