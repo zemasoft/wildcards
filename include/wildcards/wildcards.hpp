@@ -9,7 +9,8 @@
 #include <type_traits>  // std::remove_cv, std::remove_reference
 #include <utility>      // std::declval, std::forward, std::move
 
-#include <cx/iterator.hpp>  // cx::begin, cx::end, cx::next
+#include <configuration.hpp>  // cfg_HAVE_CONSTEXPR_14
+#include <cx/iterator.hpp>    // cx::begin, cx::end, cx::next
 
 namespace wildcards
 {
@@ -88,6 +89,38 @@ constexpr bool match(SequenceIterator s, SequenceIterator send, PatternIterator 
                      PatternIterator pend, const cards<iterated_item_t<PatternIterator>>& c,
                      bool escape)
 {
+#if cfg_HAVE_CONSTEXPR_14
+
+  if (p == pend)
+  {
+    return s == send;
+  }
+
+  if (!escape && *p == c.escape)
+  {
+    return match(s, send, cx::next(p), pend, c, true);
+  }
+
+  if (escape || *p != c.asterisk)
+  {
+    if (s == send)
+    {
+      return false;
+    }
+
+    if ((!escape && *p == c.question_mark) || *s == *p)
+    {
+      return match(cx::next(s), send, cx::next(p), pend, c, false);
+    }
+
+    return false;
+  }
+
+  return match(s, send, cx::next(p), pend, c, false) ||
+         ((s != send) && match(cx::next(s), send, p, pend, c, false));
+
+#else  // !cfg_HAVE_CONSTEXPR_14
+
   return p == pend ? s == send
                    : !escape && *p == c.escape
                          ? match(s, send, cx::next(p), pend, c, true)
@@ -100,6 +133,8 @@ constexpr bool match(SequenceIterator s, SequenceIterator send, PatternIterator 
 
                              match(s, send, cx::next(p), pend, c, false) ||
                                  ((s != send) && match(cx::next(s), send, p, pend, c, false));
+
+#endif  // cfg_HAVE_CONSTEXPR_14
 }
 
 }  // namespace detail
