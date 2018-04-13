@@ -1,4 +1,4 @@
-project(SelfTest)
+project(Test)
 
 add_executable(selftest src/cx/array_test.cpp
                         src/cx/string_view_test.cpp
