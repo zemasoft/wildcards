@@ -11,6 +11,8 @@
 
 #include <cx/algorithm.hpp>  // cx::equal
 
+#define cx_constexpr14
+
 namespace cx
 {
 
@@ -34,7 +36,7 @@ struct array
     return &data[0];
   }
 
-  constexpr T* begin()
+  cx_constexpr14 T* begin()
   {
     return &data[0];
   }
@@ -44,7 +46,7 @@ struct array
     return &data[N];
   }
 
-  constexpr T* end()
+  cx_constexpr14 T* end()
   {
     return &data[N];
   }
@@ -54,7 +56,7 @@ struct array
     return data[pos];
   }
 
-  constexpr T& operator[](std::size_t pos)
+  cx_constexpr14 T& operator[](std::size_t pos)
   {
     return data[pos];
   }
@@ -64,7 +66,7 @@ struct array
     return pos < size() ? data[pos] : throw std::out_of_range("");
   }
 
-  constexpr T& at(std::size_t pos)
+  cx_constexpr14 T& at(std::size_t pos)
   {
     return pos < size() ? data[pos] : throw std::out_of_range("");
   }
