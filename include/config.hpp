@@ -3,8 +3,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef CONFIGURATION_HPP
-#define CONFIGURATION_HPP
+#ifndef CONFIG_HPP
+#define CONFIG_HPP
 
 // Compiler detection:
 // Note: MSVC supports C++14 since it supports C++17.
@@ -59,4 +59,4 @@
 #define cfg_constexpr17 /*constexpr*/
 #endif
 
-#endif  // CONFIGURATION_HPP
+#endif  // CONFIG_HPP

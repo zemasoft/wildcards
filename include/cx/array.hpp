@@ -9,8 +9,8 @@
 #include <cstddef>    // std::size_t
 #include <stdexcept>  // std::out_of_range
 
-#include <configuration.hpp>  // cfg_constexpr14
-#include <cx/algorithm.hpp>   // cx::equal
+#include <config.hpp>        // cfg_constexpr14
+#include <cx/algorithm.hpp>  // cx::equal
 
 namespace cx
 {

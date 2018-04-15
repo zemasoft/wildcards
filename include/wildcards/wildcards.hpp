@@ -9,8 +9,8 @@
 #include <type_traits>  // std::remove_cv, std::remove_reference
 #include <utility>      // std::declval, std::forward, std::move
 
-#include <configuration.hpp>  // cfg_HAVE_CONSTEXPR_14
-#include <cx/iterator.hpp>    // cx::begin, cx::end, cx::next
+#include <config.hpp>       // cfg_HAVE_CONSTEXPR_14
+#include <cx/iterator.hpp>  // cx::begin, cx::end, cx::next
 
 namespace wildcards
 {
