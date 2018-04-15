@@ -8,7 +8,7 @@
 
 #include <cstddef>  // std::size_t
 
-#include <cx/algorithm.hpp>  // cx::equal
+#include "cx/algorithm.hpp"  // cx::equal
 
 namespace cx
 {

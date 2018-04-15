@@ -5,9 +5,9 @@
 
 #include <type_traits>  // std::is_same
 
-#include <cx/utility.hpp>  // cx::get, cx::make_pair, cx::pair, cx::tuple_size
+#include "cx/utility.hpp"  // cx::get, cx::make_pair, cx::pair, cx::tuple_size
 
-#include <catch.hpp>
+#include "catch.hpp"
 
 TEST_CASE("cx::pair<int, char> is compliant", "[cx::pair]")
 {

@@ -6,8 +6,8 @@
 #ifndef CX_ALGORITHM_HPP
 #define CX_ALGORITHM_HPP
 
-#include <config.hpp>       // cfg_HAVE_CONSTEXPR_14
-#include <cx/iterator.hpp>  // cx::next
+#include "config.hpp"       // cfg_HAVE_CONSTEXPR_14
+#include "cx/iterator.hpp"  // cx::next
 
 namespace cx
 {

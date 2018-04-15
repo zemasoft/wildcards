@@ -3,9 +3,9 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <cx/array.hpp>  // cx::array, cx::get
+#include "cx/array.hpp"  // cx::array, cx::get
 
-#include <catch.hpp>
+#include "catch.hpp"
 
 TEST_CASE("cx::array<int, 0> is compliant", "[cx::array]")
 {

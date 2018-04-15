@@ -5,9 +5,9 @@
 
 #include <type_traits>  // std::is_same
 
-#include <cx/tuple.hpp>  // cx::get, cx::make_tuple, cx::tuple, cx::tuple_size
+#include "cx/tuple.hpp"  // cx::get, cx::make_tuple, cx::tuple, cx::tuple_size
 
-#include <catch.hpp>
+#include "catch.hpp"
 
 TEST_CASE("cx::tuple<> is compliant", "[cx::tuple]")
 {

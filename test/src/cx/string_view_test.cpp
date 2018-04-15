@@ -5,11 +5,11 @@
 
 #include <type_traits>  // std::is_same
 
-#include <cx/string_view.hpp>  // cx::basic_string_view, cx::literals, cx::make_string_view,
+#include "cx/string_view.hpp"  // cx::basic_string_view, cx::literals, cx::make_string_view,
                                // cx::string_view, cx::u16string_view, cx::u32string_view,
                                // cx::wstring_view
 
-#include <catch.hpp>
+#include "catch.hpp"
 
 TEST_CASE("cx::basic_string_view<char> is compliant", "[cx::string_view]")
 {
