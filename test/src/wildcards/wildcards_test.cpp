@@ -15,7 +15,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
   SECTION("match with an empty pattern")
   {
     constexpr auto pattern1 = ""_sv;
-    constexpr auto pattern2 = "\\"_sv;
+    constexpr auto pattern2 = R"(\)"_sv;
 
     static_assert(wildcards::match(""_sv, pattern1), "");
     static_assert(wildcards::match(""_sv, pattern2), "");
@@ -27,8 +27,8 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
   SECTION("match with \"A\"")
   {
     constexpr auto pattern1 = "A"_sv;
-    constexpr auto pattern2 = "A\\"_sv;
-    constexpr auto pattern3 = "\\A"_sv;
+    constexpr auto pattern2 = R"(A\)"_sv;
+    constexpr auto pattern3 = R"(\A)"_sv;
 
     static_assert(wildcards::match("A"_sv, pattern1), "");
     static_assert(wildcards::match("A"_sv, pattern2), "");
@@ -54,8 +54,8 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
   SECTION("match with \"Hallo!\"")
   {
     constexpr auto pattern1 = "Hallo!"_sv;
-    constexpr auto pattern2 = "Hallo!\\"_sv;
-    constexpr auto pattern3 = "\\H\\a\\l\\l\\o\\!"_sv;
+    constexpr auto pattern2 = R"(Hallo!\)"_sv;
+    constexpr auto pattern3 = R"(\H\a\l\l\o\!)"_sv;
 
     static_assert(wildcards::match("Hallo!"_sv, pattern1), "");
     static_assert(wildcards::match("Hallo!"_sv, pattern2), "");
@@ -85,8 +85,8 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
   SECTION("match with \"*\"")
   {
     constexpr auto pattern1 = "*"_sv;
-    constexpr auto pattern2 = "*\\"_sv;
-    constexpr auto pattern3 = "\\*"_sv;
+    constexpr auto pattern2 = R"(*\)"_sv;
+    constexpr auto pattern3 = R"(\*)"_sv;
 
     static_assert(wildcards::match(""_sv, pattern1), "");
     static_assert(wildcards::match(""_sv, pattern2), "");
@@ -104,8 +104,8 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
   SECTION("match with \"?\"")
   {
     constexpr auto pattern1 = "?"_sv;
-    constexpr auto pattern2 = "?\\"_sv;
-    constexpr auto pattern3 = "\\?"_sv;
+    constexpr auto pattern2 = R"(?\)"_sv;
+    constexpr auto pattern3 = R"(\?)"_sv;
 
     static_assert(wildcards::match("A"_sv, pattern1), "");
     static_assert(wildcards::match("A"_sv, pattern2), "");
