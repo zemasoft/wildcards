@@ -55,8 +55,9 @@ struct tuple_size<pair<First, Second>> : std::integral_constant<std::size_t, 2>
 {
 };
 
-template <typename T>
-struct tuple_size<const T> : std::integral_constant<std::size_t, tuple_size<T>::value>
+template <typename First, typename Second>
+struct tuple_size<const pair<First, Second>>
+    : std::integral_constant<std::size_t, tuple_size<pair<First, Second>>::value>
 {
 };
 

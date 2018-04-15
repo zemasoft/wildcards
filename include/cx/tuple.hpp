@@ -52,8 +52,9 @@ struct tuple_size<tuple<Types...>> : std::integral_constant<std::size_t, sizeof.
 {
 };
 
-template <typename T>
-struct tuple_size<const T> : std::integral_constant<std::size_t, tuple_size<T>::value>
+template <typename... Types>
+struct tuple_size<const tuple<Types...>>
+    : std::integral_constant<std::size_t, tuple_size<tuple<Types...>>::value>
 {
 };
 
