@@ -9,7 +9,7 @@
 #include <type_traits>  // std::remove_cv, std::remove_reference
 #include <utility>      // std::declval, std::forward, std::move
 
-#include "config.hpp"       // cfg_HAVE_CONSTEXPR_14
+#include "config.hpp"       // cfg_HAS_CONSTEXPR14
 #include "cx/iterator.hpp"  // cx::begin, cx::end, cx::next
 
 namespace wildcards
@@ -89,7 +89,7 @@ constexpr bool match(SequenceIterator s, SequenceIterator send, PatternIterator 
                      PatternIterator pend, const cards<iterated_item_t<PatternIterator>>& c,
                      bool escape)
 {
-#if cfg_HAVE_CONSTEXPR_14
+#if cfg_HAS_CONSTEXPR14
 
   if (p == pend)
   {
@@ -119,7 +119,7 @@ constexpr bool match(SequenceIterator s, SequenceIterator send, PatternIterator 
   return match(s, send, cx::next(p), pend, c, false) ||
          ((s != send) && match(cx::next(s), send, p, pend, c, false));
 
-#else  // !cfg_HAVE_CONSTEXPR_14
+#else  // !cfg_HAS_CONSTEXPR14
 
   return p == pend ? s == send
                    : !escape && *p == c.escape
@@ -134,7 +134,7 @@ constexpr bool match(SequenceIterator s, SequenceIterator send, PatternIterator 
                              match(s, send, cx::next(p), pend, c, false) ||
                                  ((s != send) && match(cx::next(s), send, p, pend, c, false));
 
-#endif  // cfg_HAVE_CONSTEXPR_14
+#endif  // cfg_HAS_CONSTEXPR14
 }
 
 }  // namespace detail
