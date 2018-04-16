@@ -48,10 +48,11 @@ add_test(NAME SelfTest COMMAND selftest)
 if(CLANGFORMAT)
   include(ClangFormat)
 
-  file(GLOB_RECURSE clangformat_srcs include/cx/*.hpp
-                                     include/wildcards/*.hpp
-                                     src/cx/*.cpp
-                                     src/wildcards/*.cpp)
+  set(clangformat_srcs src/cx/array_test.cpp
+                       src/cx/string_view_test.cpp
+                       src/cx/tuple_test.cpp
+                       src/cx/utility_test.cpp
+                       src/wildcards/wildcards_test.cpp)
 
   clangformat_setup("${clangformat_srcs}")
 endif()

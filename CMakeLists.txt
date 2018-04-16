@@ -24,7 +24,14 @@ endif()
 if(CLANGFORMAT)
   include(ClangFormat)
 
-  file(GLOB_RECURSE clangformat_srcs include/*.hpp)
+  set(clangformat_srcs include/config.hpp
+                       include/cx/algorithm.hpp
+                       include/cx/array.hpp
+                       include/cx/iterator.hpp
+                       include/cx/string_view.hpp
+                       include/cx/tuple.hpp
+                       include/cx/utility.hpp
+                       include/wildcards/wildcards.hpp)
 
   clangformat_setup("${clangformat_srcs}")
 endif()

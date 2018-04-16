@@ -18,6 +18,14 @@ function(clangformat_setup clangformat_srcs)
     endif()
   endif()
 
+  foreach(clangformat_src ${clangformat_srcs})
+    get_filename_component(clangformat_src ${clangformat_src} ABSOLUTE)
+    list(APPEND clangformat_srcs_tmp ${clangformat_src})
+    message(${clangformat_src})
+  endforeach()
+  set(clangformat_srcs "${clangformat_srcs_tmp}")
+  unset(clangformat_srcs_tmp)
+
   add_custom_target(${PROJECT_NAME}_clangformat
                     COMMAND ${CLANGFORMAT_EXECUTABLE}
                             -style=file
