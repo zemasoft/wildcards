@@ -7,6 +7,7 @@
 #define CX_STRING_VIEW_HPP
 
 #include <cstddef>  // std::size_t
+#include <ostream>  // std::basic_ostream
 
 #include "cx/algorithm.hpp"  // cx::equal
 
@@ -70,6 +71,13 @@ template <typename T>
 constexpr bool operator!=(const basic_string_view<T>& lhs, const basic_string_view<T>& rhs)
 {
   return !(lhs == rhs);
+}
+
+template <typename T>
+std::basic_ostream<T>& operator<<(std::basic_ostream<T>& o, const basic_string_view<T>& s)
+{
+  o << s.data();
+  return o;
 }
 
 template <typename T, std::size_t N>
