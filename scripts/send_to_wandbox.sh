@@ -19,7 +19,7 @@ scripts/GenSingleHeader.py -Iinclude "$WANDBOX_DIR/tmp/wildcards.hpp" > "$WANDBO
 gcc -fpreprocessed -dD -E -P "$WANDBOX_DIR/tmp/wildcards_single_header.hpp" > "$WANDBOX_DIR/include/wildcards_single_header.hpp" 2> /dev/null
 
 for example in $(find example -maxdepth 1 -type f -name '*.cpp'); do
-  awk 'BEGIN { count=0 } { if ($0 ~ /^#include \"config.hpp\"/ || $0 ~ /^#include \"cx\// || $0 ~ /^#include \"wildcards\//) { if (!count) { print "#include \"wildcards_single_header.hpp\""; count++ } } else { print $0 } }' "$example" > "$WANDBOX_DIR/"$(basename "$example")
+  awk 'BEGIN { count=0 } { if ($0 ~ /^#include \"cpp_feature.hpp\"/ || $0 ~ /^#include \"config.hpp\"/ || $0 ~ /^#include \"cx\// || $0 ~ /^#include \"wildcards\//) { if (!count) { print "#include \"wildcards_single_header.hpp\""; count++ } } else { print $0 } }' "$example" > "$WANDBOX_DIR/"$(basename "$example")
 done
 
 for example in $(find "$WANDBOX_DIR" -maxdepth 1 -type f -name '*.cpp'); do
