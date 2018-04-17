@@ -78,7 +78,7 @@ template <typename C>
 struct container_item
 {
   using type = typename std::remove_cv<
-      typename std::remove_reference<decltype(*begin(std::declval<C>()))>::type>::type;
+      typename std::remove_reference<decltype(*cx::begin(std::declval<C>()))>::type>::type;
 };
 
 template <typename C>
