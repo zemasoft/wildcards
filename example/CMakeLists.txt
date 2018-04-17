@@ -42,11 +42,13 @@ macro(add_example target file_name)
 endmacro()
 
 add_example(example01 example01.cpp)
+add_example(example02 example02.cpp)
 
 if(CLANGFORMAT)
   include(ClangFormat)
 
-  set(clangformat_srcs example01.cpp)
+  set(clangformat_srcs example01.cpp
+                       example02.cpp)
 
   clangformat_setup("${clangformat_srcs}")
 endif()
