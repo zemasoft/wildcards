@@ -44,7 +44,7 @@ constexpr bool operator!=(const pair<First, Second>& lhs, const pair<First, Seco
 template <typename First, typename Second>
 constexpr pair<First, Second> make_pair(First&& first, Second&& second)
 {
-  return pair<First, Second>{std::forward<First>(first), std::forward<Second>(second)};
+  return {std::forward<First>(first), std::forward<Second>(second)};
 }
 
 template <typename T>

@@ -41,7 +41,7 @@ struct tuple<>
 template <typename... Types>
 constexpr tuple<Types...> make_tuple(Types&&... types)
 {
-  return tuple<Types...>{std::forward<Types>(types)...};
+  return {std::forward<Types>(types)...};
 }
 
 template <typename T>

@@ -99,7 +99,7 @@ struct cards<wchar_t>
 template <typename T>
 constexpr cards<T> make_cards(T&& c1, T&& c2)
 {
-  return cards<T>{std::forward<T>(c1), std::forward<T>(c2)};
+  return {std::forward<T>(c1), std::forward<T>(c2)};
 }
 
 namespace detail

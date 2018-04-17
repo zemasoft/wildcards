@@ -83,13 +83,13 @@ std::basic_ostream<T>& operator<<(std::basic_ostream<T>& o, const basic_string_v
 template <typename T, std::size_t N>
 constexpr basic_string_view<T> make_string_view(const T (&str)[N])
 {
-  return basic_string_view<T>{str, N - 1};
+  return {str, N - 1};
 }
 
 template <typename T>
 constexpr basic_string_view<T> make_string_view(const T* str, std::size_t s)
 {
-  return basic_string_view<T>{str, s};
+  return {str, s};
 }
 
 using string_view = basic_string_view<char>;
@@ -102,22 +102,22 @@ namespace literals
 
 constexpr string_view operator"" _sv(const char* str, std::size_t s)
 {
-  return string_view{str, s};
+  return {str, s};
 }
 
 constexpr u16string_view operator"" _sv(const char16_t* str, std::size_t s)
 {
-  return u16string_view{str, s};
+  return {str, s};
 }
 
 constexpr u32string_view operator"" _sv(const char32_t* str, std::size_t s)
 {
-  return u32string_view{str, s};
+  return {str, s};
 }
 
 constexpr wstring_view operator"" _sv(const wchar_t* str, std::size_t s)
 {
-  return wstring_view{str, s};
+  return {str, s};
 }
 
 }  // namespace literals
