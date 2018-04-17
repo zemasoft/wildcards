@@ -180,6 +180,13 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(wildcards::match(L"Hallo, World!", pattern), "");
   }
 
+  SECTION(R"(match with "H.llo,+W+!")")
+  {
+    constexpr char pattern[] = "H.llo,+W+!";
+
+    static_assert(wildcards::match("Hallo, World!", pattern, {'+', '.', '\\'}), "");
+  }
+
   SECTION(R"(match with "H?llo,*W*!"_sv)")
   {
     using namespace cx::literals;
@@ -214,5 +221,14 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     constexpr auto pattern = L"H?llo,*W*!"_sv;
 
     static_assert(wildcards::match(L"Hallo, World!"_sv, pattern), "");
+  }
+
+  SECTION(R"(match with "H.llo,+W+!"_sv)")
+  {
+    using namespace cx::literals;
+
+    constexpr auto pattern = "H.llo,+W+!"_sv;
+
+    static_assert(wildcards::match("Hallo, World!"_sv, pattern, {'+', '.', '\\'}), "");
   }
 }
