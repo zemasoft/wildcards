@@ -22,7 +22,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!wildcards::match("Anything", pattern2), "");
   }
 
-  SECTION("match with \"A\"")
+  SECTION(R"(match with "A")")
   {
     constexpr char pattern1[] = "A";
     constexpr char pattern2[] = R"(A\)";
@@ -49,7 +49,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!wildcards::match("Something", pattern3), "");
   }
 
-  SECTION("match with \"Hallo!\"")
+  SECTION(R"(match with "Hallo!")")
   {
     constexpr char pattern1[] = "Hallo!";
     constexpr char pattern2[] = R"(Hallo!\)";
@@ -80,7 +80,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!wildcards::match("Hallo!Hallo!", pattern3), "");
   }
 
-  SECTION("match with \"*\"")
+  SECTION(R"(match with "*")")
   {
     constexpr char pattern1[] = "*";
     constexpr char pattern2[] = R"(*\)";
@@ -99,7 +99,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!wildcards::match("Anything", pattern3), "");
   }
 
-  SECTION("match with \"?\"")
+  SECTION(R"(match with "?")")
   {
     constexpr char pattern1[] = "?";
     constexpr char pattern2[] = R"(?\)";
@@ -126,7 +126,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!wildcards::match("Something", pattern3), "");
   }
 
-  SECTION("match with \"H?llo,*W*!\"")
+  SECTION(R"(match with "H?llo,*W*!")")
   {
     constexpr char pattern[] = "H?llo,*W*!";
 
@@ -145,28 +145,42 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!wildcards::match("Hallo, World!?", pattern), "");
   }
 
-  SECTION("match with u\"H?llo,*W*!\"")
+  SECTION(R"zzz(match with R"(\\\* *\? \*\\)")zzz")
+  {
+    constexpr char pattern[] = R"(\\\* *\? \*\\)";
+
+    static_assert(wildcards::match(R"(\* Hallo? *\)", pattern), "");
+    static_assert(wildcards::match(R"(\* Hi? *\)", pattern), "");
+    static_assert(wildcards::match(R"(\* ? *\)", pattern), "");
+
+    static_assert(!wildcards::match(R"(\* Hallo! *\)", pattern), "");
+    static_assert(!wildcards::match(R"(* Hallo? *\)", pattern), "");
+    static_assert(!wildcards::match(R"(\ Hallo? *\)", pattern), "");
+    static_assert(!wildcards::match(R"( Hallo? *\)", pattern), "");
+  }
+
+  SECTION(R"(match with u"H?llo,*W*!")")
   {
     constexpr char16_t pattern[] = u"H?llo,*W*!";
 
     static_assert(wildcards::match(u"Hallo, World!", pattern), "");
   }
 
-  SECTION("match with U\"H?llo,*W*!\"")
+  SECTION(R"(match with U"H?llo,*W*!")")
   {
     constexpr char32_t pattern[] = U"H?llo,*W*!";
 
     static_assert(wildcards::match(U"Hallo, World!", pattern), "");
   }
 
-  SECTION("match with L\"H?llo,*W*!\"")
+  SECTION(R"(match with L"H?llo,*W*!")")
   {
     constexpr wchar_t pattern[] = L"H?llo,*W*!";
 
     static_assert(wildcards::match(L"Hallo, World!", pattern), "");
   }
 
-  SECTION("match with \"H?llo,*W*!\"_sv")
+  SECTION(R"(match with "H?llo,*W*!"_sv)")
   {
     using namespace cx::literals;
 
@@ -175,7 +189,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(wildcards::match("Hallo, World!"_sv, pattern), "");
   }
 
-  SECTION("match with u\"H?llo,*W*!\"_sv")
+  SECTION(R"(match with u"H?llo,*W*!"_sv)")
   {
     using namespace cx::literals;
 
@@ -184,7 +198,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(wildcards::match(u"Hallo, World!"_sv, pattern), "");
   }
 
-  SECTION("match with U\"H?llo,*W*!\"_sv")
+  SECTION(R"(match with U"H?llo,*W*!"_sv)")
   {
     using namespace cx::literals;
 
@@ -193,7 +207,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(wildcards::match(U"Hallo, World!"_sv, pattern), "");
   }
 
-  SECTION("match with L\"H?llo,*W*!\"_sv")
+  SECTION(R"(match with L"H?llo,*W*!"_sv)")
   {
     using namespace cx::literals;
 
