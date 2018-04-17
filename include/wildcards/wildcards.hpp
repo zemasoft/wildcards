@@ -18,6 +18,11 @@ namespace wildcards
 template <typename T>
 struct cards
 {
+  constexpr cards(T a, T q, T e)
+      : asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
+  {
+  }
+
   T asterisk;
   T question_mark;
   T escape;
@@ -26,6 +31,15 @@ struct cards
 template <>
 struct cards<char>
 {
+  constexpr cards()
+  {
+  }
+
+  constexpr cards(char a, char q, char e)
+      : asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
+  {
+  }
+
   char asterisk{'*'};
   char question_mark{'?'};
   char escape{'\\'};
@@ -34,6 +48,15 @@ struct cards<char>
 template <>
 struct cards<char16_t>
 {
+  constexpr cards()
+  {
+  }
+
+  constexpr cards(char16_t a, char16_t q, char16_t e)
+      : asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
+  {
+  }
+
   char16_t asterisk{u'*'};
   char16_t question_mark{u'?'};
   char16_t escape{u'\\'};
@@ -42,6 +65,15 @@ struct cards<char16_t>
 template <>
 struct cards<char32_t>
 {
+  constexpr cards()
+  {
+  }
+
+  constexpr cards(char32_t a, char32_t q, char32_t e)
+      : asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
+  {
+  }
+
   char32_t asterisk{U'*'};
   char32_t question_mark{U'?'};
   char32_t escape{U'\\'};
@@ -50,6 +82,15 @@ struct cards<char32_t>
 template <>
 struct cards<wchar_t>
 {
+  constexpr cards()
+  {
+  }
+
+  constexpr cards(wchar_t a, wchar_t q, wchar_t e)
+      : asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
+  {
+  }
+
   wchar_t asterisk{L'*'};
   wchar_t question_mark{L'?'};
   wchar_t escape{L'\\'};
