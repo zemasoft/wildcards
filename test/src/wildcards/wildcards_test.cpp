@@ -10,140 +10,195 @@
 
 TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 {
-  using namespace cx::literals;
-
   SECTION("match with an empty pattern")
   {
-    constexpr auto pattern1 = ""_sv;
-    constexpr auto pattern2 = R"(\)"_sv;
+    constexpr char pattern1[] = "";
+    constexpr char pattern2[] = R"(\)";
 
-    static_assert(wildcards::match(""_sv, pattern1), "");
-    static_assert(wildcards::match(""_sv, pattern2), "");
+    static_assert(wildcards::match("", pattern1), "");
+    static_assert(wildcards::match("", pattern2), "");
 
-    static_assert(!wildcards::match("Anything"_sv, pattern1), "");
-    static_assert(!wildcards::match("Anything"_sv, pattern2), "");
+    static_assert(!wildcards::match("Anything", pattern1), "");
+    static_assert(!wildcards::match("Anything", pattern2), "");
   }
 
   SECTION("match with \"A\"")
   {
-    constexpr auto pattern1 = "A"_sv;
-    constexpr auto pattern2 = R"(A\)"_sv;
-    constexpr auto pattern3 = R"(\A)"_sv;
+    constexpr char pattern1[] = "A";
+    constexpr char pattern2[] = R"(A\)";
+    constexpr char pattern3[] = R"(\A)";
 
-    static_assert(wildcards::match("A"_sv, pattern1), "");
-    static_assert(wildcards::match("A"_sv, pattern2), "");
-    static_assert(wildcards::match("A"_sv, pattern3), "");
+    static_assert(wildcards::match("A", pattern1), "");
+    static_assert(wildcards::match("A", pattern2), "");
+    static_assert(wildcards::match("A", pattern3), "");
 
-    static_assert(!wildcards::match(""_sv, pattern1), "");
-    static_assert(!wildcards::match(""_sv, pattern2), "");
-    static_assert(!wildcards::match(""_sv, pattern3), "");
+    static_assert(!wildcards::match("", pattern1), "");
+    static_assert(!wildcards::match("", pattern2), "");
+    static_assert(!wildcards::match("", pattern3), "");
 
-    static_assert(!wildcards::match("a"_sv, pattern1), "");
-    static_assert(!wildcards::match("a"_sv, pattern2), "");
-    static_assert(!wildcards::match("a"_sv, pattern3), "");
+    static_assert(!wildcards::match("a", pattern1), "");
+    static_assert(!wildcards::match("a", pattern2), "");
+    static_assert(!wildcards::match("a", pattern3), "");
 
-    static_assert(!wildcards::match("AA"_sv, pattern1), "");
-    static_assert(!wildcards::match("AA"_sv, pattern2), "");
-    static_assert(!wildcards::match("AA"_sv, pattern3), "");
+    static_assert(!wildcards::match("AA", pattern1), "");
+    static_assert(!wildcards::match("AA", pattern2), "");
+    static_assert(!wildcards::match("AA", pattern3), "");
 
-    static_assert(!wildcards::match("Something"_sv, pattern1), "");
-    static_assert(!wildcards::match("Something"_sv, pattern2), "");
-    static_assert(!wildcards::match("Something"_sv, pattern3), "");
+    static_assert(!wildcards::match("Something", pattern1), "");
+    static_assert(!wildcards::match("Something", pattern2), "");
+    static_assert(!wildcards::match("Something", pattern3), "");
   }
 
   SECTION("match with \"Hallo!\"")
   {
-    constexpr auto pattern1 = "Hallo!"_sv;
-    constexpr auto pattern2 = R"(Hallo!\)"_sv;
-    constexpr auto pattern3 = R"(\H\a\l\l\o\!)"_sv;
+    constexpr char pattern1[] = "Hallo!";
+    constexpr char pattern2[] = R"(Hallo!\)";
+    constexpr char pattern3[] = R"(\H\a\l\l\o\!)";
 
-    static_assert(wildcards::match("Hallo!"_sv, pattern1), "");
-    static_assert(wildcards::match("Hallo!"_sv, pattern2), "");
-    static_assert(wildcards::match("Hallo!"_sv, pattern3), "");
+    static_assert(wildcards::match("Hallo!", pattern1), "");
+    static_assert(wildcards::match("Hallo!", pattern2), "");
+    static_assert(wildcards::match("Hallo!", pattern3), "");
 
-    static_assert(!wildcards::match(""_sv, pattern1), "");
-    static_assert(!wildcards::match(""_sv, pattern2), "");
-    static_assert(!wildcards::match(""_sv, pattern3), "");
+    static_assert(!wildcards::match("", pattern1), "");
+    static_assert(!wildcards::match("", pattern2), "");
+    static_assert(!wildcards::match("", pattern3), "");
 
-    static_assert(!wildcards::match("Hello!"_sv, pattern1), "");
-    static_assert(!wildcards::match("Hello!"_sv, pattern2), "");
-    static_assert(!wildcards::match("Hello!"_sv, pattern3), "");
+    static_assert(!wildcards::match("Hello!", pattern1), "");
+    static_assert(!wildcards::match("Hello!", pattern2), "");
+    static_assert(!wildcards::match("Hello!", pattern3), "");
 
-    static_assert(!wildcards::match("HHallo!"_sv, pattern1), "");
-    static_assert(!wildcards::match("HHallo!"_sv, pattern2), "");
-    static_assert(!wildcards::match("HHallo!"_sv, pattern3), "");
+    static_assert(!wildcards::match("HHallo!", pattern1), "");
+    static_assert(!wildcards::match("HHallo!", pattern2), "");
+    static_assert(!wildcards::match("HHallo!", pattern3), "");
 
-    static_assert(!wildcards::match("Hallo!!"_sv, pattern1), "");
-    static_assert(!wildcards::match("Hallo!!"_sv, pattern2), "");
-    static_assert(!wildcards::match("Hallo!!"_sv, pattern3), "");
+    static_assert(!wildcards::match("Hallo!!", pattern1), "");
+    static_assert(!wildcards::match("Hallo!!", pattern2), "");
+    static_assert(!wildcards::match("Hallo!!", pattern3), "");
 
-    static_assert(!wildcards::match("Hallo!Hallo!"_sv, pattern1), "");
-    static_assert(!wildcards::match("Hallo!Hallo!"_sv, pattern2), "");
-    static_assert(!wildcards::match("Hallo!Hallo!"_sv, pattern3), "");
+    static_assert(!wildcards::match("Hallo!Hallo!", pattern1), "");
+    static_assert(!wildcards::match("Hallo!Hallo!", pattern2), "");
+    static_assert(!wildcards::match("Hallo!Hallo!", pattern3), "");
   }
 
   SECTION("match with \"*\"")
   {
-    constexpr auto pattern1 = "*"_sv;
-    constexpr auto pattern2 = R"(*\)"_sv;
-    constexpr auto pattern3 = R"(\*)"_sv;
+    constexpr char pattern1[] = "*";
+    constexpr char pattern2[] = R"(*\)";
+    constexpr char pattern3[] = R"(\*)";
 
-    static_assert(wildcards::match(""_sv, pattern1), "");
-    static_assert(wildcards::match(""_sv, pattern2), "");
-    static_assert(!wildcards::match(""_sv, pattern3), "");
+    static_assert(wildcards::match("", pattern1), "");
+    static_assert(wildcards::match("", pattern2), "");
+    static_assert(!wildcards::match("", pattern3), "");
 
-    static_assert(wildcards::match("*"_sv, pattern1), "");
-    static_assert(wildcards::match("*"_sv, pattern2), "");
-    static_assert(wildcards::match("*"_sv, pattern3), "");
+    static_assert(wildcards::match("*", pattern1), "");
+    static_assert(wildcards::match("*", pattern2), "");
+    static_assert(wildcards::match("*", pattern3), "");
 
-    static_assert(wildcards::match("Anything"_sv, pattern1), "");
-    static_assert(wildcards::match("Anything"_sv, pattern2), "");
-    static_assert(!wildcards::match("Anything"_sv, pattern3), "");
+    static_assert(wildcards::match("Anything", pattern1), "");
+    static_assert(wildcards::match("Anything", pattern2), "");
+    static_assert(!wildcards::match("Anything", pattern3), "");
   }
 
   SECTION("match with \"?\"")
   {
-    constexpr auto pattern1 = "?"_sv;
-    constexpr auto pattern2 = R"(?\)"_sv;
-    constexpr auto pattern3 = R"(\?)"_sv;
+    constexpr char pattern1[] = "?";
+    constexpr char pattern2[] = R"(?\)";
+    constexpr char pattern3[] = R"(\?)";
 
-    static_assert(wildcards::match("A"_sv, pattern1), "");
-    static_assert(wildcards::match("A"_sv, pattern2), "");
-    static_assert(!wildcards::match("A"_sv, pattern3), "");
+    static_assert(wildcards::match("A", pattern1), "");
+    static_assert(wildcards::match("A", pattern2), "");
+    static_assert(!wildcards::match("A", pattern3), "");
 
-    static_assert(wildcards::match("a"_sv, pattern1), "");
-    static_assert(wildcards::match("a"_sv, pattern2), "");
-    static_assert(!wildcards::match("a"_sv, pattern3), "");
+    static_assert(wildcards::match("a", pattern1), "");
+    static_assert(wildcards::match("a", pattern2), "");
+    static_assert(!wildcards::match("a", pattern3), "");
 
-    static_assert(wildcards::match("?"_sv, pattern1), "");
-    static_assert(wildcards::match("?"_sv, pattern2), "");
-    static_assert(wildcards::match("?"_sv, pattern3), "");
+    static_assert(wildcards::match("?", pattern1), "");
+    static_assert(wildcards::match("?", pattern2), "");
+    static_assert(wildcards::match("?", pattern3), "");
 
-    static_assert(!wildcards::match(""_sv, pattern1), "");
-    static_assert(!wildcards::match(""_sv, pattern2), "");
-    static_assert(!wildcards::match(""_sv, pattern3), "");
+    static_assert(!wildcards::match("", pattern1), "");
+    static_assert(!wildcards::match("", pattern2), "");
+    static_assert(!wildcards::match("", pattern3), "");
 
-    static_assert(!wildcards::match("Something"_sv, pattern1), "");
-    static_assert(!wildcards::match("Something"_sv, pattern2), "");
-    static_assert(!wildcards::match("Something"_sv, pattern3), "");
+    static_assert(!wildcards::match("Something", pattern1), "");
+    static_assert(!wildcards::match("Something", pattern2), "");
+    static_assert(!wildcards::match("Something", pattern3), "");
   }
 
   SECTION("match with \"H?llo,*W*!\"")
   {
+    constexpr char pattern[] = "H?llo,*W*!";
+
+    static_assert(wildcards::match("Hallo, World!", pattern), "");
+    static_assert(wildcards::match("Hello, World!", pattern), "");
+    static_assert(wildcards::match("Hello,World!", pattern), "");
+    static_assert(wildcards::match("Hello,WildCards!", pattern), "");
+    static_assert(wildcards::match("Hello, crazy WildCards!", pattern), "");
+    static_assert(wildcards::match("Hello, crazy WildCards! Still working?!", pattern), "");
+
+    static_assert(!wildcards::match("", pattern), "");
+    static_assert(!wildcards::match("Hllo, World!", pattern), "");
+    static_assert(!wildcards::match("Hallo, World?", pattern), "");
+    static_assert(!wildcards::match("Hallo, world!", pattern), "");
+    static_assert(!wildcards::match("Yes. Hallo, World!", pattern), "");
+    static_assert(!wildcards::match("Hallo, World!?", pattern), "");
+  }
+
+  SECTION("match with u\"H?llo,*W*!\"")
+  {
+    constexpr char16_t pattern[] = u"H?llo,*W*!";
+
+    static_assert(wildcards::match(u"Hallo, World!", pattern), "");
+  }
+
+  SECTION("match with U\"H?llo,*W*!\"")
+  {
+    constexpr char32_t pattern[] = U"H?llo,*W*!";
+
+    static_assert(wildcards::match(U"Hallo, World!", pattern), "");
+  }
+
+  SECTION("match with L\"H?llo,*W*!\"")
+  {
+    constexpr wchar_t pattern[] = L"H?llo,*W*!";
+
+    static_assert(wildcards::match(L"Hallo, World!", pattern), "");
+  }
+
+  SECTION("match with \"H?llo,*W*!\"_sv")
+  {
+    using namespace cx::literals;
+
     constexpr auto pattern = "H?llo,*W*!"_sv;
 
     static_assert(wildcards::match("Hallo, World!"_sv, pattern), "");
-    static_assert(wildcards::match("Hello, World!"_sv, pattern), "");
-    static_assert(wildcards::match("Hello,World!"_sv, pattern), "");
-    static_assert(wildcards::match("Hello,WildCards!"_sv, pattern), "");
-    static_assert(wildcards::match("Hello, crazy WildCards!"_sv, pattern), "");
-    static_assert(wildcards::match("Hello, crazy WildCards! Still working?!"_sv, pattern), "");
+  }
 
-    static_assert(!wildcards::match(""_sv, pattern), "");
-    static_assert(!wildcards::match("Hllo, World!"_sv, pattern), "");
-    static_assert(!wildcards::match("Hallo, World?"_sv, pattern), "");
-    static_assert(!wildcards::match("Hallo, world!"_sv, pattern), "");
-    static_assert(!wildcards::match("Yes. Hallo, World!"_sv, pattern), "");
-    static_assert(!wildcards::match("Hallo, World!?"_sv, pattern), "");
+  SECTION("match with u\"H?llo,*W*!\"_sv")
+  {
+    using namespace cx::literals;
+
+    constexpr auto pattern = u"H?llo,*W*!"_sv;
+
+    static_assert(wildcards::match(u"Hallo, World!"_sv, pattern), "");
+  }
+
+  SECTION("match with U\"H?llo,*W*!\"_sv")
+  {
+    using namespace cx::literals;
+
+    constexpr auto pattern = U"H?llo,*W*!"_sv;
+
+    static_assert(wildcards::match(U"Hallo, World!"_sv, pattern), "");
+  }
+
+  SECTION("match with L\"H?llo,*W*!\"_sv")
+  {
+    using namespace cx::literals;
+
+    constexpr auto pattern = L"H?llo,*W*!"_sv;
+
+    static_assert(wildcards::match(L"Hallo, World!"_sv, pattern), "");
   }
 }
