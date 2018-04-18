@@ -3,12 +3,11 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <iostream>   // std::cout, std::endl
-#include <stdexcept>  // std::logic_error
+#include <iostream>
+#include <stdexcept>
 
-#include "cx/string_view.hpp"   // cx::basic_string_view, cx::string_view, cx::u16string_view,
-                                // cx::u32string_view, cx::wstring_view
-#include "wildcards/match.hpp"  // wildcards::match
+#include "cx/string_view.hpp"
+#include "wildcards/match.hpp"
 
 template <typename T>
 struct valid_id_pattern;
