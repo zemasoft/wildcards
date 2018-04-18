@@ -1,87 +1,9 @@
-#ifndef WILDCARDS_HPP
-#define WILDCARDS_HPP 
-#ifndef WILDCARDS_CARDS_HPP
-#define WILDCARDS_CARDS_HPP 
-#include <utility>
-namespace wildcards
-{
-template <typename T>
-struct cards
-{
-constexpr cards(T a, T q, T e)
-: asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
-{
-}
-T asterisk;
-T question_mark;
-T escape;
-};
-template <>
-struct cards<char>
-{
-constexpr cards()
-{
-}
-constexpr cards(char a, char q, char e)
-: asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
-{
-}
-char asterisk{'*'};
-char question_mark{'?'};
-char escape{'\\'};
-};
-template <>
-struct cards<char16_t>
-{
-constexpr cards()
-{
-}
-constexpr cards(char16_t a, char16_t q, char16_t e)
-: asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
-{
-}
-char16_t asterisk{u'*'};
-char16_t question_mark{u'?'};
-char16_t escape{u'\\'};
-};
-template <>
-struct cards<char32_t>
-{
-constexpr cards()
-{
-}
-constexpr cards(char32_t a, char32_t q, char32_t e)
-: asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
-{
-}
-char32_t asterisk{U'*'};
-char32_t question_mark{U'?'};
-char32_t escape{U'\\'};
-};
-template <>
-struct cards<wchar_t>
-{
-constexpr cards()
-{
-}
-constexpr cards(wchar_t a, wchar_t q, wchar_t e)
-: asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
-{
-}
-wchar_t asterisk{L'*'};
-wchar_t question_mark{L'?'};
-wchar_t escape{L'\\'};
-};
-template <typename T>
-constexpr cards<T> make_cards(T&& c1, T&& c2)
-{
-return {std::forward<T>(c1), std::forward<T>(c2)};
-}
-}
-#endif
-#ifndef WILDCARDS_MATCH_HPP
-#define WILDCARDS_MATCH_HPP 
-#include <utility>
+#ifndef CX_HPP
+#define CX_HPP 
+#ifndef CX_ARRAY_HPP
+#define CX_ARRAY_HPP 
+#include <cstddef>
+#include <stdexcept>
 #ifndef CONFIG_HPP
 #define CONFIG_HPP 
 #ifndef QUICKCPPLIB_HAS_FEATURE_H
@@ -408,6 +330,8 @@ return {std::forward<T>(c1), std::forward<T>(c2)};
 #define cfg_constexpr14 
 #endif
 #endif
+#ifndef CX_ALGORITHM_HPP
+#define CX_ALGORITHM_HPP 
 #ifndef CX_ITERATOR_HPP
 #define CX_ITERATOR_HPP 
 #include <cstddef>
@@ -491,80 +415,438 @@ return il.end();
 }
 }
 #endif
-#ifndef WILDCARDS_UTILITY_HPP
-#define WILDCARDS_UTILITY_HPP 
-#include <type_traits>
-#include <utility>
-namespace wildcards
+namespace cx
 {
-template <typename It>
-struct iterated_item
-{
-using type = typename std::remove_cv<
-typename std::remove_reference<decltype(*std::declval<It>())>::type>::type;
-};
-template <typename It>
-using iterated_item_t = typename iterated_item<It>::type;
-template <typename C>
-struct container_item
-{
-using type = typename std::remove_cv<
-typename std::remove_reference<decltype(*cx::begin(std::declval<C>()))>::type>::type;
-};
-template <typename C>
-using container_item_t = typename container_item<C>::type;
-}
-#endif
-namespace wildcards
-{
-template <typename SequenceIterator, typename PatternIterator>
-constexpr bool match(SequenceIterator s, SequenceIterator send, PatternIterator p,
-PatternIterator pend, const cards<iterated_item_t<PatternIterator>>& c,
-bool escape = false)
+template <typename Iterator1, typename Iterator2>
+constexpr bool equal(Iterator1 first1, Iterator1 last1, Iterator2 first2, Iterator2 last2)
 {
 #if cfg_HAS_CONSTEXPR14
-if (p == pend)
+while (first1 != last1 && first2 != last2 && *first1 == *first2)
 {
-return s == send;
+++first1, ++first2;
 }
-if (!escape && *p == c.escape)
-{
-return match(s, send, cx::next(p), pend, c, true);
-}
-if (escape || *p != c.asterisk)
-{
-if (s == send)
-{
-return false;
-}
-if ((!escape && *p == c.question_mark) || *s == *p)
-{
-return match(cx::next(s), send, cx::next(p), pend, c, false);
-}
-return false;
-}
-return match(s, send, cx::next(p), pend, c, false) ||
-((s != send) && match(cx::next(s), send, p, pend, c, false));
+return first1 == last1 && first2 == last2;
 #else
-return p == pend ? s == send
-: !escape && *p == c.escape
-? match(s, send, cx::next(p), pend, c, true)
-:
-escape || *p != c.asterisk
-? s != send && ((!escape && *p == c.question_mark) || *s == *p) &&
-match(cx::next(s), send, cx::next(p), pend, c, false)
-:
-match(s, send, cx::next(p), pend, c, false) ||
-((s != send) && match(cx::next(s), send, p, pend, c, false));
+return first1 != last1 && first2 != last2 && *first1 == *first2
+? equal(next(first1), last1, next(first2), last2)
+: first1 == last1 && first2 == last2;
 #endif
 }
-template <typename Sequence, typename Pattern>
-constexpr bool match(Sequence&& sequence, Pattern&& pattern,
-const cards<container_item_t<Pattern>>& c = cards<container_item_t<Pattern>>())
+}
+#endif
+namespace cx
 {
-return match(cx::begin(std::forward<Sequence>(sequence)),
-cx::end(std::forward<Sequence>(sequence)), cx::begin(std::forward<Pattern>(pattern)),
-cx::end(std::forward<Pattern>(pattern)), c);
+template <typename T, std::size_t N>
+struct array
+{
+using value_type = T;
+constexpr std::size_t size() const
+{
+return N;
+}
+constexpr bool empty() const
+{
+return size() == 0;
+}
+constexpr const T* begin() const
+{
+return &data[0];
+}
+cfg_constexpr14 T* begin()
+{
+return &data[0];
+}
+constexpr const T* end() const
+{
+return &data[N];
+}
+cfg_constexpr14 T* end()
+{
+return &data[N];
+}
+constexpr const T& operator[](std::size_t pos) const
+{
+return data[pos];
+}
+cfg_constexpr14 T& operator[](std::size_t pos)
+{
+return data[pos];
+}
+constexpr const T& at(std::size_t pos) const
+{
+return pos < size() ? data[pos] : throw std::out_of_range("");
+}
+cfg_constexpr14 T& at(std::size_t pos)
+{
+return pos < size() ? data[pos] : throw std::out_of_range("");
+}
+T data[N > 0 ? N : 1];
+};
+template <typename T, std::size_t N>
+constexpr bool operator==(const array<T, N>& lhs, const array<T, N>& rhs)
+{
+return equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+}
+template <typename T, std::size_t N>
+constexpr bool operator!=(const array<T, N>& lhs, const array<T, N>& rhs)
+{
+return !(lhs == rhs);
+}
+template <std::size_t Index, typename T>
+struct tuple_element;
+template <std::size_t Index, typename T, std::size_t N>
+struct tuple_element<Index, array<T, N>>
+{
+static_assert(Index < N, "Index out of bounds in cx::tuple_element<>");
+using type = T;
+constexpr static const T& get(const array<T, N>& a)
+{
+return a[Index];
+}
+constexpr static T& get(array<T, N>& a)
+{
+return a[Index];
+}
+};
+template <std::size_t Index, typename T>
+using tuple_element_t = typename tuple_element<Index, T>::type;
+template <std::size_t Index, typename T, std::size_t N>
+constexpr const T& get(const array<T, N>& a)
+{
+static_assert(Index < N, "Index out of bounds in cx::get<>(const cx::array<>&)");
+return a[Index];
+}
+template <std::size_t Index, typename T, std::size_t N>
+constexpr T& get(array<T, N>& a)
+{
+static_assert(Index < N, "Index out of bounds in cx::get<>(cx::array<>&)");
+return a[Index];
+}
+}
+#endif
+#ifndef CX_UTILITY_HPP
+#define CX_UTILITY_HPP 
+#include <cstddef>
+#include <type_traits>
+#include <utility>
+namespace cx
+{
+template <typename First, typename Second>
+struct pair
+{
+using first_type = First;
+using second_type = Second;
+constexpr pair() = default;
+constexpr pair(First first, Second second) : first{std::move(first)}, second{std::move(second)}
+{
+}
+First first;
+Second second;
+};
+template <typename First, typename Second>
+constexpr bool operator==(const pair<First, Second>& lhs, const pair<First, Second>& rhs)
+{
+return lhs.first == rhs.first && lhs.second == rhs.second;
+}
+template <typename First, typename Second>
+constexpr bool operator!=(const pair<First, Second>& lhs, const pair<First, Second>& rhs)
+{
+return !(lhs == rhs);
+}
+template <typename First, typename Second>
+constexpr pair<First, Second> make_pair(First&& first, Second&& second)
+{
+return {std::forward<First>(first), std::forward<Second>(second)};
+}
+template <typename T>
+struct tuple_size;
+template <typename First, typename Second>
+struct tuple_size<pair<First, Second>> : std::integral_constant<std::size_t, 2>
+{
+};
+template <typename First, typename Second>
+struct tuple_size<const pair<First, Second>>
+: std::integral_constant<std::size_t, tuple_size<pair<First, Second>>::value>
+{
+};
+template <std::size_t Index, typename T>
+struct tuple_element;
+template <typename First, typename Second>
+struct tuple_element<0, pair<First, Second>>
+{
+using type = First;
+constexpr static const First& get(const pair<First, Second>& p)
+{
+return p.first;
+}
+constexpr static First& get(pair<First, Second>& p)
+{
+return p.first;
+}
+};
+template <typename First, typename Second>
+struct tuple_element<1, pair<First, Second>>
+{
+using type = Second;
+constexpr static const Second& get(const pair<First, Second>& p)
+{
+return p.second;
+}
+constexpr static Second& get(pair<First, Second>& p)
+{
+return p.second;
+}
+};
+template <std::size_t Index, typename T>
+using tuple_element_t = typename tuple_element<Index, T>::type;
+template <std::size_t Index, typename First, typename Second>
+constexpr const tuple_element_t<Index, pair<First, Second>>& get(const pair<First, Second>& p)
+{
+return tuple_element<Index, pair<First, Second>>::get(p);
+}
+template <std::size_t Index, typename First, typename Second>
+constexpr tuple_element_t<Index, pair<First, Second>>& get(pair<First, Second>& p)
+{
+return tuple_element<Index, pair<First, Second>>::get(p);
+}
+template <typename First, typename Second>
+constexpr const First& get(const pair<First, Second>& p)
+{
+return p.first;
+}
+template <typename First, typename Second>
+constexpr First& get(pair<First, Second>& p)
+{
+return p.first;
+}
+template <typename Second, typename First>
+constexpr const Second& get(const pair<First, Second>& p)
+{
+return p.second;
+}
+template <typename Second, typename First>
+constexpr Second& get(pair<First, Second>& p)
+{
+return p.second;
+}
+}
+#endif
+#ifndef CX_STRING_VIEW_HPP
+#define CX_STRING_VIEW_HPP 
+#include <cstddef>
+#include <ostream>
+namespace cx
+{
+template <typename T>
+class basic_string_view
+{
+public:
+using value_type = T;
+constexpr basic_string_view() = default;
+template <std::size_t N>
+constexpr basic_string_view(const T (&str)[N]) : data_{&str[0]}, size_{N - 1}
+{
+}
+constexpr basic_string_view(const T* str, std::size_t s) : data_{str}, size_{s}
+{
+}
+constexpr const T* data() const
+{
+return data_;
+}
+constexpr std::size_t size() const
+{
+return size_;
+}
+constexpr bool empty() const
+{
+return size() == 0;
+}
+constexpr const T* begin() const
+{
+return data_;
+}
+constexpr const T* end() const
+{
+return data_ + size_;
+}
+private:
+const T* data_{nullptr};
+std::size_t size_{0};
+};
+template <typename T>
+constexpr bool operator==(const basic_string_view<T>& lhs, const basic_string_view<T>& rhs)
+{
+return equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+}
+template <typename T>
+constexpr bool operator!=(const basic_string_view<T>& lhs, const basic_string_view<T>& rhs)
+{
+return !(lhs == rhs);
+}
+template <typename T>
+std::basic_ostream<T>& operator<<(std::basic_ostream<T>& o, const basic_string_view<T>& s)
+{
+o << s.data();
+return o;
+}
+template <typename T, std::size_t N>
+constexpr basic_string_view<T> make_string_view(const T (&str)[N])
+{
+return {str, N - 1};
+}
+template <typename T>
+constexpr basic_string_view<T> make_string_view(const T* str, std::size_t s)
+{
+return {str, s};
+}
+using string_view = basic_string_view<char>;
+using u16string_view = basic_string_view<char16_t>;
+using u32string_view = basic_string_view<char32_t>;
+using wstring_view = basic_string_view<wchar_t>;
+namespace literals
+{
+constexpr string_view operator"" _sv(const char* str, std::size_t s)
+{
+return {str, s};
+}
+constexpr u16string_view operator"" _sv(const char16_t* str, std::size_t s)
+{
+return {str, s};
+}
+constexpr u32string_view operator"" _sv(const char32_t* str, std::size_t s)
+{
+return {str, s};
+}
+constexpr wstring_view operator"" _sv(const wchar_t* str, std::size_t s)
+{
+return {str, s};
+}
+}
+}
+#endif
+#ifndef CX_TUPLE_HPP
+#define CX_TUPLE_HPP 
+#include <cstddef>
+#include <type_traits>
+#include <utility>
+namespace cx
+{
+template <typename... Types>
+struct tuple;
+template <typename First, typename... Rest>
+struct tuple<First, Rest...> : public tuple<Rest...>
+{
+template <std::size_t Index, typename T>
+friend struct tuple_element;
+constexpr tuple() = default;
+constexpr tuple(First first, Rest... rest)
+: tuple<Rest...>{std::move(rest)...}, first_{std::move(first)}
+{
+}
+private:
+First first_;
+};
+template <>
+struct tuple<>
+{
+};
+template <typename... Types>
+constexpr tuple<Types...> make_tuple(Types&&... types)
+{
+return {std::forward<Types>(types)...};
+}
+template <typename T>
+struct tuple_size;
+template <typename... Types>
+struct tuple_size<tuple<Types...>> : std::integral_constant<std::size_t, sizeof...(Types)>
+{
+};
+template <typename... Types>
+struct tuple_size<const tuple<Types...>>
+: std::integral_constant<std::size_t, tuple_size<tuple<Types...>>::value>
+{
+};
+template <std::size_t Index, typename T>
+struct tuple_element;
+template <std::size_t Index, typename First, typename... Rest>
+struct tuple_element<Index, tuple<First, Rest...>>
+{
+using type = typename tuple_element<Index - 1, tuple<Rest...>>::type;
+constexpr static const typename tuple_element<Index - 1, tuple<Rest...>>::type& get(
+const tuple<First, Rest...>& t)
+{
+return tuple_element<Index - 1, tuple<Rest...>>::get(t);
+}
+constexpr static typename tuple_element<Index - 1, tuple<Rest...>>::type& get(
+tuple<First, Rest...>& t)
+{
+return tuple_element<Index - 1, tuple<Rest...>>::get(t);
+}
+};
+template <typename First, typename... Rest>
+struct tuple_element<0, tuple<First, Rest...>>
+{
+using type = First;
+constexpr static const First& get(const tuple<First, Rest...>& t)
+{
+return t.first_;
+}
+constexpr static First& get(tuple<First, Rest...>& t)
+{
+return t.first_;
+}
+};
+template <std::size_t Index, typename T>
+using tuple_element_t = typename tuple_element<Index, T>::type;
+template <std::size_t Index, typename First, typename... Rest>
+constexpr const tuple_element_t<Index, tuple<First, Rest...>>& get(const tuple<First, Rest...>& t)
+{
+return tuple_element<Index, tuple<First, Rest...>>::get(t);
+}
+template <std::size_t Index, typename First, typename... Rest>
+constexpr tuple_element_t<Index, tuple<First, Rest...>>& get(tuple<First, Rest...>& t)
+{
+return tuple_element<Index, tuple<First, Rest...>>::get(t);
+}
+namespace detail
+{
+template <std::size_t Index>
+struct tuples
+{
+template <typename... Types1, typename... Types2>
+constexpr static bool equal(const tuple<Types1...>& lhs, const tuple<Types2...>& rhs)
+{
+return get<Index>(lhs) == get<Index>(rhs) && tuples<Index - 1>::equal(lhs, rhs);
+}
+};
+template <>
+struct tuples<0>
+{
+template <typename... Types1, typename... Types2>
+constexpr static bool equal(const tuple<Types1...>& lhs, const tuple<Types2...>& rhs)
+{
+return get<0>(lhs) == get<0>(rhs);
+}
+};
+}
+template <typename... Types1, typename... Types2>
+constexpr bool operator==(const tuple<Types1...>& lhs, const tuple<Types2...>& rhs)
+{
+static_assert(
+sizeof...(Types1) == sizeof...(Types2),
+"Tuples size is not equal in cx::operator==(const cx::tuple<>&, const cx::tuple<>&)");
+return detail::tuples<sizeof...(Types1) -1>::equal(lhs, rhs);
+}
+template <>
+constexpr bool operator==(const tuple<>&, const tuple<>&)
+{
+return true;
+}
+template <typename... Types1, typename... Types2>
+constexpr bool operator!=(const tuple<Types1...>& lhs, const tuple<Types2...>& rhs)
+{
+return !(lhs == rhs);
 }
 }
 #endif
