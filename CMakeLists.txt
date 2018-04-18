@@ -31,6 +31,8 @@ if(CLANGFORMAT)
                        include/cx/string_view.hpp
                        include/cx/tuple.hpp
                        include/cx/utility.hpp
+                       include/wildcards/cards.hpp
+                       include/wildcards/utility.hpp
                        include/wildcards/wildcards.hpp)
 
   clangformat_setup("${clangformat_srcs}")
