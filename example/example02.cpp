@@ -40,7 +40,7 @@ template <typename T>
 constexpr cx::basic_string_view<T> basic_valid_id(cx::basic_string_view<T> s)
 {
   return wildcards::match(s, valid_id_pattern<T>::value) ? s
-                                                         : throw std::logic_error("Id is invalid");
+                                                         : throw std::logic_error("ID is invalid");
 }
 
 constexpr cx::string_view valid_id(cx::string_view s)
@@ -88,8 +88,8 @@ int main()
   constexpr auto id1 = valid_id("test_ok");
   constexpr auto id2 = "test_ok"_valid_id;
 
-  std::cout << id1 << std::endl;
-  std::cout << id2 << std::endl;
+  std::cout << "valid ID: " << id1 << std::endl;
+  std::cout << "valid ID: " << id2 << std::endl;
 
-  return 0;
+  return EXIT_SUCCESS;
 }
