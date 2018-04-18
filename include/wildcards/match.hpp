@@ -3,8 +3,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef WILDCARDS_WILDCARDS_HPP
-#define WILDCARDS_WILDCARDS_HPP
+#ifndef WILDCARDS_MATCH_HPP
+#define WILDCARDS_MATCH_HPP
 
 #include <utility>  // std::forward
 
@@ -80,4 +80,4 @@ constexpr bool match(Sequence&& sequence, Pattern&& pattern,
 
 }  // namespace wildcards
 
-#endif  // WILDCARDS_WILDCARDS_HPP
+#endif  // WILDCARDS_MATCH_HPP

@@ -32,8 +32,8 @@ if(CLANGFORMAT)
                        include/cx/tuple.hpp
                        include/cx/utility.hpp
                        include/wildcards/cards.hpp
-                       include/wildcards/utility.hpp
-                       include/wildcards/wildcards.hpp)
+                       include/wildcards/match.hpp
+                       include/wildcards/utility.hpp)
 
   clangformat_setup("${clangformat_srcs}")
 endif()

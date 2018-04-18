@@ -4,7 +4,7 @@ add_executable(selftest src/cx/array_test.cpp
                         src/cx/string_view_test.cpp
                         src/cx/tuple_test.cpp
                         src/cx/utility_test.cpp
-                        src/wildcards/wildcards_test.cpp
+                        src/wildcards/match_test.cpp
                         src/catch.cpp)
 target_include_directories(selftest PRIVATE ../include include)
 
@@ -52,7 +52,7 @@ if(CLANGFORMAT)
                        src/cx/string_view_test.cpp
                        src/cx/tuple_test.cpp
                        src/cx/utility_test.cpp
-                       src/wildcards/wildcards_test.cpp)
+                       src/wildcards/match_test.cpp)
 
   clangformat_setup("${clangformat_srcs}")
 endif()

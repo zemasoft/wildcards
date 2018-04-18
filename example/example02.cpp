@@ -6,9 +6,9 @@
 #include <iostream>   // std::cout, std::endl
 #include <stdexcept>  // std::logic_error
 
-#include "cx/string_view.hpp"       // cx::basic_string_view, cx::string_view, cx::u16string_view,
-                                    // cx::u32string_view, cx::wstring_view
-#include "wildcards/wildcards.hpp"  // wildcards::match
+#include "cx/string_view.hpp"   // cx::basic_string_view, cx::string_view, cx::u16string_view,
+                                // cx::u32string_view, cx::wstring_view
+#include "wildcards/match.hpp"  // wildcards::match
 
 template <typename T>
 struct valid_id_pattern;
