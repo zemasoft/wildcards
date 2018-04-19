@@ -50,10 +50,30 @@ struct valid_id_pattern<wchar_t>
 };
 
 template <typename T>
-constexpr cx::basic_string_view<T> basic_valid_id(cx::basic_string_view<T> s)
+constexpr cx::basic_string_view<T> basic_valid_id(
+    cx::basic_string_view<T> s, cx::basic_string_view<T> p = valid_id_pattern<T>::value())
 {
-  return wildcards::match(s, valid_id_pattern<T>::value()) ? s
-                                                           : throw std::logic_error("Invalid ID");
+  return wildcards::match(s, p) ? s : throw std::logic_error("Invalid ID");
+}
+
+constexpr cx::string_view valid_id(cx::string_view s, cx::string_view p)
+{
+  return basic_valid_id<char>(s, p);
+}
+
+constexpr cx::u16string_view valid_id(cx::u16string_view s, cx::u16string_view p)
+{
+  return basic_valid_id<char16_t>(s, p);
+}
+
+constexpr cx::u32string_view valid_id(cx::u32string_view s, cx::u32string_view p)
+{
+  return basic_valid_id<char32_t>(s, p);
+}
+
+constexpr cx::wstring_view valid_id(cx::wstring_view s, cx::wstring_view p)
+{
+  return basic_valid_id<wchar_t>(s, p);
 }
 
 constexpr cx::string_view valid_id(cx::string_view s)
@@ -106,7 +126,7 @@ int main()
     constexpr auto id2 = "test_something_else"_valid_id;
     std::cout << "Valid ID: " << id2 << std::endl;
 
-    // constexpr auto id3 = "tst_something_different"_valid_id;  // compile time error
+    // constexpr auto id3 = "Test_something_different"_valid_id;  // compile time error
     // std::cout << "Valid ID: " << id3 << std::endl;
   }
 
@@ -119,7 +139,7 @@ int main()
     auto id2 = "test_something_else"_valid_id;
     std::cout << "Valid ID: " << id2 << std::endl;
 
-    auto id3 = "tst_something_different"_valid_id;  // runtime error
+    auto id3 = "Test_something_different"_valid_id;  // runtime error
     std::cout << "Valid ID: " << id3 << std::endl;
   }
   catch (const std::exception& e)
