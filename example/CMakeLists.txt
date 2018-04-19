@@ -44,13 +44,15 @@ endmacro()
 add_example(example01 example01.cpp)
 add_example(example02 example02.cpp)
 add_example(example03 example03.cpp)
+add_example(example04 example04.cpp)
 
 if(CLANGFORMAT)
   include(ClangFormat)
 
   set(clangformat_srcs example01.cpp
                        example02.cpp
-                       example03.cpp)
+                       example03.cpp
+                       example04.cpp)
 
   clangformat_setup("${clangformat_srcs}")
 endif()
