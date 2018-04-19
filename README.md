@@ -22,7 +22,7 @@ Usage
 
 2. Multi-header approach
    * Add the Wildcards include directory to your project's header search path.
-   * Add `#include <wildcards/match.hpp>` to your source file.
+   * Add `#include <wildcards.hpp>` to your source file.
    * Use `wildcards::match()`.
 
 Examples
