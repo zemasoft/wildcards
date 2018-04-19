@@ -45,6 +45,8 @@ add_example(example01 example01.cpp)
 add_example(example02 example02.cpp)
 add_example(example03 example03.cpp)
 add_example(example04 example04.cpp)
+add_example(example05 example05.cpp)
+target_link_libraries(example05 stdc++fs)
 
 if(CLANGFORMAT)
   include(ClangFormat)
@@ -52,7 +54,8 @@ if(CLANGFORMAT)
   set(clangformat_srcs example01.cpp
                        example02.cpp
                        example03.cpp
-                       example04.cpp)
+                       example04.cpp
+                       example05.cpp)
 
   clangformat_setup("${clangformat_srcs}")
 endif()
