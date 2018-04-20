@@ -1,5 +1,8 @@
 #ifndef CX_HPP
 #define CX_HPP 
+#define CX_VERSION_MAJOR 0
+#define CX_VERSION_MINOR 1
+#define CX_VERSION_PATCH 0
 #ifndef CX_ARRAY_HPP
 #define CX_ARRAY_HPP 
 #include <cstddef>
