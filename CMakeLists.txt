@@ -25,8 +25,11 @@ if(CLANGFORMAT)
   include(ClangFormat)
 
   set(clangformat_srcs include/config.hpp
+                       include/cx.hpp
+                       include/wildcards.hpp
                        include/cx/algorithm.hpp
                        include/cx/array.hpp
+                       include/cx/functional.hpp
                        include/cx/iterator.hpp
                        include/cx/string_view.hpp
                        include/cx/tuple.hpp

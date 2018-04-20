@@ -10,11 +10,12 @@
 #define CX_VERSION_MINOR 1
 #define CX_VERSION_PATCH 0
 
-#include "cx/array.hpp"
 #include "cx/algorithm.hpp"
-#include "cx/utility.hpp"
+#include "cx/array.hpp"
+#include "cx/functional.hpp"
 #include "cx/iterator.hpp"
 #include "cx/string_view.hpp"
 #include "cx/tuple.hpp"
+#include "cx/utility.hpp"
 
 #endif  // CX_HPP
