@@ -40,6 +40,11 @@ struct array
     return &data[0];
   }
 
+  constexpr const T* cbegin() const
+  {
+    return begin();
+  }
+
   constexpr const T* end() const
   {
     return &data[N];
@@ -48,6 +53,11 @@ struct array
   cfg_constexpr14 T* end()
   {
     return &data[N];
+  }
+
+  constexpr const T* cend() const
+  {
+    return end();
   }
 
   constexpr const T& operator[](std::size_t pos) const

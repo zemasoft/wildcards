@@ -51,9 +51,19 @@ class basic_string_view
     return data_;
   }
 
+  constexpr const T* cbegin() const
+  {
+    return begin();
+  }
+
   constexpr const T* end() const
   {
     return data_ + size_;
+  }
+
+  constexpr const T* cend() const
+  {
+    return end();
   }
 
  private:

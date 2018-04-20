@@ -79,6 +79,12 @@ constexpr const E* begin(std::initializer_list<E> il)
 }
 
 template <typename C>
+constexpr auto cbegin(const C& c) -> decltype(cx::begin(c))
+{
+  return cx::begin(c);
+}
+
+template <typename C>
 constexpr auto end(const C& c) -> decltype(c.end())
 {
   return c.end();
@@ -100,6 +106,12 @@ template <typename E>
 constexpr const E* end(std::initializer_list<E> il)
 {
   return il.end();
+}
+
+template <typename C>
+constexpr auto cend(const C& c) -> decltype(cx::end(c))
+{
+  return cx::end(c);
 }
 
 }  // namespace cx
