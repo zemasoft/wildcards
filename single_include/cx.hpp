@@ -1,3 +1,9 @@
+// THIS FILE HAS BEEN GENERATED AUTOMATICALLY. DO NOT EDIT DIRECTLY.
+// Generated: 2018-04-20 07:58:19.771749180
+// Copyright Tomas Zeman 2018.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 #ifndef CX_HPP
 #define CX_HPP 
 #define CX_VERSION_MAJOR 0
