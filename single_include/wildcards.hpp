@@ -1,5 +1,5 @@
 // THIS FILE HAS BEEN GENERATED AUTOMATICALLY. DO NOT EDIT DIRECTLY.
-// Generated: 2018-04-20 07:58:19.878033941
+// Generated: 2018-04-20 11:43:26.011834299
 // Copyright Tomas Zeman 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -417,6 +417,31 @@ return {std::forward<T>(c1), std::forward<T>(c2)};
 #define cfg_constexpr14 
 #endif
 #endif
+#ifndef CX_FUNCTIONAL_HPP
+#define CX_FUNCTIONAL_HPP 
+#include <utility>
+namespace cx
+{
+template <typename T>
+struct equal_to
+{
+constexpr auto operator()(const T& lhs, const T& rhs) const -> decltype(lhs == rhs)
+{
+return lhs == rhs;
+}
+};
+template <>
+struct equal_to<void>
+{
+template <typename T, typename U>
+constexpr auto operator()(T&& lhs, U&& rhs) const
+-> decltype(std::forward<T>(lhs) == std::forward<U>(rhs))
+{
+return std::forward<T>(lhs) == std::forward<U>(rhs);
+}
+};
+}
+#endif
 #ifndef CX_ITERATOR_HPP
 #define CX_ITERATOR_HPP 
 #include <cstddef>
@@ -526,10 +551,11 @@ using container_item_t = typename container_item<C>::type;
 #endif
 namespace wildcards
 {
-template <typename SequenceIterator, typename PatternIterator>
+template <typename SequenceIterator, typename PatternIterator,
+typename EqualTo = cx::equal_to<void>>
 constexpr bool match(SequenceIterator s, SequenceIterator send, PatternIterator p,
 PatternIterator pend, const cards<iterated_item_t<PatternIterator>>& c,
-bool escape = false)
+const EqualTo& equal_to = EqualTo(), bool escape = false)
 {
 #if cfg_HAS_CONSTEXPR14
 if (p == pend)
@@ -538,7 +564,7 @@ return s == send;
 }
 if (!escape && *p == c.escape)
 {
-return match(s, send, cx::next(p), pend, c, true);
+return match(s, send, cx::next(p), pend, c, equal_to, true);
 }
 if (escape || *p != c.asterisk)
 {
@@ -546,34 +572,36 @@ if (s == send)
 {
 return false;
 }
-if ((!escape && *p == c.question_mark) || *s == *p)
+if ((!escape && *p == c.question_mark) || equal_to(*s, *p))
 {
-return match(cx::next(s), send, cx::next(p), pend, c, false);
+return match(cx::next(s), send, cx::next(p), pend, c, equal_to, false);
 }
 return false;
 }
-return match(s, send, cx::next(p), pend, c, false) ||
-((s != send) && match(cx::next(s), send, p, pend, c, false));
+return match(s, send, cx::next(p), pend, c, equal_to, false) ||
+((s != send) && match(cx::next(s), send, p, pend, c, equal_to, false));
 #else
-return p == pend ? s == send
+return p == pend
+? s == send
 : !escape && *p == c.escape
-? match(s, send, cx::next(p), pend, c, true)
+? match(s, send, cx::next(p), pend, c, equal_to, true)
 :
 escape || *p != c.asterisk
-? s != send && ((!escape && *p == c.question_mark) || *s == *p) &&
-match(cx::next(s), send, cx::next(p), pend, c, false)
+? s != send && ((!escape && *p == c.question_mark) || equal_to(*s, *p)) &&
+match(cx::next(s), send, cx::next(p), pend, c, equal_to, false)
 :
-match(s, send, cx::next(p), pend, c, false) ||
-((s != send) && match(cx::next(s), send, p, pend, c, false));
+match(s, send, cx::next(p), pend, c, equal_to, false) ||
+((s != send) && match(cx::next(s), send, p, pend, c, equal_to, false));
 #endif
 }
-template <typename Sequence, typename Pattern>
+template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>>
 constexpr bool match(Sequence&& sequence, Pattern&& pattern,
-const cards<container_item_t<Pattern>>& c = cards<container_item_t<Pattern>>())
+const cards<container_item_t<Pattern>>& c = cards<container_item_t<Pattern>>(),
+const EqualTo& equal_to = EqualTo())
 {
 return match(cx::begin(std::forward<Sequence>(sequence)),
 cx::end(std::forward<Sequence>(sequence)), cx::begin(std::forward<Pattern>(pattern)),
-cx::end(std::forward<Pattern>(pattern)), c);
+cx::end(std::forward<Pattern>(pattern)), c, equal_to);
 }
 }
 #endif

@@ -1,5 +1,5 @@
 // THIS FILE HAS BEEN GENERATED AUTOMATICALLY. DO NOT EDIT DIRECTLY.
-// Generated: 2018-04-20 07:58:19.771749180
+// Generated: 2018-04-20 11:43:25.912348425
 // Copyright Tomas Zeman 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -9,10 +9,8 @@
 #define CX_VERSION_MAJOR 0
 #define CX_VERSION_MINOR 1
 #define CX_VERSION_PATCH 0
-#ifndef CX_ARRAY_HPP
-#define CX_ARRAY_HPP 
-#include <cstddef>
-#include <stdexcept>
+#ifndef CX_ALGORITHM_HPP
+#define CX_ALGORITHM_HPP 
 #ifndef CONFIG_HPP
 #define CONFIG_HPP 
 #ifndef QUICKCPPLIB_HAS_FEATURE_H
@@ -339,8 +337,6 @@
 #define cfg_constexpr14 
 #endif
 #endif
-#ifndef CX_ALGORITHM_HPP
-#define CX_ALGORITHM_HPP 
 #ifndef CX_ITERATOR_HPP
 #define CX_ITERATOR_HPP 
 #include <cstddef>
@@ -443,6 +439,10 @@ return first1 != last1 && first2 != last2 && *first1 == *first2
 }
 }
 #endif
+#ifndef CX_ARRAY_HPP
+#define CX_ARRAY_HPP 
+#include <cstddef>
+#include <stdexcept>
 namespace cx
 {
 template <typename T, std::size_t N>
@@ -533,111 +533,29 @@ return a[Index];
 }
 }
 #endif
-#ifndef CX_UTILITY_HPP
-#define CX_UTILITY_HPP 
-#include <cstddef>
-#include <type_traits>
+#ifndef CX_FUNCTIONAL_HPP
+#define CX_FUNCTIONAL_HPP 
 #include <utility>
 namespace cx
 {
-template <typename First, typename Second>
-struct pair
-{
-using first_type = First;
-using second_type = Second;
-constexpr pair() = default;
-constexpr pair(First first, Second second) : first{std::move(first)}, second{std::move(second)}
-{
-}
-First first;
-Second second;
-};
-template <typename First, typename Second>
-constexpr bool operator==(const pair<First, Second>& lhs, const pair<First, Second>& rhs)
-{
-return lhs.first == rhs.first && lhs.second == rhs.second;
-}
-template <typename First, typename Second>
-constexpr bool operator!=(const pair<First, Second>& lhs, const pair<First, Second>& rhs)
-{
-return !(lhs == rhs);
-}
-template <typename First, typename Second>
-constexpr pair<First, Second> make_pair(First&& first, Second&& second)
-{
-return {std::forward<First>(first), std::forward<Second>(second)};
-}
 template <typename T>
-struct tuple_size;
-template <typename First, typename Second>
-struct tuple_size<pair<First, Second>> : std::integral_constant<std::size_t, 2>
+struct equal_to
 {
-};
-template <typename First, typename Second>
-struct tuple_size<const pair<First, Second>>
-: std::integral_constant<std::size_t, tuple_size<pair<First, Second>>::value>
+constexpr auto operator()(const T& lhs, const T& rhs) const -> decltype(lhs == rhs)
 {
-};
-template <std::size_t Index, typename T>
-struct tuple_element;
-template <typename First, typename Second>
-struct tuple_element<0, pair<First, Second>>
-{
-using type = First;
-constexpr static const First& get(const pair<First, Second>& p)
-{
-return p.first;
-}
-constexpr static First& get(pair<First, Second>& p)
-{
-return p.first;
+return lhs == rhs;
 }
 };
-template <typename First, typename Second>
-struct tuple_element<1, pair<First, Second>>
+template <>
+struct equal_to<void>
 {
-using type = Second;
-constexpr static const Second& get(const pair<First, Second>& p)
+template <typename T, typename U>
+constexpr auto operator()(T&& lhs, U&& rhs) const
+-> decltype(std::forward<T>(lhs) == std::forward<U>(rhs))
 {
-return p.second;
-}
-constexpr static Second& get(pair<First, Second>& p)
-{
-return p.second;
+return std::forward<T>(lhs) == std::forward<U>(rhs);
 }
 };
-template <std::size_t Index, typename T>
-using tuple_element_t = typename tuple_element<Index, T>::type;
-template <std::size_t Index, typename First, typename Second>
-constexpr const tuple_element_t<Index, pair<First, Second>>& get(const pair<First, Second>& p)
-{
-return tuple_element<Index, pair<First, Second>>::get(p);
-}
-template <std::size_t Index, typename First, typename Second>
-constexpr tuple_element_t<Index, pair<First, Second>>& get(pair<First, Second>& p)
-{
-return tuple_element<Index, pair<First, Second>>::get(p);
-}
-template <typename First, typename Second>
-constexpr const First& get(const pair<First, Second>& p)
-{
-return p.first;
-}
-template <typename First, typename Second>
-constexpr First& get(pair<First, Second>& p)
-{
-return p.first;
-}
-template <typename Second, typename First>
-constexpr const Second& get(const pair<First, Second>& p)
-{
-return p.second;
-}
-template <typename Second, typename First>
-constexpr Second& get(pair<First, Second>& p)
-{
-return p.second;
-}
 }
 #endif
 #ifndef CX_STRING_VIEW_HPP
@@ -856,6 +774,113 @@ template <typename... Types1, typename... Types2>
 constexpr bool operator!=(const tuple<Types1...>& lhs, const tuple<Types2...>& rhs)
 {
 return !(lhs == rhs);
+}
+}
+#endif
+#ifndef CX_UTILITY_HPP
+#define CX_UTILITY_HPP 
+#include <cstddef>
+#include <type_traits>
+#include <utility>
+namespace cx
+{
+template <typename First, typename Second>
+struct pair
+{
+using first_type = First;
+using second_type = Second;
+constexpr pair() = default;
+constexpr pair(First first, Second second) : first{std::move(first)}, second{std::move(second)}
+{
+}
+First first;
+Second second;
+};
+template <typename First, typename Second>
+constexpr bool operator==(const pair<First, Second>& lhs, const pair<First, Second>& rhs)
+{
+return lhs.first == rhs.first && lhs.second == rhs.second;
+}
+template <typename First, typename Second>
+constexpr bool operator!=(const pair<First, Second>& lhs, const pair<First, Second>& rhs)
+{
+return !(lhs == rhs);
+}
+template <typename First, typename Second>
+constexpr pair<First, Second> make_pair(First&& first, Second&& second)
+{
+return {std::forward<First>(first), std::forward<Second>(second)};
+}
+template <typename T>
+struct tuple_size;
+template <typename First, typename Second>
+struct tuple_size<pair<First, Second>> : std::integral_constant<std::size_t, 2>
+{
+};
+template <typename First, typename Second>
+struct tuple_size<const pair<First, Second>>
+: std::integral_constant<std::size_t, tuple_size<pair<First, Second>>::value>
+{
+};
+template <std::size_t Index, typename T>
+struct tuple_element;
+template <typename First, typename Second>
+struct tuple_element<0, pair<First, Second>>
+{
+using type = First;
+constexpr static const First& get(const pair<First, Second>& p)
+{
+return p.first;
+}
+constexpr static First& get(pair<First, Second>& p)
+{
+return p.first;
+}
+};
+template <typename First, typename Second>
+struct tuple_element<1, pair<First, Second>>
+{
+using type = Second;
+constexpr static const Second& get(const pair<First, Second>& p)
+{
+return p.second;
+}
+constexpr static Second& get(pair<First, Second>& p)
+{
+return p.second;
+}
+};
+template <std::size_t Index, typename T>
+using tuple_element_t = typename tuple_element<Index, T>::type;
+template <std::size_t Index, typename First, typename Second>
+constexpr const tuple_element_t<Index, pair<First, Second>>& get(const pair<First, Second>& p)
+{
+return tuple_element<Index, pair<First, Second>>::get(p);
+}
+template <std::size_t Index, typename First, typename Second>
+constexpr tuple_element_t<Index, pair<First, Second>>& get(pair<First, Second>& p)
+{
+return tuple_element<Index, pair<First, Second>>::get(p);
+}
+template <typename First, typename Second>
+constexpr const First& get(const pair<First, Second>& p)
+{
+return p.first;
+}
+template <typename First, typename Second>
+constexpr First& get(pair<First, Second>& p)
+{
+return p.first;
+}
+template <typename Second, typename First>
+constexpr const Second& get(const pair<First, Second>& p)
+{
+return p.second;
+}
+template <typename Second, typename First>
+constexpr Second& get(pair<First, Second>& p)
+{
+return p.second;
 }
 }
 #endif
