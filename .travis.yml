@@ -13,32 +13,32 @@ matrix:
       os: osx
       osx_image: xcode9
       compiler: clang
-    - env: CLANG_VERSION=3.8 BUILD_TYPE=Debug
-      os: linux
-      addons: &clang38
-        apt:
-          packages:
-            - clang-3.8
-            - g++-5
-          sources: &sources
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-3.8
-    - env: CLANG_VERSION=3.8 BUILD_TYPE=Release
-      os: linux
-      addons: *clang38
-    - env: CLANG_VERSION=3.9 BUILD_TYPE=Debug
-      os: linux
-      addons: &clang39
-        apt:
-          packages:
-            - clang-3.9
-            - g++-5
-          sources: &sources
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-3.9
-    - env: CLANG_VERSION=3.9 BUILD_TYPE=Release
-      os: linux
-      addons: *clang39
+#   - env: CLANG_VERSION=3.8 BUILD_TYPE=Debug
+#     os: linux
+#     addons: &clang38
+#       apt:
+#         packages:
+#           - clang-3.8
+#           - g++-5
+#         sources: &sources
+#           - ubuntu-toolchain-r-test
+#           - llvm-toolchain-trusty-3.8
+#   - env: CLANG_VERSION=3.8 BUILD_TYPE=Release
+#     os: linux
+#     addons: *clang38
+#   - env: CLANG_VERSION=3.9 BUILD_TYPE=Debug
+#     os: linux
+#     addons: &clang39
+#       apt:
+#         packages:
+#           - clang-3.9
+#           - g++-5
+#         sources: &sources
+#           - ubuntu-toolchain-r-test
+#           - llvm-toolchain-trusty-3.9
+#   - env: CLANG_VERSION=3.9 BUILD_TYPE=Release
+#     os: linux
+#     addons: *clang39
     - env: CLANG_VERSION=4.0 BUILD_TYPE=Debug
       os: linux
       addons: &clang40
