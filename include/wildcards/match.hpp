@@ -85,8 +85,7 @@ constexpr bool match(Sequence&& sequence, Pattern&& pattern,
 template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>>
 constexpr bool match(Sequence&& sequence, Pattern&& pattern, const EqualTo& equal_to)
 {
-  return match(cx::cbegin(sequence), cx::cend(std::forward<Sequence>(sequence)),
-               cx::cbegin(pattern), cx::cend(std::forward<Pattern>(pattern)),
+  return match(std::forward<Sequence>(sequence), std::forward<Pattern>(pattern),
                cards<container_item_t<Pattern>>(), equal_to);
 }
 
