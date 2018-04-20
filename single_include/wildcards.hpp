@@ -1,5 +1,5 @@
 // THIS FILE HAS BEEN GENERATED AUTOMATICALLY. DO NOT EDIT DIRECTLY.
-// Generated: 2018-04-20 11:43:26.011834299
+// Generated: 2018-04-20 19:41:36.131091880
 // Copyright Tomas Zeman 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -504,6 +504,11 @@ constexpr const E* begin(std::initializer_list<E> il)
 return il.begin();
 }
 template <typename C>
+constexpr auto cbegin(const C& c) -> decltype(cx::begin(c))
+{
+return cx::begin(c);
+}
+template <typename C>
 constexpr auto end(const C& c) -> decltype(c.end())
 {
 return c.end();
@@ -522,6 +527,11 @@ template <typename E>
 constexpr const E* end(std::initializer_list<E> il)
 {
 return il.end();
+}
+template <typename C>
+constexpr auto cend(const C& c) -> decltype(cx::end(c))
+{
+return cx::end(c);
 }
 }
 #endif
@@ -553,8 +563,9 @@ namespace wildcards
 {
 template <typename SequenceIterator, typename PatternIterator,
 typename EqualTo = cx::equal_to<void>>
-constexpr bool match(SequenceIterator s, SequenceIterator send, PatternIterator p,
-PatternIterator pend, const cards<iterated_item_t<PatternIterator>>& c,
+constexpr bool match(
+SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
+const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
 const EqualTo& equal_to = EqualTo(), bool escape = false)
 {
 #if cfg_HAS_CONSTEXPR14
@@ -599,9 +610,14 @@ constexpr bool match(Sequence&& sequence, Pattern&& pattern,
 const cards<container_item_t<Pattern>>& c = cards<container_item_t<Pattern>>(),
 const EqualTo& equal_to = EqualTo())
 {
-return match(cx::begin(std::forward<Sequence>(sequence)),
-cx::end(std::forward<Sequence>(sequence)), cx::begin(std::forward<Pattern>(pattern)),
-cx::end(std::forward<Pattern>(pattern)), c, equal_to);
+return match(cx::cbegin(sequence), cx::cend(std::forward<Sequence>(sequence)),
+cx::cbegin(pattern), cx::cend(std::forward<Pattern>(pattern)), c, equal_to);
+}
+template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>>
+constexpr bool match(Sequence&& sequence, Pattern&& pattern, const EqualTo& equal_to)
+{
+return match(std::forward<Sequence>(sequence), std::forward<Pattern>(pattern),
+cards<container_item_t<Pattern>>(), equal_to);
 }
 }
 #endif

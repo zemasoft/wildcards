@@ -1,5 +1,5 @@
 // THIS FILE HAS BEEN GENERATED AUTOMATICALLY. DO NOT EDIT DIRECTLY.
-// Generated: 2018-04-20 11:43:25.912348425
+// Generated: 2018-04-20 19:41:35.120174912
 // Copyright Tomas Zeman 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -399,6 +399,11 @@ constexpr const E* begin(std::initializer_list<E> il)
 return il.begin();
 }
 template <typename C>
+constexpr auto cbegin(const C& c) -> decltype(cx::begin(c))
+{
+return cx::begin(c);
+}
+template <typename C>
 constexpr auto end(const C& c) -> decltype(c.end())
 {
 return c.end();
@@ -417,6 +422,11 @@ template <typename E>
 constexpr const E* end(std::initializer_list<E> il)
 {
 return il.end();
+}
+template <typename C>
+constexpr auto cend(const C& c) -> decltype(cx::end(c))
+{
+return cx::end(c);
 }
 }
 #endif
@@ -465,6 +475,10 @@ cfg_constexpr14 T* begin()
 {
 return &data[0];
 }
+constexpr const T* cbegin() const
+{
+return begin();
+}
 constexpr const T* end() const
 {
 return &data[N];
@@ -472,6 +486,10 @@ return &data[N];
 cfg_constexpr14 T* end()
 {
 return &data[N];
+}
+constexpr const T* cend() const
+{
+return end();
 }
 constexpr const T& operator[](std::size_t pos) const
 {
@@ -593,9 +611,17 @@ constexpr const T* begin() const
 {
 return data_;
 }
+constexpr const T* cbegin() const
+{
+return begin();
+}
 constexpr const T* end() const
 {
 return data_ + size_;
+}
+constexpr const T* cend() const
+{
+return end();
 }
 private:
 const T* data_{nullptr};
