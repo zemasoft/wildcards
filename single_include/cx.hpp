@@ -1,5 +1,5 @@
 // THIS FILE HAS BEEN GENERATED AUTOMATICALLY. DO NOT EDIT DIRECTLY.
-// Generated: 2018-04-20 19:41:35.120174912
+// Generated: 2018-04-23 18:35:25.466715844
 // Copyright Tomas Zeman 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -7,7 +7,7 @@
 #ifndef CX_HPP
 #define CX_HPP 
 #define CX_VERSION_MAJOR 0
-#define CX_VERSION_MINOR 1
+#define CX_VERSION_MINOR 2
 #define CX_VERSION_PATCH 0
 #ifndef CX_ALGORITHM_HPP
 #define CX_ALGORITHM_HPP 
