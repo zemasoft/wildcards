@@ -9,8 +9,7 @@
 Introduction
 ============
 
-Wildcards is a simple C++ library which implements string matching using
-wildcards.
+Wildcards is a simple C++ library which implements matching using wildcards.
 
 Requirements
 ============
