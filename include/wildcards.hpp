@@ -7,7 +7,7 @@
 #define WILDCARDS_HPP
 
 #define WILDCARDS_VERSION_MAJOR 0
-#define WILDCARDS_VERSION_MINOR 1
+#define WILDCARDS_VERSION_MINOR 2
 #define WILDCARDS_VERSION_PATCH 0
 
 #include "wildcards/cards.hpp"
