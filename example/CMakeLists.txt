@@ -23,8 +23,7 @@ macro(add_example target file_name)
                                              -Wpedantic
                                              -Wconversion
                                              -Wsign-conversion
-                                             -Wsign-promo -Wdouble-promotion
-                                             $<$<CONFIG:Release>:-s>)
+                                             -Wsign-promo -Wdouble-promotion)
 
     if(WILDCARDS_ENABLE_WERROR)
       target_compile_options(${target} PRIVATE -Werror)
