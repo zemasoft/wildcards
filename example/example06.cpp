@@ -18,8 +18,7 @@ enum class nucleobase
   adenine,
   cytosine,
   guanine,
-  thymine,
-  uracil
+  thymine
 };
 
 nucleobase to_base(int n)
@@ -34,8 +33,6 @@ nucleobase to_base(int n)
       return nucleobase::guanine;
     case 3:
       return nucleobase::thymine;
-    case 4:
-      return nucleobase::uracil;
   }
 
   throw std::out_of_range("Input out of range");
@@ -53,8 +50,6 @@ char to_char(nucleobase base)
       return 'G';
     case nucleobase::thymine:
       return 'T';
-    case nucleobase::uracil:
-      return 'U';
   }
 
   throw std::out_of_range("Input out of range");
@@ -88,7 +83,7 @@ int main(int argc, char** argv)
 
   auto generator = std::default_random_engine{};
   auto n_distribution = std::normal_distribution<double>{5.0, 2.0};
-  auto u_distribution = std::uniform_int_distribution<int>{0, 4};
+  auto u_distribution = std::uniform_int_distribution<int>{0, 3};
 
   auto count = 0;
   auto found = 0;
