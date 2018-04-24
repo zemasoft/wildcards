@@ -38,7 +38,7 @@ nucleobase to_base(int n)
       return nucleobase::uracil;
   }
 
-  throw std::runtime_error("bleee");
+  throw std::out_of_range("Input out of range");
 }
 
 char to_char(nucleobase base)
@@ -57,7 +57,7 @@ char to_char(nucleobase base)
       return 'U';
   }
 
-  throw std::runtime_error("bleee");
+  throw std::out_of_range("Input out of range");
 }
 
 std::ostream& operator<<(std::ostream& o, const std::vector<nucleobase>& sequence)
@@ -69,14 +69,6 @@ std::ostream& operator<<(std::ostream& o, const std::vector<nucleobase>& sequenc
 
   return o;
 }
-
-struct equal_to
-{
-  bool operator()(nucleobase base, char c) const
-  {
-    return to_char(base) == c;
-  }
-};
 
 int main(int argc, char** argv)
 {
@@ -99,22 +91,36 @@ int main(int argc, char** argv)
   auto u_distribution = std::uniform_int_distribution<int>{0, 4};
 
   auto count = 0;
-
+  auto found = 0;
   do
   {
-    auto sequence = std::vector<nucleobase>{};
+    auto length = n_distribution(generator);
+    if (length < 0.0 || length > 10.0)
+    {
+      continue;
+    }
 
-    for (int n = 0; n < static_cast<int>(std::round(n_distribution(generator))); ++n)
+    auto size = static_cast<std::vector<nucleobase>::size_type>(std::round(length));
+
+    auto sequence = std::vector<nucleobase>{};
+    sequence.reserve(size);
+    for (decltype(size) n = 0; n < size; ++n)
     {
       sequence.push_back(to_base(u_distribution(generator)));
     }
 
-    if (wildcards::match(sequence, pattern, equal_to()))
+    if (wildcards::match(sequence, pattern,
+                         [](nucleobase base, char c) { return to_char(base) == c; }))
     {
       std::cout << sequence << std::endl;
-      ++count;
+      ++found;
     }
-  } while (count < 10);
+
+    ++count;
+  } while (count < 1000000);
+
+  std::cout << "Generated : " << count << std::endl;
+  std::cout << "Found     : " << found << std::endl;
 
   return EXIT_SUCCESS;
 }
