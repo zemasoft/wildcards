@@ -18,7 +18,7 @@ struct valid_id_pattern<char>
 {
   constexpr static cx::string_view value()
   {
-    return "test_*";
+    return cx::string_view{"test_*"};
   }
 };
 
@@ -27,7 +27,7 @@ struct valid_id_pattern<char16_t>
 {
   constexpr static cx::u16string_view value()
   {
-    return u"test_*";
+    return cx::u16string_view{u"test_*"};
   }
 };
 
@@ -36,7 +36,7 @@ struct valid_id_pattern<char32_t>
 {
   constexpr static cx::u32string_view value()
   {
-    return U"test_*";
+    return cx::u32string_view{U"test_*"};
   }
 };
 
@@ -45,7 +45,7 @@ struct valid_id_pattern<wchar_t>
 {
   constexpr static cx::wstring_view value()
   {
-    return L"test_*";
+    return cx::wstring_view{L"test_*"};
   }
 };
 
