@@ -9,10 +9,10 @@ add_executable(selftest src/cx/array_test.cpp
 target_include_directories(selftest PRIVATE ../include include)
 
 if(WILDCARDS_USE_CXX_17)
-  message(STATUS "Enabling C++17 for tests")
+  message(STATUS "Enabling C++17 for selftest")
   set_target_properties(selftest PROPERTIES CXX_STANDARD 17)
 elseif(WILDCARDS_USE_CXX_14)
-  message(STATUS "Enabling C++14 for tests")
+  message(STATUS "Enabling C++14 for selftest")
   set_target_properties(selftest PROPERTIES CXX_STANDARD 14)
 else()
   set_target_properties(selftest PROPERTIES CXX_STANDARD 11)
