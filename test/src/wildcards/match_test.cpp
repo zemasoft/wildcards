@@ -4,6 +4,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include "wildcards/match.hpp"  // wildcards::match
+#include "cx/array.hpp"         // cx::array
 #include "cx/string_view.hpp"   // cx::literals
 
 #include "catch.hpp"
@@ -230,5 +231,41 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     constexpr auto pattern = "H.llo,+W+!"_sv;
 
     static_assert(wildcards::match("Hallo, World!"_sv, pattern, {'+', '.', '\\'}), "");
+  }
+
+  SECTION(R"(match with "11*7?"_sv)")
+  {
+    struct equal_to
+    {
+      constexpr bool operator()(int n, char c) const
+      {
+        return n + 48 == c;
+      }
+    };
+
+    using namespace cx::literals;
+
+    constexpr auto pattern = "11*7?"_sv;
+
+    static_assert(wildcards::match(cx::array<int, 6>{1, 1, 3, 5, 7, 9}, pattern, equal_to()), "");
+  }
+
+  SECTION(R"(match with "11+7."_sv)")
+  {
+    struct equal_to
+    {
+      constexpr bool operator()(int n, char c) const
+      {
+        return n + 48 == c;
+      }
+    };
+
+    using namespace cx::literals;
+
+    constexpr auto pattern = "11+7."_sv;
+
+    static_assert(wildcards::match(cx::array<int, 6>{1, 1, 3, 5, 7, 9}, pattern, {'+', '.', '\\'},
+                                   equal_to()),
+                  "");
   }
 }
