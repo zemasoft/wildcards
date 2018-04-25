@@ -17,7 +17,7 @@ macro(add_example target file_name)
   set_target_properties(${target} PROPERTIES CXX_STANDARD_REQUIRED ON
                                              CXX_EXTENSIONS OFF)
 
-  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|AppleClang|Clang")
     target_compile_options(${target} PRIVATE -Wall
                                              -Wextra
                                              -Wpedantic
@@ -48,9 +48,9 @@ if(WILDCARDS_USE_CXX_17)
   add_example(example05 example05.cpp)
   if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     target_link_libraries(example05 stdc++fs)
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_link_libraries(example05 c++experimental)
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   endif()
 endif()

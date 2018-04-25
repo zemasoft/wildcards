@@ -21,7 +21,7 @@ endif()
 set_target_properties(selftest PROPERTIES CXX_STANDARD_REQUIRED ON
                                           CXX_EXTENSIONS OFF)
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|AppleClang|Clang")
   target_compile_options(selftest PRIVATE -Wall
                                           -Wextra
                                           -Wpedantic
