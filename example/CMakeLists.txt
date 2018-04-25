@@ -48,8 +48,6 @@ if(WILDCARDS_USE_CXX_17 AND NOT CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
   add_example(example05 example05.cpp)
   if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     target_link_libraries(example05 stdc++fs)
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
-    # maybe in a future version of AppleClang
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_link_libraries(example05 c++experimental)
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
