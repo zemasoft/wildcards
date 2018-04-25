@@ -87,6 +87,18 @@ def main():
            The path may be either absolute or relative to the current directory.
         """
     )
+    parser.add_argument('compiler', type=str, help=
+        """The compiler.
+        """
+    )
+    parser.add_argument('options', type=str, help=
+        """Options for the compiler.
+        """
+    )
+    parser.add_argument('raw_options', type=str, help=
+        """Raw options for the compiler.
+        """
+    )
     args = parser.parse_args()
     directory = os.path.abspath(args.directory)
     if not os.path.exists(directory):
@@ -102,10 +114,10 @@ def main():
             'file': os.path.relpath(header, directory),
             'code': strip_comments(open(header).read())
         } for header in headers(directory)],
-        'options': 'c++11',
-        'compiler': 'gcc-head',
+        'options': args.options,
+        'compiler': args.compiler,
         'save': True,
-        'compiler-option-raw': '-Wall\n-Wextra'
+        'compiler-option-raw': args.raw_options
     })
 
     if 'status' in response and response['status'] == '0':
