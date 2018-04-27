@@ -13,6 +13,10 @@
 #include "cx/string_view.hpp"
 #include "wildcards/match.hpp"
 
+#ifndef __DJGPP__
+using std::round;
+#endif
+
 enum class nucleobase
 {
   adenine,
@@ -95,7 +99,7 @@ int main(int argc, char** argv)
       continue;
     }
 
-    auto size = static_cast<std::vector<nucleobase>::size_type>(std::round(length));
+    auto size = static_cast<std::vector<nucleobase>::size_type>(round(length));
 
     auto sequence = std::vector<nucleobase>{};
     sequence.reserve(size);
