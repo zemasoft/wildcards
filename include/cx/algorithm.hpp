@@ -6,8 +6,7 @@
 #ifndef CX_ALGORITHM_HPP
 #define CX_ALGORITHM_HPP
 
-#include "config.hpp"       // cfg_HAS_CONSTEXPR14
-#include "cx/iterator.hpp"  // cx::next
+#include "config.hpp"  // cfg_HAS_CONSTEXPR14
 
 namespace cx
 {
@@ -27,7 +26,7 @@ constexpr bool equal(Iterator1 first1, Iterator1 last1, Iterator2 first2, Iterat
 #else  // !cfg_HAS_CONSTEXPR14
 
   return first1 != last1 && first2 != last2 && *first1 == *first2
-             ? equal(next(first1), last1, next(first2), last2)
+             ? equal(first1 + 1, last1, first2 + 1, last2)
              : first1 == last1 && first2 == last2;
 
 #endif  // cfg_HAS_CONSTEXPR14

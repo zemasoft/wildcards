@@ -247,7 +247,11 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 
     constexpr auto pattern = "11*7?"_sv;
 
+#if !defined(_MSC_VER) || _MSC_VER > 1900  // VS2015
     static_assert(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern, equal_to()), "");
+#else
+    REQUIRE(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern, equal_to()));
+#endif
   }
 
   SECTION(R"(match with "11+7."_sv)")
@@ -264,8 +268,13 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 
     constexpr auto pattern = "11+7."_sv;
 
+#if !defined(_MSC_VER) || _MSC_VER > 1900  // VS2015
     static_assert(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern, {'+', '.', '\\'},
                                    equal_to()),
                   "");
+#else
+    REQUIRE(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern, {'+', '.', '\\'},
+                             equal_to()));
+#endif
   }
 }
