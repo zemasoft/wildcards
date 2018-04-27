@@ -15,14 +15,14 @@ TEST_CASE("cx::array<int, 0> is compliant", "[cx::array]")
 
   static_assert(a1.empty(), "");
 
-#if !defined(_MSC_VER) || _MSC_VER > 1900  // VS2015
+#if !defined(_MSC_VER) || _MSC_VER > 1900  // !VS2015
   static_assert(a1.begin() == a1.end(), "");
 #endif
 
-#if !defined(_MSC_VER) || _MSC_VER > 1900  // VS2015
-  static_assert(cx::array<int, 0>{} == cx::array<int, 0>{}, "");
-#else
+#if defined(_MSC_VER) && _MSC_VER <= 1900  // VS2015
   REQUIRE(cx::array<int, 0>{} == cx::array<int, 0>{});
+#else
+  static_assert(cx::array<int, 0>{} == cx::array<int, 0>{}, "");
 #endif
 }
 
@@ -46,12 +46,12 @@ TEST_CASE("cx::array<int, 1> is compliant", "[cx::array]")
 
   static_assert(cx::get<0>(a2) == 10, "");
 
-#if !defined(_MSC_VER) || _MSC_VER > 1900  // VS2015
-  static_assert(cx::array<int, 1>{{10}} == cx::array<int, 1>{{10}}, "");
-  static_assert(cx::array<int, 1>{{10}} != cx::array<int, 1>{{20}}, "");
-#else
+#if defined(_MSC_VER) && _MSC_VER <= 1900  // VS2015
   REQUIRE(cx::array<int, 1>{{10}} == cx::array<int, 1>{{10}});
   REQUIRE(cx::array<int, 1>{{10}} != cx::array<int, 1>{{20}});
+#else
+  static_assert(cx::array<int, 1>{{10}} == cx::array<int, 1>{{10}}, "");
+  static_assert(cx::array<int, 1>{{10}} != cx::array<int, 1>{{20}}, "");
 #endif
 }
 
@@ -85,11 +85,11 @@ TEST_CASE("cx::array<int, 2> is compliant", "[cx::array]")
   static_assert(cx::get<0>(a3) == 10, "");
   static_assert(cx::get<1>(a3) == 20, "");
 
-#if !defined(_MSC_VER) || _MSC_VER > 1900  // VS2015
-  static_assert(cx::array<int, 2>{{10, 20}} == cx::array<int, 2>{{10, 20}}, "");
-  static_assert(cx::array<int, 2>{{10, 20}} != cx::array<int, 2>{{20, 10}}, "");
-#else
+#if defined(_MSC_VER) && _MSC_VER <= 1900  // VS2015
   REQUIRE(cx::array<int, 2>{{10, 20}} == cx::array<int, 2>{{10, 20}});
   REQUIRE(cx::array<int, 2>{{10, 20}} != cx::array<int, 2>{{20, 10}});
+#else
+  static_assert(cx::array<int, 2>{{10, 20}} == cx::array<int, 2>{{10, 20}}, "");
+  static_assert(cx::array<int, 2>{{10, 20}} != cx::array<int, 2>{{20, 10}}, "");
 #endif
 }

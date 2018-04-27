@@ -10,15 +10,26 @@
 #ifdef __has_include
 # if __has_include(<filesystem>)
 #   include <filesystem>
-    namespace fs = std::filesystem;
+#   if defined(_MSC_VER)
+namespace fs = std::experimental::filesystem::v1;
+#   else
+namespace fs = std::filesystem;
+#   endif
 # elif __has_include(<experimental/filesystem>)
 #   include <experimental/filesystem>
-    namespace fs = std::experimental::filesystem;
+namespace fs = std::experimental::filesystem;
 # elif __has_include(<boost/filesystem.hpp>)
 #   include <boost/filesystem.hpp>
-    namespace fs = boost::filesystem;
+namespace fs = boost::filesystem;
 # else
 #   error "Missing <filesystem>"
+# endif
+#else
+# if defined(_MSC_VER)
+#   include <filesystem>
+namespace fs = std::experimental::filesystem::v1;
+# else
+#   error "Missing __has_include"
 # endif
 #endif
 // clang-format on
