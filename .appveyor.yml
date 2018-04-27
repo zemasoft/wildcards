@@ -41,11 +41,21 @@ install:
 
 before_build:
   - cd %APPVEYOR_BUILD_FOLDER%
-  - cmake . -Bbuild -G "%GENERATOR%" -DWILDCARDS_BUILD_EXAMPLES=ON
+  - cmake . -Bbuild11 -G "%GENERATOR%" -DWILDCARDS_BUILD_EXAMPLES=ON
+  - cmake . -Bbuild14 -G "%GENERATOR%" -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_USE_CXX_14=ON
+  - cmake . -Bbuild17 -G "%GENERATOR%" -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_USE_CXX_17=ON
 
 build_script:
-  - cmake --build build --config %CONFIGURATION% -- /m /v:minimal
+  - cmake --build build11 --config %CONFIGURATION% -- /m /v:minimal
+  - cmake --build build14 --config %CONFIGURATION% -- /m /v:minimal
+  - cmake --build build17 --config %CONFIGURATION% -- /m /v:minimal
 
 test_script:
-  - cd build
+  - cd build11
+  - ctest --output-on-failure --build-config %CONFIGURATION%
+  - cd ..
+  - cd build14
+  - ctest --output-on-failure --build-config %CONFIGURATION%
+  - cd ..
+  - cd build17
   - ctest --output-on-failure --build-config %CONFIGURATION%
