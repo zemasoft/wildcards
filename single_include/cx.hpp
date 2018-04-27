@@ -1,13 +1,13 @@
 // THIS FILE HAS BEEN GENERATED AUTOMATICALLY. DO NOT EDIT DIRECTLY.
-// Generated: 2018-04-23 18:35:25.466715844
+// Generated: 2018-04-27 20:08:52.300450472
 // Copyright Tomas Zeman 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #ifndef CX_HPP
 #define CX_HPP 
-#define CX_VERSION_MAJOR 0
-#define CX_VERSION_MINOR 2
+#define CX_VERSION_MAJOR 1
+#define CX_VERSION_MINOR 0
 #define CX_VERSION_PATCH 0
 #ifndef CX_ALGORITHM_HPP
 #define CX_ALGORITHM_HPP 
@@ -337,99 +337,6 @@
 #define cfg_constexpr14 
 #endif
 #endif
-#ifndef CX_ITERATOR_HPP
-#define CX_ITERATOR_HPP 
-#include <cstddef>
-#include <initializer_list>
-namespace cx
-{
-template <typename It>
-constexpr It next(It it)
-{
-return it + 1;
-}
-template <typename It>
-constexpr It prev(It it)
-{
-return it - 1;
-}
-template <typename C>
-constexpr auto size(const C& c) -> decltype(c.size())
-{
-return c.size();
-}
-template <typename T, std::size_t N>
-constexpr std::size_t size(const T (&)[N])
-{
-return N;
-}
-template <typename C>
-constexpr auto empty(const C& c) -> decltype(c.empty())
-{
-return c.empty();
-}
-template <typename T, std::size_t N>
-constexpr bool empty(const T (&)[N])
-{
-return false;
-}
-template <typename E>
-constexpr bool empty(std::initializer_list<E> il)
-{
-return il.size() == 0;
-}
-template <typename C>
-constexpr auto begin(const C& c) -> decltype(c.begin())
-{
-return c.begin();
-}
-template <typename C>
-constexpr auto begin(C& c) -> decltype(c.begin())
-{
-return c.begin();
-}
-template <typename T, std::size_t N>
-constexpr T* begin(T (&array)[N])
-{
-return &array[0];
-}
-template <typename E>
-constexpr const E* begin(std::initializer_list<E> il)
-{
-return il.begin();
-}
-template <typename C>
-constexpr auto cbegin(const C& c) -> decltype(cx::begin(c))
-{
-return cx::begin(c);
-}
-template <typename C>
-constexpr auto end(const C& c) -> decltype(c.end())
-{
-return c.end();
-}
-template <typename C>
-constexpr auto end(C& c) -> decltype(c.end())
-{
-return c.end();
-}
-template <typename T, std::size_t N>
-constexpr T* end(T (&array)[N])
-{
-return &array[N];
-}
-template <typename E>
-constexpr const E* end(std::initializer_list<E> il)
-{
-return il.end();
-}
-template <typename C>
-constexpr auto cend(const C& c) -> decltype(cx::end(c))
-{
-return cx::end(c);
-}
-}
-#endif
 namespace cx
 {
 template <typename Iterator1, typename Iterator2>
@@ -443,7 +350,7 @@ while (first1 != last1 && first2 != last2 && *first1 == *first2)
 return first1 == last1 && first2 == last2;
 #else
 return first1 != last1 && first2 != last2 && *first1 == *first2
-? equal(next(first1), last1, next(first2), last2)
+? equal(first1 + 1, last1, first2 + 1, last2)
 : first1 == last1 && first2 == last2;
 #endif
 }
@@ -574,6 +481,99 @@ constexpr auto operator()(T&& lhs, U&& rhs) const
 return std::forward<T>(lhs) == std::forward<U>(rhs);
 }
 };
+}
+#endif
+#ifndef CX_ITERATOR_HPP
+#define CX_ITERATOR_HPP 
+#include <cstddef>
+#include <initializer_list>
+namespace cx
+{
+template <typename It>
+constexpr It next(It it)
+{
+return it + 1;
+}
+template <typename It>
+constexpr It prev(It it)
+{
+return it - 1;
+}
+template <typename C>
+constexpr auto size(const C& c) -> decltype(c.size())
+{
+return c.size();
+}
+template <typename T, std::size_t N>
+constexpr std::size_t size(const T (&)[N])
+{
+return N;
+}
+template <typename C>
+constexpr auto empty(const C& c) -> decltype(c.empty())
+{
+return c.empty();
+}
+template <typename T, std::size_t N>
+constexpr bool empty(const T (&)[N])
+{
+return false;
+}
+template <typename E>
+constexpr bool empty(std::initializer_list<E> il)
+{
+return il.size() == 0;
+}
+template <typename C>
+constexpr auto begin(const C& c) -> decltype(c.begin())
+{
+return c.begin();
+}
+template <typename C>
+constexpr auto begin(C& c) -> decltype(c.begin())
+{
+return c.begin();
+}
+template <typename T, std::size_t N>
+constexpr T* begin(T (&array)[N])
+{
+return &array[0];
+}
+template <typename E>
+constexpr const E* begin(std::initializer_list<E> il)
+{
+return il.begin();
+}
+template <typename C>
+constexpr auto cbegin(const C& c) -> decltype(cx::begin(c))
+{
+return cx::begin(c);
+}
+template <typename C>
+constexpr auto end(const C& c) -> decltype(c.end())
+{
+return c.end();
+}
+template <typename C>
+constexpr auto end(C& c) -> decltype(c.end())
+{
+return c.end();
+}
+template <typename T, std::size_t N>
+constexpr T* end(T (&array)[N])
+{
+return &array[N];
+}
+template <typename E>
+constexpr const E* end(std::initializer_list<E> il)
+{
+return il.end();
+}
+template <typename C>
+constexpr auto cend(const C& c) -> decltype(cx::end(c))
+{
+return cx::end(c);
+}
 }
 #endif
 #ifndef CX_STRING_VIEW_HPP
