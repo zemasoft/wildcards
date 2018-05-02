@@ -46,13 +46,13 @@ constexpr bool match(
     return match(s, send, cx::next(p), pend, c, equal_to, true);
   }
 
-  if (*p == c.asterisk)
+  if (*p == c.anything)
   {
     return match(s, send, cx::next(p), pend, c, equal_to) ||
            ((s != send) && match(cx::next(s), send, p, pend, c, equal_to));
   }
 
-  if (s != send && (*p == c.question_mark || equal_to(*s, *p)))
+  if (s != send && (*p == c.single || equal_to(*s, *p)))
   {
     return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
   }
@@ -68,10 +68,10 @@ constexpr bool match(
                          match(cx::next(s), send, cx::next(p), pend, c, equal_to)
                    : *p == c.escape
                          ? match(s, send, cx::next(p), pend, c, equal_to, true)
-                         : *p == c.asterisk
+                         : *p == c.anything
                                ? match(s, send, cx::next(p), pend, c, equal_to) ||
                                      ((s != send) && match(cx::next(s), send, p, pend, c, equal_to))
-                               : s != send && (*p == c.question_mark || equal_to(*s, *p)) &&
+                               : s != send && (*p == c.single || equal_to(*s, *p)) &&
                                      match(cx::next(s), send, cx::next(p), pend, c, equal_to);
 
 #endif  // cfg_HAS_CONSTEXPR14

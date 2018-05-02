@@ -14,13 +14,13 @@ namespace wildcards
 template <typename T>
 struct cards
 {
-  constexpr cards(T a, T q, T e)
-      : asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
+  constexpr cards(T a, T s, T e)
+      : anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}
   {
   }
 
-  T asterisk;
-  T question_mark;
+  T anything;
+  T single;
   T escape;
 };
 
@@ -31,13 +31,13 @@ struct cards<char>
   {
   }
 
-  constexpr cards(char a, char q, char e)
-      : asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
+  constexpr cards(char a, char s, char e)
+      : anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}
   {
   }
 
-  char asterisk{'*'};
-  char question_mark{'?'};
+  char anything{'*'};
+  char single{'?'};
   char escape{'\\'};
 };
 
@@ -48,13 +48,13 @@ struct cards<char16_t>
   {
   }
 
-  constexpr cards(char16_t a, char16_t q, char16_t e)
-      : asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
+  constexpr cards(char16_t a, char16_t s, char16_t e)
+      : anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}
   {
   }
 
-  char16_t asterisk{u'*'};
-  char16_t question_mark{u'?'};
+  char16_t anything{u'*'};
+  char16_t single{u'?'};
   char16_t escape{u'\\'};
 };
 
@@ -65,13 +65,13 @@ struct cards<char32_t>
   {
   }
 
-  constexpr cards(char32_t a, char32_t q, char32_t e)
-      : asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
+  constexpr cards(char32_t a, char32_t s, char32_t e)
+      : anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}
   {
   }
 
-  char32_t asterisk{U'*'};
-  char32_t question_mark{U'?'};
+  char32_t anything{U'*'};
+  char32_t single{U'?'};
   char32_t escape{U'\\'};
 };
 
@@ -82,13 +82,13 @@ struct cards<wchar_t>
   {
   }
 
-  constexpr cards(wchar_t a, wchar_t q, wchar_t e)
-      : asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
+  constexpr cards(wchar_t a, wchar_t s, wchar_t e)
+      : anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}
   {
   }
 
-  wchar_t asterisk{L'*'};
-  wchar_t question_mark{L'?'};
+  wchar_t anything{L'*'};
+  wchar_t single{L'?'};
   wchar_t escape{L'\\'};
 };
 
