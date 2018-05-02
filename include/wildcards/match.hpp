@@ -31,44 +31,48 @@ constexpr bool match(
     return s == send;
   }
 
-  if (!escape && *p == c.escape)
+  if (escape)
   {
-    return match(s, send, cx::next(p), pend, c, equal_to, true);
-  }
-
-  if (escape || *p != c.asterisk)
-  {
-    if (s == send)
+    if (s != send && equal_to(*s, *p))
     {
-      return false;
-    }
-
-    if ((!escape && *p == c.question_mark) || equal_to(*s, *p))
-    {
-      return match(cx::next(s), send, cx::next(p), pend, c, equal_to, false);
+      return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
     }
 
     return false;
   }
 
-  return match(s, send, cx::next(p), pend, c, equal_to, false) ||
-         ((s != send) && match(cx::next(s), send, p, pend, c, equal_to, false));
+  if (*p == c.escape)
+  {
+    return match(s, send, cx::next(p), pend, c, equal_to, true);
+  }
+
+  if (*p == c.asterisk)
+  {
+    return match(s, send, cx::next(p), pend, c, equal_to) ||
+           ((s != send) && match(cx::next(s), send, p, pend, c, equal_to));
+  }
+
+  if (s != send && (*p == c.question_mark || equal_to(*s, *p)))
+  {
+    return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+  }
+
+  return false;
 
 #else  // !cfg_HAS_CONSTEXPR14
 
   return p == pend
              ? s == send
-             : !escape && *p == c.escape
-                   ? match(s, send, cx::next(p), pend, c, equal_to, true)
-                   :
-
-                   escape || *p != c.asterisk
-                       ? s != send && ((!escape && *p == c.question_mark) || equal_to(*s, *p)) &&
-                             match(cx::next(s), send, cx::next(p), pend, c, equal_to, false)
-                       :
-
-                       match(s, send, cx::next(p), pend, c, equal_to, false) ||
-                           ((s != send) && match(cx::next(s), send, p, pend, c, equal_to, false));
+             : escape
+                   ? s != send && equal_to(*s, *p) &&
+                         match(cx::next(s), send, cx::next(p), pend, c, equal_to)
+                   : *p == c.escape
+                         ? match(s, send, cx::next(p), pend, c, equal_to, true)
+                         : *p == c.asterisk
+                               ? match(s, send, cx::next(p), pend, c, equal_to) ||
+                                     ((s != send) && match(cx::next(s), send, p, pend, c, equal_to))
+                               : s != send && (*p == c.question_mark || equal_to(*s, *p)) &&
+                                     match(cx::next(s), send, cx::next(p), pend, c, equal_to);
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
