@@ -181,11 +181,11 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(wildcards::match(L"Hallo, World!", pattern), "");
   }
 
-  SECTION(R"(match with "H.llo,+W+!")")
+  SECTION(R"(match with "H_llo,%W%!")")
   {
-    constexpr char pattern[] = "H.llo,+W+!";
+    constexpr char pattern[] = "H_llo,%W%!";
 
-    static_assert(wildcards::match("Hallo, World!", pattern, {'+', '.', '\\'}), "");
+    static_assert(wildcards::match("Hallo, World!", pattern, {'%', '_', '\\'}), "");
   }
 
   SECTION(R"(match with "H?llo,*W*!"_sv)")
@@ -224,13 +224,13 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(wildcards::match(L"Hallo, World!"_sv, pattern), "");
   }
 
-  SECTION(R"(match with "H.llo,+W+!"_sv)")
+  SECTION(R"(match with "H_llo,%W%!"_sv)")
   {
     using namespace cx::literals;
 
-    constexpr auto pattern = "H.llo,+W+!"_sv;
+    constexpr auto pattern = "H_llo,%W%!"_sv;
 
-    static_assert(wildcards::match("Hallo, World!"_sv, pattern, {'+', '.', '\\'}), "");
+    static_assert(wildcards::match("Hallo, World!"_sv, pattern, {'%', '_', '\\'}), "");
   }
 
   SECTION(R"(match with "11*7?"_sv)")
@@ -254,7 +254,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 #endif
   }
 
-  SECTION(R"(match with "11+7."_sv)")
+  SECTION(R"(match with "11%7_"_sv)")
   {
     struct equal_to
     {
@@ -266,13 +266,13 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 
     using namespace cx::literals;
 
-    constexpr auto pattern = "11+7."_sv;
+    constexpr auto pattern = "11%7_"_sv;
 
 #if defined(_MSC_VER) && _MSC_VER <= 1900  // VS2015
-    REQUIRE(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern, {'+', '.', '\\'},
+    REQUIRE(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern, {'%', '_', '\\'},
                              equal_to()));
 #else
-    static_assert(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern, {'+', '.', '\\'},
+    static_assert(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern, {'%', '_', '\\'},
                                    equal_to()),
                   "");
 #endif
