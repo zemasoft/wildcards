@@ -185,7 +185,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
   {
     constexpr char pattern[] = "H_llo,%W%!";
 
-    static_assert(wildcards::match("Hallo, World!", pattern, {'%', '_', '\\'}), "");
+    static_assert(wildcards::match("Hallo, World!", pattern, {'%', '_', '\\', '[', ']', '!'}), "");
   }
 
   SECTION(R"(match with "H?llo,*W*!"_sv)")
@@ -230,7 +230,8 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 
     constexpr auto pattern = "H_llo,%W%!"_sv;
 
-    static_assert(wildcards::match("Hallo, World!"_sv, pattern, {'%', '_', '\\'}), "");
+    static_assert(wildcards::match("Hallo, World!"_sv, pattern, {'%', '_', '\\', '[', ']', '!'}),
+                  "");
   }
 
   SECTION(R"(match with "11*7?"_sv)")
@@ -269,11 +270,11 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     constexpr auto pattern = "11%7_"_sv;
 
 #if defined(_MSC_VER) && _MSC_VER <= 1900  // VS2015
-    REQUIRE(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern, {'%', '_', '\\'},
-                             equal_to()));
+    REQUIRE(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern,
+                             {'%', '_', '\\', '[', ']', '!'}, equal_to()));
 #else
-    static_assert(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern, {'%', '_', '\\'},
-                                   equal_to()),
+    static_assert(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern,
+                                   {'%', '_', '\\', '[', ']', '!'}, equal_to()),
                   "");
 #endif
   }
