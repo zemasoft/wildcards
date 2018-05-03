@@ -6,7 +6,8 @@
 #ifndef WILDCARDS_MATCH_HPP
 #define WILDCARDS_MATCH_HPP
 
-#include <utility>  // std::forward
+#include <stdexcept>  // std::logic_error
+#include <utility>    // std::forward
 
 #include "config.hpp"             // cfg_HAS_CONSTEXPR14
 #include "cx/functional.hpp"      // cx::equal_to
@@ -63,13 +64,15 @@ constexpr bool is_enum(
       return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
 
     case is_enum_state::next_item:
-    default:
       if (*p == c.enum_close)
       {
         return true;
       }
 
       return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
+
+    default:
+      throw std::logic_error("Logic error");
   }
 
 #else  // !cfg_HAS_CONSTEXPR14
@@ -85,8 +88,10 @@ constexpr bool is_enum(
                                      : is_enum(cx::next(p), pend, c, is_enum_state::next_item)
                                : state == is_enum_state::first_item
                                      ? is_enum(cx::next(p), pend, c, is_enum_state::next_item)
-                                     : *p == c.enum_close ||
-                                           is_enum(cx::next(p), pend, c, is_enum_state::next_item));
+                                     : state == is_enum_state::next_item
+                                           ? *p == c.enum_close || is_enum(cx::next(p), pend, c,
+                                                                           is_enum_state::next_item)
+                                           : throw std::logic_error("Logic error"));
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
