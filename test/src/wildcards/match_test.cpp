@@ -5,9 +5,94 @@
 
 #include "wildcards/match.hpp"  // wildcards::match
 #include "cx/array.hpp"         // cx::array
+#include "cx/iterator.hpp"      // cx::begin, cx::end
 #include "cx/string_view.hpp"   // cx::literals
 
 #include "catch.hpp"
+
+TEST_CASE("wildcards::detail::is_enum() is compliant", "[wildcards::detail::is_enum]")
+{
+  SECTION("")
+  {
+    constexpr char pattern1[] = "[a]";
+    constexpr char pattern2[] = "[abc]";
+
+    constexpr char pattern3[] = "[]]";
+    constexpr char pattern4[] = "[]a]";
+    constexpr char pattern5[] = "[]abc]";
+    constexpr char pattern6[] = "[][]";
+    constexpr char pattern7[] = "[][a]";
+    constexpr char pattern8[] = "[][abc]";
+
+    constexpr char pattern9[] = "[[]";
+    constexpr char pattern10[] = "[[a]";
+    constexpr char pattern11[] = "[[abc]";
+
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern1), cx::end(pattern1)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern2), cx::end(pattern2)), "");
+
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern3), cx::end(pattern3)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern4), cx::end(pattern4)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern5), cx::end(pattern5)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern6), cx::end(pattern6)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern7), cx::end(pattern7)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern8), cx::end(pattern8)), "");
+
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern9), cx::end(pattern9)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern10), cx::end(pattern10)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern11), cx::end(pattern11)), "");
+  }
+
+  SECTION("")
+  {
+    constexpr char pattern1[] = "[!a]";
+    constexpr char pattern2[] = "[!abc]";
+
+    constexpr char pattern3[] = "[!]]";
+    constexpr char pattern4[] = "[!]a]";
+    constexpr char pattern5[] = "[!]abc]";
+    constexpr char pattern6[] = "[!][]";
+    constexpr char pattern7[] = "[!][a]";
+    constexpr char pattern8[] = "[!][abc]";
+
+    constexpr char pattern9[] = "[![]";
+    constexpr char pattern10[] = "[![a]";
+    constexpr char pattern11[] = "[![abc]";
+
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern1), cx::end(pattern1)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern2), cx::end(pattern2)), "");
+
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern3), cx::end(pattern3)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern4), cx::end(pattern4)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern5), cx::end(pattern5)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern6), cx::end(pattern6)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern7), cx::end(pattern7)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern8), cx::end(pattern8)), "");
+
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern9), cx::end(pattern9)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern10), cx::end(pattern10)), "");
+    static_assert(wildcards::detail::is_enum(cx::begin(pattern11), cx::end(pattern11)), "");
+  }
+
+  SECTION("")
+  {
+    constexpr char pattern1[] = "";
+    constexpr char pattern2[] = "a";
+    constexpr char pattern3[] = "[";
+    constexpr char pattern4[] = "[a";
+    constexpr char pattern5[] = "[]";
+    constexpr char pattern6[] = "[]a";
+    // constexpr char pattern7[] = "[a]]";
+
+    static_assert(!wildcards::detail::is_enum(cx::begin(pattern1), cx::end(pattern1)), "");
+    static_assert(!wildcards::detail::is_enum(cx::begin(pattern2), cx::end(pattern2)), "");
+    static_assert(!wildcards::detail::is_enum(cx::begin(pattern3), cx::end(pattern3)), "");
+    static_assert(!wildcards::detail::is_enum(cx::begin(pattern4), cx::end(pattern4)), "");
+    static_assert(!wildcards::detail::is_enum(cx::begin(pattern5), cx::end(pattern5)), "");
+    static_assert(!wildcards::detail::is_enum(cx::begin(pattern6), cx::end(pattern6)), "");
+    // static_assert(!wildcards::detail::is_enum(cx::begin(pattern7), cx::end(pattern7)), "");
+  }
+}
 
 TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 {

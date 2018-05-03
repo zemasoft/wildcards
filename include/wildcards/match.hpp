@@ -17,6 +17,83 @@
 namespace wildcards
 {
 
+namespace detail
+{
+
+enum class is_enum_state
+{
+  open,
+  exclusion_or_first_item,
+  first_item,
+  next_item
+};
+
+template <typename PatternIterator>
+constexpr bool is_enum(
+    PatternIterator p, PatternIterator pend,
+    const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
+    is_enum_state type = is_enum_state::open)
+{
+#if cfg_HAS_CONSTEXPR14
+
+  if (p == pend)
+  {
+    return false;
+  }
+
+  if (type == is_enum_state::open)
+  {
+    if (*p == c.enum_open)
+    {
+      return is_enum(cx::next(p), pend, c, is_enum_state::exclusion_or_first_item);
+    }
+
+    return false;
+  }
+
+  if (type == is_enum_state::exclusion_or_first_item)
+  {
+    if (*p == c.enum_exclusion)
+    {
+      return is_enum(cx::next(p), pend, c, is_enum_state::first_item);
+    }
+
+    return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
+  }
+
+  if (type == is_enum_state::first_item)
+  {
+    return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
+  }
+
+  if (*p == c.enum_close)
+  {
+    return true;
+  }
+
+  return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
+
+#else  // !cfg_HAS_CONSTEXPR14
+
+  return p != pend && (type == is_enum_state::open
+                           ? *p == c.enum_open && is_enum(cx::next(p), pend, c,
+                                                          is_enum_state::exclusion_or_first_item)
+                           :
+
+                           type == is_enum_state::exclusion_or_first_item
+                               ? *p == c.enum_exclusion
+                                     ? is_enum(cx::next(p), pend, c, is_enum_state::first_item)
+                                     : is_enum(cx::next(p), pend, c, is_enum_state::next_item)
+                               : type == is_enum_state::first_item
+                                     ? is_enum(cx::next(p), pend, c, is_enum_state::next_item)
+                                     : *p == c.enum_close ||
+                                           is_enum(cx::next(p), pend, c, is_enum_state::next_item));
+
+#endif  // cfg_HAS_CONSTEXPR14
+}
+
+}  // namespace detail
+
 template <typename SequenceIterator, typename PatternIterator,
           typename EqualTo = cx::equal_to<void>>
 constexpr bool match(
