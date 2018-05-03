@@ -32,7 +32,7 @@ template <typename PatternIterator>
 constexpr bool is_enum(
     PatternIterator p, PatternIterator pend,
     const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
-    is_enum_state type = is_enum_state::open)
+    is_enum_state state = is_enum_state::open)
 {
 #if cfg_HAS_CONSTEXPR14
 
@@ -41,7 +41,7 @@ constexpr bool is_enum(
     return false;
   }
 
-  if (type == is_enum_state::open)
+  if (state == is_enum_state::open)
   {
     if (*p == c.enum_open)
     {
@@ -51,7 +51,7 @@ constexpr bool is_enum(
     return false;
   }
 
-  if (type == is_enum_state::exclusion_or_first_item)
+  if (state == is_enum_state::exclusion_or_first_item)
   {
     if (*p == c.enum_exclusion)
     {
@@ -61,7 +61,7 @@ constexpr bool is_enum(
     return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
   }
 
-  if (type == is_enum_state::first_item)
+  if (state == is_enum_state::first_item)
   {
     return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
   }
@@ -75,16 +75,16 @@ constexpr bool is_enum(
 
 #else  // !cfg_HAS_CONSTEXPR14
 
-  return p != pend && (type == is_enum_state::open
+  return p != pend && (state == is_enum_state::open
                            ? *p == c.enum_open && is_enum(cx::next(p), pend, c,
                                                           is_enum_state::exclusion_or_first_item)
                            :
 
-                           type == is_enum_state::exclusion_or_first_item
+                           state == is_enum_state::exclusion_or_first_item
                                ? *p == c.enum_exclusion
                                      ? is_enum(cx::next(p), pend, c, is_enum_state::first_item)
                                      : is_enum(cx::next(p), pend, c, is_enum_state::next_item)
-                               : type == is_enum_state::first_item
+                               : state == is_enum_state::first_item
                                      ? is_enum(cx::next(p), pend, c, is_enum_state::next_item)
                                      : *p == c.enum_close ||
                                            is_enum(cx::next(p), pend, c, is_enum_state::next_item));
