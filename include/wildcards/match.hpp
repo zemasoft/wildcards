@@ -41,37 +41,36 @@ constexpr bool is_enum(
     return false;
   }
 
-  if (state == is_enum_state::open)
+  switch (state)
   {
-    if (*p == c.enum_open)
-    {
-      return is_enum(cx::next(p), pend, c, is_enum_state::exclusion_or_first_item);
-    }
+    case is_enum_state::open:
+      if (*p == c.enum_open)
+      {
+        return is_enum(cx::next(p), pend, c, is_enum_state::exclusion_or_first_item);
+      }
 
-    return false;
+      return false;
+
+    case is_enum_state::exclusion_or_first_item:
+      if (*p == c.enum_exclusion)
+      {
+        return is_enum(cx::next(p), pend, c, is_enum_state::first_item);
+      }
+
+      return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
+
+    case is_enum_state::first_item:
+      return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
+
+    case is_enum_state::next_item:
+    default:
+      if (*p == c.enum_close)
+      {
+        return true;
+      }
+
+      return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
   }
-
-  if (state == is_enum_state::exclusion_or_first_item)
-  {
-    if (*p == c.enum_exclusion)
-    {
-      return is_enum(cx::next(p), pend, c, is_enum_state::first_item);
-    }
-
-    return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
-  }
-
-  if (state == is_enum_state::first_item)
-  {
-    return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
-  }
-
-  if (*p == c.enum_close)
-  {
-    return true;
-  }
-
-  return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
 
 #else  // !cfg_HAS_CONSTEXPR14
 
