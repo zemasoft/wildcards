@@ -7,16 +7,21 @@
 
 int main()
 {
-  constexpr char pattern[] = "Hallo,* World?";
+  constexpr char pattern[] = "H?llo,* World[.!?]";
 
+  static_assert(wildcards::match("Hello, World!", pattern), "");
   static_assert(wildcards::match("Hallo, World!", pattern), "");
-  static_assert(wildcards::match("Hallo, World?", pattern), "");
-  static_assert(wildcards::match("Hallo, dear World!", pattern), "");
+  static_assert(wildcards::match("Hello, big World!", pattern), "");
+  static_assert(wildcards::match("Hello, World.", pattern), "");
+  static_assert(wildcards::match("Hello, World?", pattern), "");
 
-  static_assert(!wildcards::match("Hallo World!", pattern), "");
-  static_assert(!wildcards::match("Hallo,World!", pattern), "");
-  static_assert(!wildcards::match("Hallo, world!", pattern), "");
-  static_assert(!wildcards::match("Hallo, World", pattern), "");
+  static_assert(!wildcards::match("Hllo World!", pattern), "");
+  static_assert(!wildcards::match("Hello World!", pattern), "");
+  static_assert(!wildcards::match("Hello,World!", pattern), "");
+  static_assert(!wildcards::match("Hello, world!", pattern), "");
+  static_assert(!wildcards::match("Hello, World", pattern), "");
+  static_assert(!wildcards::match("Hello, World;", pattern), "");
+  static_assert(!wildcards::match("Hello, World!!", pattern), "");
 
   return 0;
 }

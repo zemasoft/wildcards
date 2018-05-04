@@ -18,7 +18,7 @@ struct valid_id_pattern<char>
 {
   constexpr static cx::string_view value()
   {
-    return cx::string_view{"test_*"};
+    return cx::string_view{"[Tt]est_*"};
   }
 };
 
@@ -27,7 +27,7 @@ struct valid_id_pattern<char16_t>
 {
   constexpr static cx::u16string_view value()
   {
-    return cx::u16string_view{u"test_*"};
+    return cx::u16string_view{u"[Tt]est_*"};
   }
 };
 
@@ -36,7 +36,7 @@ struct valid_id_pattern<char32_t>
 {
   constexpr static cx::u32string_view value()
   {
-    return cx::u32string_view{U"test_*"};
+    return cx::u32string_view{U"[Tt]est_*"};
   }
 };
 
@@ -45,7 +45,7 @@ struct valid_id_pattern<wchar_t>
 {
   constexpr static cx::wstring_view value()
   {
-    return cx::wstring_view{L"test_*"};
+    return cx::wstring_view{L"[Tt]est_*"};
   }
 };
 
@@ -123,10 +123,10 @@ int main()
     constexpr auto id1 = valid_id("test_something");
     std::cout << "Valid ID: " << id1 << std::endl;
 
-    constexpr auto id2 = "test_something_else"_valid_id;
+    constexpr auto id2 = "Test_something_else"_valid_id;
     std::cout << "Valid ID: " << id2 << std::endl;
 
-    // constexpr auto id3 = "Test_something_different"_valid_id;  // compile time error
+    // constexpr auto id3 = "tst_something_different"_valid_id;  // compile time error
     // std::cout << "Valid ID: " << id3 << std::endl;
   }
 
@@ -136,10 +136,10 @@ int main()
     auto id1 = valid_id("test_something");
     std::cout << "Valid ID: " << id1 << std::endl;
 
-    auto id2 = "test_something_else"_valid_id;
+    auto id2 = "Test_something_else"_valid_id;
     std::cout << "Valid ID: " << id2 << std::endl;
 
-    auto id3 = "Test_something_different"_valid_id;  // runtime error
+    auto id3 = "tst_something_different"_valid_id;  // runtime error
     std::cout << "Valid ID: " << id3 << std::endl;
   }
   catch (const std::exception& e)

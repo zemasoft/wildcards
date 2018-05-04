@@ -41,21 +41,27 @@ int main()
 {
   // compile time
   {
-    constexpr auto id1 = valid_id("test_something", "test_*");
+    constexpr auto id1 = valid_id("test_something", "[Tt]est_*");
     std::cout << "Valid ID: " << id1 << std::endl;
 
-    // constexpr auto id2 = valid_id("test_something_else", "Test_*");  // compile time error
-    // std::cout << "Valid ID: " << id2 << std::endl;
+    constexpr auto id2 = valid_id("Test_something_else", "[Tt]est_*");
+    std::cout << "Valid ID: " << id2 << std::endl;
+
+    // constexpr auto id3 = valid_id("tst_something_different", "[Tt]est_*");  // compile time error
+    // std::cout << "Valid ID: " << id3 << std::endl;
   }
 
   // runtime
   try
   {
-    auto id1 = valid_id("test_something", "test_*");
+    auto id1 = valid_id("test_something", "[Tt]est_*");
     std::cout << "Valid ID: " << id1 << std::endl;
 
-    auto id2 = valid_id("test_something_else", "Test_*");  // runtime error
+    auto id2 = valid_id("Test_something_else", "[Tt]est_*");
     std::cout << "Valid ID: " << id2 << std::endl;
+
+    auto id3 = valid_id("tst_something_different", "[Tt]est_*");  // runtime error
+    std::cout << "Valid ID: " << id3 << std::endl;
   }
   catch (const std::exception& e)
   {
