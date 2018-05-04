@@ -6,7 +6,7 @@
 #ifndef WILDCARDS_MATCH_HPP
 #define WILDCARDS_MATCH_HPP
 
-#include <stdexcept>  // std::logic_error
+#include <stdexcept>  // std::invalid_argument, std::logic_error
 #include <utility>    // std::forward
 
 #include "config.hpp"             // cfg_HAS_CONSTEXPR14
@@ -98,6 +98,127 @@ constexpr bool is_enum(
                                                                            is_enum_state::next_item)
                                            : throw std::logic_error("Logic error"));
 
+#endif  // cfg_HAS_CONSTEXPR14
+}
+
+constexpr bool throw_invalid_argument(const char* what_arg)
+{
+  return what_arg == nullptr ? false : throw std::invalid_argument(what_arg);
+}
+
+enum class match_enum_state
+{
+  open,
+  exclusion_or_first_in_item,
+  first_out_item,
+  skip_next_in_item,
+  next_in_item,
+  next_out_item
+};
+
+template <typename SequenceIterator, typename PatternIterator,
+          typename EqualTo = cx::equal_to<void>>
+constexpr bool match_enum(
+    SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
+    const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
+    const EqualTo& equal_to = EqualTo(), match_enum_state state = match_enum_state::open)
+{
+#if cfg_HAS_CONSTEXPR14
+
+  if (p == pend)
+  {
+    return throw_invalid_argument("Not an enum");
+  }
+
+  switch (state)
+  {
+    case match_enum_state::open:
+      if (*p == c.enum_open)
+      {
+        return match_enum(s, send, cx::next(p), pend, c, equal_to,
+                          match_enum_state::exclusion_or_first_in_item);
+      }
+
+      return throw_invalid_argument("Not an enum");
+
+    case match_enum_state::exclusion_or_first_in_item:
+      if (*p == c.enum_exclusion)
+      {
+        return match_enum(s, send, cx::next(p), pend, c, equal_to,
+                          match_enum_state::first_out_item);
+      }
+
+      if (s == send)
+      {
+        return false;
+      }
+
+      if (equal_to(*s, *p))
+      {
+        return match_enum(s, send, cx::next(p), pend, c, equal_to,
+                          match_enum_state::skip_next_in_item);
+      }
+
+      return match_enum(s, send, cx::next(p), pend, c, equal_to, match_enum_state::next_in_item);
+
+    case match_enum_state::first_out_item:
+      if (s == send || equal_to(*s, *p))
+      {
+        return false;
+      }
+
+      return match_enum(s, send, cx::next(p), pend, c, equal_to, match_enum_state::next_out_item);
+
+    case match_enum_state::skip_next_in_item:
+      if (*p == c.enum_close)
+      {
+        if (s == send)
+        {
+          return true;
+        }
+
+        return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+      }
+
+      return match_enum(s, send, cx::next(p), pend, c, equal_to, state);
+
+    case match_enum_state::next_in_item:
+      if (*p == c.enum_close || s == send)
+      {
+        return false;
+      }
+
+      if (equal_to(*s, *p))
+      {
+        return match_enum(s, send, cx::next(p), pend, c, equal_to,
+                          match_enum_state::skip_next_in_item);
+      }
+
+      return match_enum(s, send, cx::next(p), pend, c, equal_to, state);
+
+    case match_enum_state::next_out_item:
+      if (*p == c.enum_close)
+      {
+        if (s == send)
+        {
+          return true;
+        }
+
+        return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+      }
+
+      if (s == send || equal_to(*s, *p))
+      {
+        return false;
+      }
+
+      return match_enum(s, send, cx::next(p), pend, c, equal_to, state);
+
+    default:
+      return throw_logic_error("Logic error");
+  }
+
+#else   // !cfg_HAS_CONSTEXPR14
 #endif  // cfg_HAS_CONSTEXPR14
 }
 
