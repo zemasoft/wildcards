@@ -21,6 +21,11 @@ namespace wildcards
 namespace detail
 {
 
+constexpr bool throw_logic_error(const char* what_arg)
+{
+  return what_arg == nullptr ? false : throw std::logic_error(what_arg);
+}
+
 enum class is_enum_state
 {
   open,
@@ -72,7 +77,7 @@ constexpr bool is_enum(
       return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
 
     default:
-      throw std::logic_error("Logic error");
+      return throw_logic_error("Logic error");
   }
 
 #else  // !cfg_HAS_CONSTEXPR14
