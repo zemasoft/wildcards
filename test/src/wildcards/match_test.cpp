@@ -273,13 +273,15 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
 
 TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 {
+  using wildcards::match;
+
   SECTION("match with an empty pattern")
   {
     constexpr char pattern1[] = "";
     constexpr char pattern2[] = R"(\)";
 
-    static_assert(wildcards::match("", pattern1), "");
-    static_assert(wildcards::match("", pattern2), "");
+    static_assert(match("", pattern1), "");
+    static_assert(match("", pattern2), "");
 
     static_assert(!wildcards::match("Anything", pattern1), "");
     static_assert(!wildcards::match("Anything", pattern2), "");
@@ -291,9 +293,9 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     constexpr char pattern2[] = R"(A\)";
     constexpr char pattern3[] = R"(\A)";
 
-    static_assert(wildcards::match("A", pattern1), "");
-    static_assert(wildcards::match("A", pattern2), "");
-    static_assert(wildcards::match("A", pattern3), "");
+    static_assert(match("A", pattern1), "");
+    static_assert(match("A", pattern2), "");
+    static_assert(match("A", pattern3), "");
 
     static_assert(!wildcards::match("", pattern1), "");
     static_assert(!wildcards::match("", pattern2), "");
@@ -318,9 +320,9 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     constexpr char pattern2[] = R"(Hallo!\)";
     constexpr char pattern3[] = R"(\H\a\l\l\o\!)";
 
-    static_assert(wildcards::match("Hallo!", pattern1), "");
-    static_assert(wildcards::match("Hallo!", pattern2), "");
-    static_assert(wildcards::match("Hallo!", pattern3), "");
+    static_assert(match("Hallo!", pattern1), "");
+    static_assert(match("Hallo!", pattern2), "");
+    static_assert(match("Hallo!", pattern3), "");
 
     static_assert(!wildcards::match("", pattern1), "");
     static_assert(!wildcards::match("", pattern2), "");
@@ -349,16 +351,16 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     constexpr char pattern2[] = R"(*\)";
     constexpr char pattern3[] = R"(\*)";
 
-    static_assert(wildcards::match("", pattern1), "");
-    static_assert(wildcards::match("", pattern2), "");
+    static_assert(match("", pattern1), "");
+    static_assert(match("", pattern2), "");
     static_assert(!wildcards::match("", pattern3), "");
 
-    static_assert(wildcards::match("*", pattern1), "");
-    static_assert(wildcards::match("*", pattern2), "");
-    static_assert(wildcards::match("*", pattern3), "");
+    static_assert(match("*", pattern1), "");
+    static_assert(match("*", pattern2), "");
+    static_assert(match("*", pattern3), "");
 
-    static_assert(wildcards::match("Anything", pattern1), "");
-    static_assert(wildcards::match("Anything", pattern2), "");
+    static_assert(match("Anything", pattern1), "");
+    static_assert(match("Anything", pattern2), "");
     static_assert(!wildcards::match("Anything", pattern3), "");
   }
 
@@ -368,17 +370,17 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     constexpr char pattern2[] = R"(?\)";
     constexpr char pattern3[] = R"(\?)";
 
-    static_assert(wildcards::match("A", pattern1), "");
-    static_assert(wildcards::match("A", pattern2), "");
+    static_assert(match("A", pattern1), "");
+    static_assert(match("A", pattern2), "");
     static_assert(!wildcards::match("A", pattern3), "");
 
-    static_assert(wildcards::match("a", pattern1), "");
-    static_assert(wildcards::match("a", pattern2), "");
+    static_assert(match("a", pattern1), "");
+    static_assert(match("a", pattern2), "");
     static_assert(!wildcards::match("a", pattern3), "");
 
-    static_assert(wildcards::match("?", pattern1), "");
-    static_assert(wildcards::match("?", pattern2), "");
-    static_assert(wildcards::match("?", pattern3), "");
+    static_assert(match("?", pattern1), "");
+    static_assert(match("?", pattern2), "");
+    static_assert(match("?", pattern3), "");
 
     static_assert(!wildcards::match("", pattern1), "");
     static_assert(!wildcards::match("", pattern2), "");
@@ -393,12 +395,12 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
   {
     constexpr char pattern[] = "H?llo,*W*!";
 
-    static_assert(wildcards::match("Hallo, World!", pattern), "");
-    static_assert(wildcards::match("Hello, World!", pattern), "");
-    static_assert(wildcards::match("Hello,World!", pattern), "");
-    static_assert(wildcards::match("Hello,WildCards!", pattern), "");
-    static_assert(wildcards::match("Hello, crazy WildCards!", pattern), "");
-    static_assert(wildcards::match("Hello, crazy WildCards! Still working?!", pattern), "");
+    static_assert(match("Hallo, World!", pattern), "");
+    static_assert(match("Hello, World!", pattern), "");
+    static_assert(match("Hello,World!", pattern), "");
+    static_assert(match("Hello,WildCards!", pattern), "");
+    static_assert(match("Hello, crazy WildCards!", pattern), "");
+    static_assert(match("Hello, crazy WildCards! Still working?!", pattern), "");
 
     static_assert(!wildcards::match("", pattern), "");
     static_assert(!wildcards::match("Hllo, World!", pattern), "");
@@ -412,9 +414,9 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
   {
     constexpr char pattern[] = R"(\\\* *\? \*\\)";
 
-    static_assert(wildcards::match(R"(\* Hallo? *\)", pattern), "");
-    static_assert(wildcards::match(R"(\* Hi? *\)", pattern), "");
-    static_assert(wildcards::match(R"(\* ? *\)", pattern), "");
+    static_assert(match(R"(\* Hallo? *\)", pattern), "");
+    static_assert(match(R"(\* Hi? *\)", pattern), "");
+    static_assert(match(R"(\* ? *\)", pattern), "");
 
     static_assert(!wildcards::match(R"(\* Hallo! *\)", pattern), "");
     static_assert(!wildcards::match(R"(* Hallo? *\)", pattern), "");
@@ -426,28 +428,28 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
   {
     constexpr char16_t pattern[] = u"H?llo,*W*!";
 
-    static_assert(wildcards::match(u"Hallo, World!", pattern), "");
+    static_assert(match(u"Hallo, World!", pattern), "");
   }
 
   SECTION(R"(match with U"H?llo,*W*!")")
   {
     constexpr char32_t pattern[] = U"H?llo,*W*!";
 
-    static_assert(wildcards::match(U"Hallo, World!", pattern), "");
+    static_assert(match(U"Hallo, World!", pattern), "");
   }
 
   SECTION(R"(match with L"H?llo,*W*!")")
   {
     constexpr wchar_t pattern[] = L"H?llo,*W*!";
 
-    static_assert(wildcards::match(L"Hallo, World!", pattern), "");
+    static_assert(match(L"Hallo, World!", pattern), "");
   }
 
   SECTION(R"(match with "H_llo,%W%!")")
   {
     constexpr char pattern[] = "H_llo,%W%!";
 
-    static_assert(wildcards::match("Hallo, World!", pattern, {'%', '_', '\\', '[', ']', '!'}), "");
+    static_assert(match("Hallo, World!", pattern, {'%', '_', '\\', '[', ']', '!'}), "");
   }
 
   SECTION(R"(match with "H?llo,*W*!"_sv)")
@@ -456,7 +458,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 
     constexpr auto pattern = "H?llo,*W*!"_sv;
 
-    static_assert(wildcards::match("Hallo, World!"_sv, pattern), "");
+    static_assert(match("Hallo, World!"_sv, pattern), "");
   }
 
   SECTION(R"(match with u"H?llo,*W*!"_sv)")
@@ -465,7 +467,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 
     constexpr auto pattern = u"H?llo,*W*!"_sv;
 
-    static_assert(wildcards::match(u"Hallo, World!"_sv, pattern), "");
+    static_assert(match(u"Hallo, World!"_sv, pattern), "");
   }
 
   SECTION(R"(match with U"H?llo,*W*!"_sv)")
@@ -474,7 +476,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 
     constexpr auto pattern = U"H?llo,*W*!"_sv;
 
-    static_assert(wildcards::match(U"Hallo, World!"_sv, pattern), "");
+    static_assert(match(U"Hallo, World!"_sv, pattern), "");
   }
 
   SECTION(R"(match with L"H?llo,*W*!"_sv)")
@@ -483,7 +485,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 
     constexpr auto pattern = L"H?llo,*W*!"_sv;
 
-    static_assert(wildcards::match(L"Hallo, World!"_sv, pattern), "");
+    static_assert(match(L"Hallo, World!"_sv, pattern), "");
   }
 
   SECTION(R"(match with "H_llo,%W%!"_sv)")
@@ -492,8 +494,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 
     constexpr auto pattern = "H_llo,%W%!"_sv;
 
-    static_assert(wildcards::match("Hallo, World!"_sv, pattern, {'%', '_', '\\', '[', ']', '!'}),
-                  "");
+    static_assert(match("Hallo, World!"_sv, pattern, {'%', '_', '\\', '[', ']', '!'}), "");
   }
 
   SECTION(R"(match with "11*7?"_sv)")
@@ -511,9 +512,9 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     constexpr auto pattern = "11*7?"_sv;
 
 #if defined(_MSC_VER) && _MSC_VER <= 1900  // VS2015
-    REQUIRE(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern, equal_to()));
+    REQUIRE(match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern, equal_to()));
 #else
-    static_assert(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern, equal_to()), "");
+    static_assert(match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern, equal_to()), "");
 #endif
   }
 
@@ -532,11 +533,11 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     constexpr auto pattern = "11%7_"_sv;
 
 #if defined(_MSC_VER) && _MSC_VER <= 1900  // VS2015
-    REQUIRE(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern,
-                             {'%', '_', '\\', '[', ']', '!'}, equal_to()));
+    REQUIRE(match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern, {'%', '_', '\\', '[', ']', '!'},
+                  equal_to()));
 #else
-    static_assert(wildcards::match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern,
-                                   {'%', '_', '\\', '[', ']', '!'}, equal_to()),
+    static_assert(match(cx::array<int, 6>{{1, 1, 3, 5, 7, 9}}, pattern,
+                        {'%', '_', '\\', '[', ']', '!'}, equal_to()),
                   "");
 #endif
   }
