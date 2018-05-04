@@ -236,23 +236,18 @@ constexpr bool match_enum(
                                           match_enum_state::first_out_item)
                              :
 
-                             s == send ? false :
+                             s != send && (equal_to(*s, *p)
+                                               ? match_enum(s, send, cx::next(p), pend, c, equal_to,
+                                                            match_enum_state::skip_next_in_item)
+                                               :
 
-                                       equal_to(*s, *p)
-                                           ? match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                        match_enum_state::skip_next_in_item)
-                                           :
-
-                                           match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                      match_enum_state::next_in_item)
+                                               match_enum(s, send, cx::next(p), pend, c, equal_to,
+                                                          match_enum_state::next_in_item))
 
                        :
 
                        state == match_enum_state::first_out_item
-                           ? s == send || equal_to(*s, *p)
-                                 ? false
-                                 :
-
+                           ? s != send && !equal_to(*s, *p) &&
                                  match_enum(s, send, cx::next(p), pend, c, equal_to,
                                             match_enum_state::next_out_item)
 
@@ -262,10 +257,7 @@ constexpr bool match_enum(
                                ? *p == c.enum_close
                                      ?
 
-                                     s == send
-                                         ? true
-                                         :
-
+                                     s == send ||
                                          match(cx::next(s), send, cx::next(p), pend, c, equal_to)
                                      :
 
@@ -274,19 +266,16 @@ constexpr bool match_enum(
                                :
 
                                state == match_enum_state::next_in_item
-                                   ? *p == c.enum_close || s == send
-                                         ? false
-                                         :
+                                   ? *p != c.enum_close && s != send &&
+                                         (equal_to(*s, *p)
+                                              ?
 
-                                         equal_to(*s, *p)
-                                             ?
+                                              match_enum(s, send, cx::next(p), pend, c, equal_to,
+                                                         match_enum_state::skip_next_in_item)
+                                              :
 
-                                             match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                        match_enum_state::skip_next_in_item)
-                                             :
-
-                                             match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                        state)
+                                              match_enum(s, send, cx::next(p), pend, c, equal_to,
+                                                         state))
 
                                    :
 
@@ -294,21 +283,11 @@ constexpr bool match_enum(
                                        ? *p == c.enum_close
                                              ?
 
-                                             s == send ?
-
-                                                       true
-                                                       :
-
-                                                       match(cx::next(s), send, cx::next(p), pend,
-                                                             c, equal_to)
+                                             s == send || match(cx::next(s), send, cx::next(p),
+                                                                pend, c, equal_to)
                                              :
 
-                                             s == send || equal_to(*s, *p)
-                                                 ?
-
-                                                 false
-                                                 :
-
+                                             s != send && !equal_to(*s, *p) &&
                                                  match_enum(s, send, cx::next(p), pend, c, equal_to,
                                                             state)
 
