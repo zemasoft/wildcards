@@ -541,4 +541,18 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
                   "");
 #endif
   }
+
+  SECTION("")
+  {
+    static_assert(match("aaa", "a[abc]a"), "");
+    static_assert(!match("aaa", "a[bcd]a"), "");
+    static_assert(!match("aaa", "a[a]]a"), "");
+    static_assert(match("aa]a", "a[a]]a"), "");
+    static_assert(match("aaa", "a[]abc]a"), "");
+    static_assert(match("aaa", "a[[a]a"), "");
+    static_assert(match("a[a", "a[[a]a"), "");
+    static_assert(match("a]a", "a[]]a"), "");
+    static_assert(!match("aa", "a[]a"), "");
+    static_assert(match("a[]a", "a[]a"), "");
+  }
 }

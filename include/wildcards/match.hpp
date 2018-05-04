@@ -322,18 +322,30 @@ constexpr bool match(
     return false;
   }
 
+  if (*p == c.anything)
+  {
+    return match(s, send, cx::next(p), pend, c, equal_to) ||
+           (s != send && match(cx::next(s), send, p, pend, c, equal_to));
+  }
+
+  if (*p == c.single)
+  {
+    return s != send && match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+  }
+
   if (*p == c.escape)
   {
     return match(s, send, cx::next(p), pend, c, equal_to, true);
   }
 
-  if (*p == c.anything)
+  if (*p == c.enum_open &&
+      detail::is_enum(cx::next(p), pend, c, detail::is_enum_state::exclusion_or_first_item))
   {
-    return match(s, send, cx::next(p), pend, c, equal_to) ||
-           ((s != send) && match(cx::next(s), send, p, pend, c, equal_to));
+    return match_enum(s, send, cx::next(p), pend, c, equal_to,
+                      detail::match_enum_state::exclusion_or_first_in_item);
   }
 
-  if (s != send && (*p == c.single || equal_to(*s, *p)))
+  if (s != send && equal_to(*s, *p))
   {
     return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
   }
@@ -347,13 +359,24 @@ constexpr bool match(
              : escape
                    ? s != send && equal_to(*s, *p) &&
                          match(cx::next(s), send, cx::next(p), pend, c, equal_to)
-                   : *p == c.escape
-                         ? match(s, send, cx::next(p), pend, c, equal_to, true)
-                         : *p == c.anything
-                               ? match(s, send, cx::next(p), pend, c, equal_to) ||
-                                     ((s != send) && match(cx::next(s), send, p, pend, c, equal_to))
-                               : s != send && (*p == c.single || equal_to(*s, *p)) &&
-                                     match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+                   : *p == c.anything
+                         ? match(s, send, cx::next(p), pend, c, equal_to) ||
+                               (s != send && match(cx::next(s), send, p, pend, c, equal_to))
+                         : *p == c.single
+                               ? s != send &&
+                                     match(cx::next(s), send, cx::next(p), pend, c, equal_to)
+                               : *p == c.escape
+                                     ? match(s, send, cx::next(p), pend, c, equal_to, true)
+                                     : *p == c.enum_open &&
+                                               detail::is_enum(
+                                                   cx::next(p), pend, c,
+                                                   detail::is_enum_state::exclusion_or_first_item)
+                                           ? match_enum(s, send, cx::next(p), pend, c, equal_to,
+                                                        detail::match_enum_state::
+                                                            exclusion_or_first_in_item)
+                                           : s != send && equal_to(*s, *p) &&
+                                                 match(cx::next(s), send, cx::next(p), pend, c,
+                                                       equal_to);
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
