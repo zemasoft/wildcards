@@ -12,6 +12,8 @@
 
 TEST_CASE("wildcards::detail::is_enum() is compliant", "[wildcards::detail::is_enum]")
 {
+  using wildcards::detail::is_enum;
+
   SECTION("")
   {
     constexpr char pattern1[] = "[a]";
@@ -28,19 +30,19 @@ TEST_CASE("wildcards::detail::is_enum() is compliant", "[wildcards::detail::is_e
     constexpr char pattern10[] = "[[a]";
     constexpr char pattern11[] = "[[abc]";
 
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern1), cx::end(pattern1)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern2), cx::end(pattern2)), "");
+    static_assert(is_enum(cx::begin(pattern1), cx::end(pattern1)), "");
+    static_assert(is_enum(cx::begin(pattern2), cx::end(pattern2)), "");
 
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern3), cx::end(pattern3)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern4), cx::end(pattern4)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern5), cx::end(pattern5)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern6), cx::end(pattern6)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern7), cx::end(pattern7)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern8), cx::end(pattern8)), "");
+    static_assert(is_enum(cx::begin(pattern3), cx::end(pattern3)), "");
+    static_assert(is_enum(cx::begin(pattern4), cx::end(pattern4)), "");
+    static_assert(is_enum(cx::begin(pattern5), cx::end(pattern5)), "");
+    static_assert(is_enum(cx::begin(pattern6), cx::end(pattern6)), "");
+    static_assert(is_enum(cx::begin(pattern7), cx::end(pattern7)), "");
+    static_assert(is_enum(cx::begin(pattern8), cx::end(pattern8)), "");
 
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern9), cx::end(pattern9)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern10), cx::end(pattern10)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern11), cx::end(pattern11)), "");
+    static_assert(is_enum(cx::begin(pattern9), cx::end(pattern9)), "");
+    static_assert(is_enum(cx::begin(pattern10), cx::end(pattern10)), "");
+    static_assert(is_enum(cx::begin(pattern11), cx::end(pattern11)), "");
   }
 
   SECTION("")
@@ -59,38 +61,213 @@ TEST_CASE("wildcards::detail::is_enum() is compliant", "[wildcards::detail::is_e
     constexpr char pattern10[] = "[![a]";
     constexpr char pattern11[] = "[![abc]";
 
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern1), cx::end(pattern1)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern2), cx::end(pattern2)), "");
+    static_assert(is_enum(cx::begin(pattern1), cx::end(pattern1)), "");
+    static_assert(is_enum(cx::begin(pattern2), cx::end(pattern2)), "");
 
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern3), cx::end(pattern3)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern4), cx::end(pattern4)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern5), cx::end(pattern5)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern6), cx::end(pattern6)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern7), cx::end(pattern7)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern8), cx::end(pattern8)), "");
+    static_assert(is_enum(cx::begin(pattern3), cx::end(pattern3)), "");
+    static_assert(is_enum(cx::begin(pattern4), cx::end(pattern4)), "");
+    static_assert(is_enum(cx::begin(pattern5), cx::end(pattern5)), "");
+    static_assert(is_enum(cx::begin(pattern6), cx::end(pattern6)), "");
+    static_assert(is_enum(cx::begin(pattern7), cx::end(pattern7)), "");
+    static_assert(is_enum(cx::begin(pattern8), cx::end(pattern8)), "");
 
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern9), cx::end(pattern9)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern10), cx::end(pattern10)), "");
-    static_assert(wildcards::detail::is_enum(cx::begin(pattern11), cx::end(pattern11)), "");
+    static_assert(is_enum(cx::begin(pattern9), cx::end(pattern9)), "");
+    static_assert(is_enum(cx::begin(pattern10), cx::end(pattern10)), "");
+    static_assert(is_enum(cx::begin(pattern11), cx::end(pattern11)), "");
   }
 
   SECTION("")
   {
     constexpr char pattern1[] = "";
     constexpr char pattern2[] = "a";
-    constexpr char pattern3[] = "[";
-    constexpr char pattern4[] = "[a";
-    constexpr char pattern5[] = "[]";
-    constexpr char pattern6[] = "[]a";
-    // constexpr char pattern7[] = "[a]]";
+    constexpr char pattern3[] = "!";
 
-    static_assert(!wildcards::detail::is_enum(cx::begin(pattern1), cx::end(pattern1)), "");
-    static_assert(!wildcards::detail::is_enum(cx::begin(pattern2), cx::end(pattern2)), "");
-    static_assert(!wildcards::detail::is_enum(cx::begin(pattern3), cx::end(pattern3)), "");
-    static_assert(!wildcards::detail::is_enum(cx::begin(pattern4), cx::end(pattern4)), "");
-    static_assert(!wildcards::detail::is_enum(cx::begin(pattern5), cx::end(pattern5)), "");
-    static_assert(!wildcards::detail::is_enum(cx::begin(pattern6), cx::end(pattern6)), "");
-    // static_assert(!wildcards::detail::is_enum(cx::begin(pattern7), cx::end(pattern7)), "");
+    constexpr char pattern4[] = "[";
+    constexpr char pattern5[] = "[a";
+    constexpr char pattern6[] = "[]";
+    constexpr char pattern7[] = "[]a";
+
+    constexpr char pattern8[] = "[!";
+    constexpr char pattern9[] = "[!a";
+    constexpr char pattern10[] = "[!]";
+    constexpr char pattern11[] = "[!]a";
+
+    static_assert(!is_enum(cx::begin(pattern1), cx::end(pattern1)), "");
+    static_assert(!is_enum(cx::begin(pattern2), cx::end(pattern2)), "");
+    static_assert(!is_enum(cx::begin(pattern3), cx::end(pattern3)), "");
+
+    static_assert(!is_enum(cx::begin(pattern4), cx::end(pattern4)), "");
+    static_assert(!is_enum(cx::begin(pattern5), cx::end(pattern5)), "");
+    static_assert(!is_enum(cx::begin(pattern6), cx::end(pattern6)), "");
+    static_assert(!is_enum(cx::begin(pattern7), cx::end(pattern7)), "");
+
+    static_assert(!is_enum(cx::begin(pattern8), cx::end(pattern8)), "");
+    static_assert(!is_enum(cx::begin(pattern9), cx::end(pattern9)), "");
+    static_assert(!is_enum(cx::begin(pattern10), cx::end(pattern10)), "");
+    static_assert(!is_enum(cx::begin(pattern11), cx::end(pattern11)), "");
+  }
+}
+
+TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::match_enum]")
+{
+  using wildcards::detail::match_enum;
+
+  SECTION("")
+  {
+    constexpr char pattern[] = "[a]";
+
+    constexpr char seq1[] = "";
+    constexpr char seq2[] = "a";
+    constexpr char seq3[] = "b";
+
+    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(!match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+                  "");
+  }
+
+  SECTION("")
+  {
+    constexpr char pattern[] = "[abc]";
+
+    constexpr char seq1[] = "";
+    constexpr char seq2[] = "a";
+    constexpr char seq3[] = "b";
+    constexpr char seq4[] = "c";
+    constexpr char seq5[] = "d";
+
+    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(match_enum(cx::begin(seq4), cx::end(seq4), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(!match_enum(cx::begin(seq5), cx::end(seq5), cx::begin(pattern), cx::end(pattern)),
+                  "");
+  }
+
+  SECTION("")
+  {
+    constexpr char pattern[] = "[]]";
+
+    constexpr char seq1[] = "";
+    constexpr char seq2[] = "]";
+    constexpr char seq3[] = "a";
+
+    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(!match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+                  "");
+  }
+
+  SECTION("")
+  {
+    constexpr char pattern[] = "[]abc]";
+
+    constexpr char seq1[] = "";
+    constexpr char seq2[] = "]";
+    constexpr char seq3[] = "a";
+    constexpr char seq4[] = "b";
+    constexpr char seq5[] = "c";
+    constexpr char seq6[] = "d";
+
+    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(match_enum(cx::begin(seq4), cx::end(seq4), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(match_enum(cx::begin(seq5), cx::end(seq5), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(!match_enum(cx::begin(seq6), cx::end(seq6), cx::begin(pattern), cx::end(pattern)),
+                  "");
+  }
+
+  SECTION("")
+  {
+    constexpr char pattern[] = "[!a]";
+
+    constexpr char seq1[] = "";
+    constexpr char seq2[] = "a";
+    constexpr char seq3[] = "b";
+
+    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(!match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+                  "");
+  }
+
+  SECTION("")
+  {
+    constexpr char pattern[] = "[!abc]";
+
+    constexpr char seq1[] = "";
+    constexpr char seq2[] = "a";
+    constexpr char seq3[] = "b";
+    constexpr char seq4[] = "c";
+    constexpr char seq5[] = "d";
+
+    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(!match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(!match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(!match_enum(cx::begin(seq4), cx::end(seq4), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(match_enum(cx::begin(seq5), cx::end(seq5), cx::begin(pattern), cx::end(pattern)),
+                  "");
+  }
+
+  SECTION("")
+  {
+    constexpr char pattern[] = "[!]]";
+
+    constexpr char seq1[] = "";
+    constexpr char seq2[] = "]";
+    constexpr char seq3[] = "a";
+
+    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(!match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+                  "");
+  }
+
+  SECTION("")
+  {
+    constexpr char pattern[] = "[!]abc]";
+
+    constexpr char seq1[] = "";
+    constexpr char seq2[] = "]";
+    constexpr char seq3[] = "a";
+    constexpr char seq4[] = "b";
+    constexpr char seq5[] = "c";
+    constexpr char seq6[] = "d";
+
+    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(!match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(!match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(!match_enum(cx::begin(seq4), cx::end(seq4), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(!match_enum(cx::begin(seq5), cx::end(seq5), cx::begin(pattern), cx::end(pattern)),
+                  "");
+    static_assert(match_enum(cx::begin(seq6), cx::end(seq6), cx::begin(pattern), cx::end(pattern)),
+                  "");
   }
 }
 
