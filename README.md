@@ -40,7 +40,7 @@ Examples
 
 int main()
 {
-  static_assert(wildcards::match("Hallo, World!", "H*d?"), "");
+  static_assert(wildcards::match("Hello, World!", "H*d?"), "");
 
   return 0;
 }
