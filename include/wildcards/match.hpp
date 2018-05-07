@@ -126,7 +126,12 @@ constexpr bool match_enum(
 {
 #if cfg_HAS_CONSTEXPR14
 
-  if (!c.enum_enabled || p == pend)
+  if (!c.enum_enabled)
+  {
+    return throw_invalid_argument("Enum disabled");
+  }
+
+  if (p == pend)
   {
     return throw_invalid_argument("Not an enum");
   }
@@ -221,78 +226,85 @@ constexpr bool match_enum(
 
 #else  // !cfg_HAS_CONSTEXPR14
 
-  return !c.enum_enabled || p == pend
-             ? throw std::invalid_argument("Not an enum")
-             : state == match_enum_state::open
-                   ? *p == c.enum_open ? match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                    match_enum_state::exclusion_or_first_in_item)
-                                       :
-
-                                       throw std::invalid_argument("Not an enum")
-                   :
-
-                   state == match_enum_state::exclusion_or_first_in_item
-                       ? *p == c.enum_exclusion
-                             ? match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                          match_enum_state::first_out_item)
-                             :
-
-                             s != send && (equal_to(*s, *p)
-                                               ? match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                            match_enum_state::skip_next_in_item)
-                                               :
-
-                                               match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                          match_enum_state::next_in_item))
-
-                       :
-
-                       state == match_enum_state::first_out_item
-                           ? s != send && !equal_to(*s, *p) &&
-                                 match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                            match_enum_state::next_out_item)
-
-                           :
-
-                           state == match_enum_state::skip_next_in_item
-                               ? *p == c.enum_close
-                                     ?
-
-                                     s == send ||
-                                         match(cx::next(s), send, cx::next(p), pend, c, equal_to)
-                                     :
-
-                                     match_enum(s, send, cx::next(p), pend, c, equal_to, state)
-
+  return !c.enum_enabled
+             ? throw std::invalid_argument("Enum disabled")
+             : p == pend
+                   ? throw std::invalid_argument("Not an enum")
+                   : state == match_enum_state::open
+                         ? *p == c.enum_open
+                               ? match_enum(s, send, cx::next(p), pend, c, equal_to,
+                                            match_enum_state::exclusion_or_first_in_item)
                                :
 
-                               state == match_enum_state::next_in_item
-                                   ? *p != c.enum_close && s != send &&
-                                         (equal_to(*s, *p)
-                                              ?
+                               throw std::invalid_argument("Not an enum")
+                         :
 
-                                              match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                         match_enum_state::skip_next_in_item)
-                                              :
-
-                                              match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                         state))
-
+                         state == match_enum_state::exclusion_or_first_in_item
+                             ? *p == c.enum_exclusion
+                                   ? match_enum(s, send, cx::next(p), pend, c, equal_to,
+                                                match_enum_state::first_out_item)
                                    :
 
-                                   state == match_enum_state::next_out_item
-                                       ? *p == c.enum_close
-                                             ?
+                                   s != send &&
+                                       (equal_to(*s, *p)
+                                            ? match_enum(s, send, cx::next(p), pend, c, equal_to,
+                                                         match_enum_state::skip_next_in_item)
+                                            :
 
-                                             s == send || match(cx::next(s), send, cx::next(p),
-                                                                pend, c, equal_to)
-                                             :
+                                            match_enum(s, send, cx::next(p), pend, c, equal_to,
+                                                       match_enum_state::next_in_item))
 
-                                             s != send && !equal_to(*s, *p) &&
-                                                 match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                            state)
+                             :
 
-                                       : throw std::logic_error("Logic error");
+                             state == match_enum_state::first_out_item
+                                 ? s != send && !equal_to(*s, *p) &&
+                                       match_enum(s, send, cx::next(p), pend, c, equal_to,
+                                                  match_enum_state::next_out_item)
+
+                                 :
+
+                                 state == match_enum_state::skip_next_in_item
+                                     ? *p == c.enum_close
+                                           ?
+
+                                           s == send || match(cx::next(s), send, cx::next(p), pend,
+                                                              c, equal_to)
+                                           :
+
+                                           match_enum(s, send, cx::next(p), pend, c, equal_to,
+                                                      state)
+
+                                     :
+
+                                     state == match_enum_state::next_in_item
+                                         ? *p != c.enum_close && s != send &&
+                                               (equal_to(*s, *p)
+                                                    ?
+
+                                                    match_enum(s, send, cx::next(p), pend, c,
+                                                               equal_to,
+                                                               match_enum_state::skip_next_in_item)
+                                                    :
+
+                                                    match_enum(s, send, cx::next(p), pend, c,
+                                                               equal_to, state))
+
+                                         :
+
+                                         state == match_enum_state::next_out_item
+                                             ? *p == c.enum_close
+                                                   ?
+
+                                                   s == send ||
+                                                       match(cx::next(s), send, cx::next(p), pend,
+                                                             c, equal_to)
+                                                   :
+
+                                                   s != send && !equal_to(*s, *p) &&
+                                                       match_enum(s, send, cx::next(p), pend, c,
+                                                                  equal_to, state)
+
+                                             : throw std::logic_error("Logic error");
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
