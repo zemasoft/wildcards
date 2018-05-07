@@ -283,8 +283,8 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match("", pattern1), "");
     static_assert(match("", pattern2), "");
 
-    static_assert(!wildcards::match("Anything", pattern1), "");
-    static_assert(!wildcards::match("Anything", pattern2), "");
+    static_assert(!match("Anything", pattern1), "");
+    static_assert(!match("Anything", pattern2), "");
   }
 
   SECTION(R"(match with "A")")
@@ -297,21 +297,21 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match("A", pattern2), "");
     static_assert(match("A", pattern3), "");
 
-    static_assert(!wildcards::match("", pattern1), "");
-    static_assert(!wildcards::match("", pattern2), "");
-    static_assert(!wildcards::match("", pattern3), "");
+    static_assert(!match("", pattern1), "");
+    static_assert(!match("", pattern2), "");
+    static_assert(!match("", pattern3), "");
 
-    static_assert(!wildcards::match("a", pattern1), "");
-    static_assert(!wildcards::match("a", pattern2), "");
-    static_assert(!wildcards::match("a", pattern3), "");
+    static_assert(!match("a", pattern1), "");
+    static_assert(!match("a", pattern2), "");
+    static_assert(!match("a", pattern3), "");
 
-    static_assert(!wildcards::match("AA", pattern1), "");
-    static_assert(!wildcards::match("AA", pattern2), "");
-    static_assert(!wildcards::match("AA", pattern3), "");
+    static_assert(!match("AA", pattern1), "");
+    static_assert(!match("AA", pattern2), "");
+    static_assert(!match("AA", pattern3), "");
 
-    static_assert(!wildcards::match("Something", pattern1), "");
-    static_assert(!wildcards::match("Something", pattern2), "");
-    static_assert(!wildcards::match("Something", pattern3), "");
+    static_assert(!match("Something", pattern1), "");
+    static_assert(!match("Something", pattern2), "");
+    static_assert(!match("Something", pattern3), "");
   }
 
   SECTION(R"(match with "Hello!")")
@@ -324,25 +324,25 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match("Hello!", pattern2), "");
     static_assert(match("Hello!", pattern3), "");
 
-    static_assert(!wildcards::match("", pattern1), "");
-    static_assert(!wildcards::match("", pattern2), "");
-    static_assert(!wildcards::match("", pattern3), "");
+    static_assert(!match("", pattern1), "");
+    static_assert(!match("", pattern2), "");
+    static_assert(!match("", pattern3), "");
 
-    static_assert(!wildcards::match("Hallo!", pattern1), "");
-    static_assert(!wildcards::match("Hallo!", pattern2), "");
-    static_assert(!wildcards::match("Hallo!", pattern3), "");
+    static_assert(!match("Hallo!", pattern1), "");
+    static_assert(!match("Hallo!", pattern2), "");
+    static_assert(!match("Hallo!", pattern3), "");
 
-    static_assert(!wildcards::match("HHello!", pattern1), "");
-    static_assert(!wildcards::match("HHello!", pattern2), "");
-    static_assert(!wildcards::match("HHello!", pattern3), "");
+    static_assert(!match("HHello!", pattern1), "");
+    static_assert(!match("HHello!", pattern2), "");
+    static_assert(!match("HHello!", pattern3), "");
 
-    static_assert(!wildcards::match("Hello!!", pattern1), "");
-    static_assert(!wildcards::match("Hello!!", pattern2), "");
-    static_assert(!wildcards::match("Hello!!", pattern3), "");
+    static_assert(!match("Hello!!", pattern1), "");
+    static_assert(!match("Hello!!", pattern2), "");
+    static_assert(!match("Hello!!", pattern3), "");
 
-    static_assert(!wildcards::match("Hello!Hello!", pattern1), "");
-    static_assert(!wildcards::match("Hello!Hello!", pattern2), "");
-    static_assert(!wildcards::match("Hello!Hello!", pattern3), "");
+    static_assert(!match("Hello!Hello!", pattern1), "");
+    static_assert(!match("Hello!Hello!", pattern2), "");
+    static_assert(!match("Hello!Hello!", pattern3), "");
   }
 
   SECTION(R"(match with "*")")
@@ -353,7 +353,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 
     static_assert(match("", pattern1), "");
     static_assert(match("", pattern2), "");
-    static_assert(!wildcards::match("", pattern3), "");
+    static_assert(!match("", pattern3), "");
 
     static_assert(match("*", pattern1), "");
     static_assert(match("*", pattern2), "");
@@ -361,7 +361,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 
     static_assert(match("Anything", pattern1), "");
     static_assert(match("Anything", pattern2), "");
-    static_assert(!wildcards::match("Anything", pattern3), "");
+    static_assert(!match("Anything", pattern3), "");
   }
 
   SECTION(R"(match with "?")")
@@ -372,23 +372,23 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 
     static_assert(match("A", pattern1), "");
     static_assert(match("A", pattern2), "");
-    static_assert(!wildcards::match("A", pattern3), "");
+    static_assert(!match("A", pattern3), "");
 
     static_assert(match("a", pattern1), "");
     static_assert(match("a", pattern2), "");
-    static_assert(!wildcards::match("a", pattern3), "");
+    static_assert(!match("a", pattern3), "");
 
     static_assert(match("?", pattern1), "");
     static_assert(match("?", pattern2), "");
     static_assert(match("?", pattern3), "");
 
-    static_assert(!wildcards::match("", pattern1), "");
-    static_assert(!wildcards::match("", pattern2), "");
-    static_assert(!wildcards::match("", pattern3), "");
+    static_assert(!match("", pattern1), "");
+    static_assert(!match("", pattern2), "");
+    static_assert(!match("", pattern3), "");
 
-    static_assert(!wildcards::match("Something", pattern1), "");
-    static_assert(!wildcards::match("Something", pattern2), "");
-    static_assert(!wildcards::match("Something", pattern3), "");
+    static_assert(!match("Something", pattern1), "");
+    static_assert(!match("Something", pattern2), "");
+    static_assert(!match("Something", pattern3), "");
   }
 
   SECTION(R"(match with "H?llo,*W*!")")
@@ -402,12 +402,12 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match("Hallo, crazy WildCards!", pattern), "");
     static_assert(match("Hallo, crazy WildCards! Still working?!", pattern), "");
 
-    static_assert(!wildcards::match("", pattern), "");
-    static_assert(!wildcards::match("Hllo, World!", pattern), "");
-    static_assert(!wildcards::match("Hello, World?", pattern), "");
-    static_assert(!wildcards::match("Hello, world!", pattern), "");
-    static_assert(!wildcards::match("Yes. Hello, World!", pattern), "");
-    static_assert(!wildcards::match("Hello, World!?", pattern), "");
+    static_assert(!match("", pattern), "");
+    static_assert(!match("Hllo, World!", pattern), "");
+    static_assert(!match("Hello, World?", pattern), "");
+    static_assert(!match("Hello, world!", pattern), "");
+    static_assert(!match("Yes. Hello, World!", pattern), "");
+    static_assert(!match("Hello, World!?", pattern), "");
   }
 
   SECTION(R"zzz(match with R"(\\\* *\? \*\\)")zzz")
@@ -418,10 +418,10 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match(R"(\* Hi? *\)", pattern), "");
     static_assert(match(R"(\* ? *\)", pattern), "");
 
-    static_assert(!wildcards::match(R"(\* Hello! *\)", pattern), "");
-    static_assert(!wildcards::match(R"(* Hello? *\)", pattern), "");
-    static_assert(!wildcards::match(R"(\ Hello? *\)", pattern), "");
-    static_assert(!wildcards::match(R"( Hello? *\)", pattern), "");
+    static_assert(!match(R"(\* Hello! *\)", pattern), "");
+    static_assert(!match(R"(* Hello? *\)", pattern), "");
+    static_assert(!match(R"(\ Hello? *\)", pattern), "");
+    static_assert(!match(R"( Hello? *\)", pattern), "");
   }
 
   SECTION(R"(match with u"H?llo,*W*!")")
