@@ -42,7 +42,7 @@ constexpr bool is_enum(
 {
 #if cfg_HAS_CONSTEXPR14
 
-  if (p == pend)
+  if (!c.enum_enabled || p == pend)
   {
     return false;
   }
@@ -82,21 +82,22 @@ constexpr bool is_enum(
 
 #else  // !cfg_HAS_CONSTEXPR14
 
-  return p != pend && (state == is_enum_state::open
-                           ? *p == c.enum_open && is_enum(cx::next(p), pend, c,
-                                                          is_enum_state::exclusion_or_first_item)
-                           :
+  return c.enum_enabled && p != pend &&
+         (state == is_enum_state::open
+              ? *p == c.enum_open &&
+                    is_enum(cx::next(p), pend, c, is_enum_state::exclusion_or_first_item)
+              :
 
-                           state == is_enum_state::exclusion_or_first_item
-                               ? *p == c.enum_exclusion
-                                     ? is_enum(cx::next(p), pend, c, is_enum_state::first_item)
-                                     : is_enum(cx::next(p), pend, c, is_enum_state::next_item)
-                               : state == is_enum_state::first_item
-                                     ? is_enum(cx::next(p), pend, c, is_enum_state::next_item)
-                                     : state == is_enum_state::next_item
-                                           ? *p == c.enum_close || is_enum(cx::next(p), pend, c,
-                                                                           is_enum_state::next_item)
-                                           : throw std::logic_error("Logic error"));
+              state == is_enum_state::exclusion_or_first_item
+                  ? *p == c.enum_exclusion
+                        ? is_enum(cx::next(p), pend, c, is_enum_state::first_item)
+                        : is_enum(cx::next(p), pend, c, is_enum_state::next_item)
+                  : state == is_enum_state::first_item
+                        ? is_enum(cx::next(p), pend, c, is_enum_state::next_item)
+                        : state == is_enum_state::next_item
+                              ? *p == c.enum_close ||
+                                    is_enum(cx::next(p), pend, c, is_enum_state::next_item)
+                              : throw std::logic_error("Logic error"));
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
@@ -125,7 +126,7 @@ constexpr bool match_enum(
 {
 #if cfg_HAS_CONSTEXPR14
 
-  if (p == pend)
+  if (!c.enum_enabled || p == pend)
   {
     return throw_invalid_argument("Not an enum");
   }
@@ -220,7 +221,7 @@ constexpr bool match_enum(
 
 #else  // !cfg_HAS_CONSTEXPR14
 
-  return p == pend
+  return !c.enum_enabled || p == pend
              ? throw std::invalid_argument("Not an enum")
              : state == match_enum_state::open
                    ? *p == c.enum_open ? match_enum(s, send, cx::next(p), pend, c, equal_to,
@@ -338,7 +339,7 @@ constexpr bool match(
     return match(s, send, cx::next(p), pend, c, equal_to, true);
   }
 
-  if (*p == c.enum_open &&
+  if (c.enum_enabled && *p == c.enum_open &&
       detail::is_enum(cx::next(p), pend, c, detail::is_enum_state::exclusion_or_first_item))
   {
     return match_enum(s, send, cx::next(p), pend, c, equal_to,
@@ -367,7 +368,7 @@ constexpr bool match(
                                      match(cx::next(s), send, cx::next(p), pend, c, equal_to)
                                : *p == c.escape
                                      ? match(s, send, cx::next(p), pend, c, equal_to, true)
-                                     : *p == c.enum_open &&
+                                     : c.enum_enabled && *p == c.enum_open &&
                                                detail::is_enum(
                                                    cx::next(p), pend, c,
                                                    detail::is_enum_state::exclusion_or_first_item)
