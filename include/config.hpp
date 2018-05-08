@@ -8,12 +8,18 @@
 
 #include "cpp_feature.hpp"
 
-#define cfg_HAS_CONSTEXPR14 __cpp_constexpr >= 201304
+#define cfg_HAS_CONSTEXPR14 (__cpp_constexpr >= 201304)
 
 #if cfg_HAS_CONSTEXPR14
 #define cfg_constexpr14 constexpr
 #else
 #define cfg_constexpr14
+#endif
+
+#if cfg_HAS_CONSTEXPR14 && !(defined(__GNUC__) && __GNUC__ < 6 && !defined(__clang__))
+#define cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH 1
+#else
+#define cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH 0
 #endif
 
 #endif  // CONFIG_HPP

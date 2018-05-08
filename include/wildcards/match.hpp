@@ -21,10 +21,14 @@ namespace wildcards
 namespace detail
 {
 
+#if !cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+
 constexpr bool throw_logic_error(const char* what_arg)
 {
   return what_arg == nullptr ? false : throw std::logic_error(what_arg);
 }
+
+#endif
 
 enum class is_enum_state
 {
@@ -77,8 +81,13 @@ constexpr bool is_enum(
       return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
 
     default:
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+      throw std::logic_error(
+          "The program execution should never end up here trowing this exception");
+#else
       return throw_logic_error(
           "The program execution should never end up here trowing this exception");
+#endif
   }
 
 #else  // !cfg_HAS_CONSTEXPR14
@@ -104,10 +113,14 @@ constexpr bool is_enum(
 #endif  // cfg_HAS_CONSTEXPR14
 }
 
+#if !cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+
 constexpr bool throw_invalid_argument(const char* what_arg)
 {
   return what_arg == nullptr ? false : throw std::invalid_argument(what_arg);
 }
+
+#endif
 
 enum class match_enum_state
 {
@@ -130,12 +143,20 @@ constexpr bool match_enum(
 
   if (!c.enum_enabled)
   {
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+    throw std::invalid_argument("The use of enums is disabled");
+#else
     return throw_invalid_argument("The use of enums is disabled");
+#endif
   }
 
   if (p == pend)
   {
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+    throw std::invalid_argument("The given pattern is not a valid enum");
+#else
     return throw_invalid_argument("The given pattern is not a valid enum");
+#endif
   }
 
   switch (state)
@@ -147,7 +168,11 @@ constexpr bool match_enum(
                           match_enum_state::exclusion_or_first_in_item);
       }
 
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+      throw std::invalid_argument("The given pattern is not a valid enum");
+#else
       return throw_invalid_argument("The given pattern is not a valid enum");
+#endif
 
     case match_enum_state::exclusion_or_first_in_item:
       if (*p == c.enum_exclusion)
@@ -223,8 +248,13 @@ constexpr bool match_enum(
       return match_enum(s, send, cx::next(p), pend, c, equal_to, state);
 
     default:
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+      throw std::logic_error(
+          "The program execution should never end up here trowing this exception");
+#else
       return throw_logic_error(
           "The program execution should never end up here trowing this exception");
+#endif
   }
 
 #else  // !cfg_HAS_CONSTEXPR14
