@@ -77,7 +77,8 @@ constexpr bool is_enum(
       return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
 
     default:
-      return throw_logic_error("Logic error");
+      return throw_logic_error(
+          "The program execution should never end up here trowing this exception");
   }
 
 #else  // !cfg_HAS_CONSTEXPR14
@@ -97,7 +98,8 @@ constexpr bool is_enum(
                         : state == is_enum_state::next_item
                               ? *p == c.enum_close ||
                                     is_enum(cx::next(p), pend, c, is_enum_state::next_item)
-                              : throw std::logic_error("Logic error"));
+                              : throw std::logic_error("The program execution should never end up "
+                                                       "here trowing this exception"));
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
@@ -128,12 +130,12 @@ constexpr bool match_enum(
 
   if (!c.enum_enabled)
   {
-    return throw_invalid_argument("Enum disabled");
+    return throw_invalid_argument("The use of enums is disabled");
   }
 
   if (p == pend)
   {
-    return throw_invalid_argument("Not an enum");
+    return throw_invalid_argument("The given pattern is not a valid enum");
   }
 
   switch (state)
@@ -145,7 +147,7 @@ constexpr bool match_enum(
                           match_enum_state::exclusion_or_first_in_item);
       }
 
-      return throw_invalid_argument("Not an enum");
+      return throw_invalid_argument("The given pattern is not a valid enum");
 
     case match_enum_state::exclusion_or_first_in_item:
       if (*p == c.enum_exclusion)
@@ -221,22 +223,23 @@ constexpr bool match_enum(
       return match_enum(s, send, cx::next(p), pend, c, equal_to, state);
 
     default:
-      return throw_logic_error("Logic error");
+      return throw_logic_error(
+          "The program execution should never end up here trowing this exception");
   }
 
 #else  // !cfg_HAS_CONSTEXPR14
 
   return !c.enum_enabled
-             ? throw std::invalid_argument("Enum disabled")
+             ? throw std::invalid_argument("The use of enums is disabled")
              : p == pend
-                   ? throw std::invalid_argument("Not an enum")
+                   ? throw std::invalid_argument("The given pattern is not a valid enum")
                    : state == match_enum_state::open
                          ? *p == c.enum_open
                                ? match_enum(s, send, cx::next(p), pend, c, equal_to,
                                             match_enum_state::exclusion_or_first_in_item)
                                :
 
-                               throw std::invalid_argument("Not an enum")
+                               throw std::invalid_argument("The given pattern is not a valid enum")
                          :
 
                          state == match_enum_state::exclusion_or_first_in_item
@@ -304,7 +307,9 @@ constexpr bool match_enum(
                                                        match_enum(s, send, cx::next(p), pend, c,
                                                                   equal_to, state)
 
-                                             : throw std::logic_error("Logic error");
+                                             : throw std::logic_error(
+                                                   "The program execution should never end up here "
+                                                   "trowing this exception");
 
 #endif  // cfg_HAS_CONSTEXPR14
 }

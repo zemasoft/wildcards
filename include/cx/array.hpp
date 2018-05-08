@@ -72,12 +72,12 @@ struct array
 
   constexpr const T& at(std::size_t pos) const
   {
-    return pos < size() ? data[pos] : throw std::out_of_range("");
+    return pos < size() ? data[pos] : throw std::out_of_range("The given position is out of range");
   }
 
   cfg_constexpr14 T& at(std::size_t pos)
   {
-    return pos < size() ? data[pos] : throw std::out_of_range("");
+    return pos < size() ? data[pos] : throw std::out_of_range("The given position is out of range");
   }
 
   T data[N > 0 ? N : 1];
