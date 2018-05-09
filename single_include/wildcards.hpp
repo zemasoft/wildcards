@@ -1,5 +1,5 @@
 // THIS FILE HAS BEEN GENERATED AUTOMATICALLY. DO NOT EDIT DIRECTLY.
-// Generated: 2018-04-27 20:08:52.393001353
+// Generated: 2018-05-09 09:34:45.278048951
 // Copyright Tomas Zeman 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -7,7 +7,7 @@
 #ifndef WILDCARDS_HPP
 #define WILDCARDS_HPP 
 #define WILDCARDS_VERSION_MAJOR 1
-#define WILDCARDS_VERSION_MINOR 0
+#define WILDCARDS_VERSION_MINOR 1
 #define WILDCARDS_VERSION_PATCH 0
 #ifndef WILDCARDS_CARDS_HPP
 #define WILDCARDS_CARDS_HPP 
@@ -17,69 +17,148 @@ namespace wildcards
 template <typename T>
 struct cards
 {
-constexpr cards(T a, T q, T e)
-: asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
+constexpr cards(T a, T s, T e)
+: anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}, enum_enabled{false}
 {
 }
-T asterisk;
-T question_mark;
+constexpr cards(T a, T s, T e, T eo, T ec, T ee)
+: anything{std::move(a)},
+single{std::move(s)},
+escape{std::move(e)},
+enum_enabled{true},
+enum_open{std::move(eo)},
+enum_close{std::move(ec)},
+enum_exclusion{std::move(ee)}
+{
+}
+T anything;
+T single;
 T escape;
+bool enum_enabled;
+T enum_open;
+T enum_close;
+T enum_exclusion;
+};
+enum class cards_type
+{
+standard,
+extended
 };
 template <>
 struct cards<char>
 {
-constexpr cards()
+constexpr cards(cards_type type = cards_type::extended)
+: enum_enabled{type == cards_type::extended}
 {
 }
-constexpr cards(char a, char q, char e)
-: asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
+constexpr cards(char a, char s, char e)
+: anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}, enum_enabled{false}
 {
 }
-char asterisk{'*'};
-char question_mark{'?'};
+constexpr cards(char a, char s, char e, char eo, char ec, char ee)
+: anything{std::move(a)},
+single{std::move(s)},
+escape{std::move(e)},
+enum_enabled{true},
+enum_open{std::move(eo)},
+enum_close{std::move(ec)},
+enum_exclusion{std::move(ee)}
+{
+}
+char anything{'*'};
+char single{'?'};
 char escape{'\\'};
+bool enum_enabled{true};
+char enum_open{'['};
+char enum_close{']'};
+char enum_exclusion{'!'};
 };
 template <>
 struct cards<char16_t>
 {
-constexpr cards()
+constexpr cards(cards_type type = cards_type::extended)
+: enum_enabled{type == cards_type::extended}
 {
 }
-constexpr cards(char16_t a, char16_t q, char16_t e)
-: asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
+constexpr cards(char16_t a, char16_t s, char16_t e)
+: anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}, enum_enabled{false}
 {
 }
-char16_t asterisk{u'*'};
-char16_t question_mark{u'?'};
+constexpr cards(char16_t a, char16_t s, char16_t e, char16_t eo, char16_t ec, char16_t ee)
+: anything{std::move(a)},
+single{std::move(s)},
+escape{std::move(e)},
+enum_enabled{true},
+enum_open{std::move(eo)},
+enum_close{std::move(ec)},
+enum_exclusion{std::move(ee)}
+{
+}
+char16_t anything{u'*'};
+char16_t single{u'?'};
 char16_t escape{u'\\'};
+bool enum_enabled{true};
+char16_t enum_open{u'['};
+char16_t enum_close{u']'};
+char16_t enum_exclusion{u'!'};
 };
 template <>
 struct cards<char32_t>
 {
-constexpr cards()
+constexpr cards(cards_type type = cards_type::extended)
+: enum_enabled{type == cards_type::extended}
 {
 }
-constexpr cards(char32_t a, char32_t q, char32_t e)
-: asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
+constexpr cards(char32_t a, char32_t s, char32_t e)
+: anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}, enum_enabled{false}
 {
 }
-char32_t asterisk{U'*'};
-char32_t question_mark{U'?'};
+constexpr cards(char32_t a, char32_t s, char32_t e, char32_t eo, char32_t ec, char32_t ee)
+: anything{std::move(a)},
+single{std::move(s)},
+escape{std::move(e)},
+enum_enabled{true},
+enum_open{std::move(eo)},
+enum_close{std::move(ec)},
+enum_exclusion{std::move(ee)}
+{
+}
+char32_t anything{U'*'};
+char32_t single{U'?'};
 char32_t escape{U'\\'};
+bool enum_enabled{true};
+char32_t enum_open{U'['};
+char32_t enum_close{U']'};
+char32_t enum_exclusion{U'!'};
 };
 template <>
 struct cards<wchar_t>
 {
-constexpr cards()
+constexpr cards(cards_type type = cards_type::extended)
+: enum_enabled{type == cards_type::extended}
 {
 }
-constexpr cards(wchar_t a, wchar_t q, wchar_t e)
-: asterisk{std::move(a)}, question_mark{std::move(q)}, escape{std::move(e)}
+constexpr cards(wchar_t a, wchar_t s, wchar_t e)
+: anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}, enum_enabled{false}
 {
 }
-wchar_t asterisk{L'*'};
-wchar_t question_mark{L'?'};
+constexpr cards(wchar_t a, wchar_t s, wchar_t e, wchar_t eo, wchar_t ec, wchar_t ee)
+: anything{std::move(a)},
+single{std::move(s)},
+escape{std::move(e)},
+enum_enabled{true},
+enum_open{std::move(eo)},
+enum_close{std::move(ec)},
+enum_exclusion{std::move(ee)}
+{
+}
+wchar_t anything{L'*'};
+wchar_t single{L'?'};
 wchar_t escape{L'\\'};
+bool enum_enabled{true};
+wchar_t enum_open{L'['};
+wchar_t enum_close{L']'};
+wchar_t enum_exclusion{L'!'};
 };
 template <typename T>
 constexpr cards<T> make_cards(T&& c1, T&& c2)
@@ -90,6 +169,8 @@ return {std::forward<T>(c1), std::forward<T>(c2)};
 #endif
 #ifndef WILDCARDS_MATCH_HPP
 #define WILDCARDS_MATCH_HPP 
+#include <stdexcept>
+#include <type_traits>
 #include <utility>
 #ifndef CONFIG_HPP
 #define CONFIG_HPP 
@@ -410,11 +491,16 @@ return {std::forward<T>(c1), std::forward<T>(c2)};
 #endif
 #endif
 #endif
-#define cfg_HAS_CONSTEXPR14 __cpp_constexpr >= 201304
+#define cfg_HAS_CONSTEXPR14 (__cpp_constexpr >= 201304)
 #if cfg_HAS_CONSTEXPR14
 #define cfg_constexpr14 constexpr
 #else
 #define cfg_constexpr14 
+#endif
+#if cfg_HAS_CONSTEXPR14 && !(defined(__GNUC__) && __GNUC__ < 6 && !defined(__clang__))
+#define cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH 1
+#else
+#define cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH 0
 #endif
 #endif
 #ifndef CX_FUNCTIONAL_HPP
@@ -561,6 +647,266 @@ using container_item_t = typename container_item<C>::type;
 #endif
 namespace wildcards
 {
+namespace detail
+{
+#if !cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+constexpr bool throw_logic_error(const char* what_arg)
+{
+return what_arg == nullptr ? false : throw std::logic_error(what_arg);
+}
+#endif
+enum class is_enum_state
+{
+open,
+exclusion_or_first_item,
+first_item,
+next_item
+};
+template <typename PatternIterator>
+constexpr bool is_enum(
+PatternIterator p, PatternIterator pend,
+const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
+is_enum_state state = is_enum_state::open)
+{
+#if cfg_HAS_CONSTEXPR14
+if (!c.enum_enabled || p == pend)
+{
+return false;
+}
+switch (state)
+{
+case is_enum_state::open:
+if (*p == c.enum_open)
+{
+return is_enum(cx::next(p), pend, c, is_enum_state::exclusion_or_first_item);
+}
+return false;
+case is_enum_state::exclusion_or_first_item:
+if (*p == c.enum_exclusion)
+{
+return is_enum(cx::next(p), pend, c, is_enum_state::first_item);
+}
+return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
+case is_enum_state::first_item:
+return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
+case is_enum_state::next_item:
+if (*p == c.enum_close)
+{
+return true;
+}
+return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
+default:
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+throw std::logic_error(
+"The program execution should never end up here trowing this exception");
+#else
+return throw_logic_error(
+"The program execution should never end up here trowing this exception");
+#endif
+}
+#else
+return c.enum_enabled && p != pend &&
+(state == is_enum_state::open
+? *p == c.enum_open &&
+is_enum(cx::next(p), pend, c, is_enum_state::exclusion_or_first_item)
+:
+state == is_enum_state::exclusion_or_first_item
+? *p == c.enum_exclusion
+? is_enum(cx::next(p), pend, c, is_enum_state::first_item)
+: is_enum(cx::next(p), pend, c, is_enum_state::next_item)
+: state == is_enum_state::first_item
+? is_enum(cx::next(p), pend, c, is_enum_state::next_item)
+: state == is_enum_state::next_item
+? *p == c.enum_close ||
+is_enum(cx::next(p), pend, c, is_enum_state::next_item)
+: throw std::logic_error("The program execution should never end up "
+"here trowing this exception"));
+#endif
+}
+#if !cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+constexpr bool throw_invalid_argument(const char* what_arg)
+{
+return what_arg == nullptr ? false : throw std::invalid_argument(what_arg);
+}
+#endif
+enum class match_enum_state
+{
+open,
+exclusion_or_first_in_item,
+first_out_item,
+skip_next_in_item,
+next_in_item,
+next_out_item
+};
+template <typename SequenceIterator, typename PatternIterator,
+typename EqualTo = cx::equal_to<void>>
+constexpr bool match_enum(
+SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
+const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
+const EqualTo& equal_to = EqualTo(), match_enum_state state = match_enum_state::open)
+{
+#if cfg_HAS_CONSTEXPR14
+if (!c.enum_enabled)
+{
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+throw std::invalid_argument("The use of enums is disabled");
+#else
+return throw_invalid_argument("The use of enums is disabled");
+#endif
+}
+if (p == pend)
+{
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+throw std::invalid_argument("The given pattern is not a valid enum");
+#else
+return throw_invalid_argument("The given pattern is not a valid enum");
+#endif
+}
+switch (state)
+{
+case match_enum_state::open:
+if (*p == c.enum_open)
+{
+return match_enum(s, send, cx::next(p), pend, c, equal_to,
+match_enum_state::exclusion_or_first_in_item);
+}
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+throw std::invalid_argument("The given pattern is not a valid enum");
+#else
+return throw_invalid_argument("The given pattern is not a valid enum");
+#endif
+case match_enum_state::exclusion_or_first_in_item:
+if (*p == c.enum_exclusion)
+{
+return match_enum(s, send, cx::next(p), pend, c, equal_to,
+match_enum_state::first_out_item);
+}
+if (s == send)
+{
+return false;
+}
+if (equal_to(*s, *p))
+{
+return match_enum(s, send, cx::next(p), pend, c, equal_to,
+match_enum_state::skip_next_in_item);
+}
+return match_enum(s, send, cx::next(p), pend, c, equal_to, match_enum_state::next_in_item);
+case match_enum_state::first_out_item:
+if (s == send || equal_to(*s, *p))
+{
+return false;
+}
+return match_enum(s, send, cx::next(p), pend, c, equal_to, match_enum_state::next_out_item);
+case match_enum_state::skip_next_in_item:
+if (*p == c.enum_close)
+{
+if (s == send)
+{
+return true;
+}
+return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+}
+return match_enum(s, send, cx::next(p), pend, c, equal_to, state);
+case match_enum_state::next_in_item:
+if (*p == c.enum_close || s == send)
+{
+return false;
+}
+if (equal_to(*s, *p))
+{
+return match_enum(s, send, cx::next(p), pend, c, equal_to,
+match_enum_state::skip_next_in_item);
+}
+return match_enum(s, send, cx::next(p), pend, c, equal_to, state);
+case match_enum_state::next_out_item:
+if (*p == c.enum_close)
+{
+if (s == send)
+{
+return true;
+}
+return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+}
+if (s == send || equal_to(*s, *p))
+{
+return false;
+}
+return match_enum(s, send, cx::next(p), pend, c, equal_to, state);
+default:
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+throw std::logic_error(
+"The program execution should never end up here trowing this exception");
+#else
+return throw_logic_error(
+"The program execution should never end up here trowing this exception");
+#endif
+}
+#else
+return !c.enum_enabled
+? throw std::invalid_argument("The use of enums is disabled")
+: p == pend
+? throw std::invalid_argument("The given pattern is not a valid enum")
+: state == match_enum_state::open
+? *p == c.enum_open
+? match_enum(s, send, cx::next(p), pend, c, equal_to,
+match_enum_state::exclusion_or_first_in_item)
+:
+throw std::invalid_argument("The given pattern is not a valid enum")
+:
+state == match_enum_state::exclusion_or_first_in_item
+? *p == c.enum_exclusion
+? match_enum(s, send, cx::next(p), pend, c, equal_to,
+match_enum_state::first_out_item)
+:
+s != send &&
+(equal_to(*s, *p)
+? match_enum(s, send, cx::next(p), pend, c, equal_to,
+match_enum_state::skip_next_in_item)
+:
+match_enum(s, send, cx::next(p), pend, c, equal_to,
+match_enum_state::next_in_item))
+:
+state == match_enum_state::first_out_item
+? s != send && !equal_to(*s, *p) &&
+match_enum(s, send, cx::next(p), pend, c, equal_to,
+match_enum_state::next_out_item)
+:
+state == match_enum_state::skip_next_in_item
+? *p == c.enum_close
+?
+s == send || match(cx::next(s), send, cx::next(p), pend,
+c, equal_to)
+:
+match_enum(s, send, cx::next(p), pend, c, equal_to,
+state)
+:
+state == match_enum_state::next_in_item
+? *p != c.enum_close && s != send &&
+(equal_to(*s, *p)
+?
+match_enum(s, send, cx::next(p), pend, c,
+equal_to,
+match_enum_state::skip_next_in_item)
+:
+match_enum(s, send, cx::next(p), pend, c,
+equal_to, state))
+:
+state == match_enum_state::next_out_item
+? *p == c.enum_close
+?
+s == send ||
+match(cx::next(s), send, cx::next(p), pend,
+c, equal_to)
+:
+s != send && !equal_to(*s, *p) &&
+match_enum(s, send, cx::next(p), pend, c,
+equal_to, state)
+: throw std::logic_error(
+"The program execution should never end up here "
+"trowing this exception");
+#endif
+}
+}
 template <typename SequenceIterator, typename PatternIterator,
 typename EqualTo = cx::equal_to<void>>
 constexpr bool match(
@@ -573,36 +919,62 @@ if (p == pend)
 {
 return s == send;
 }
-if (!escape && *p == c.escape)
+if (escape)
+{
+if (s != send && equal_to(*s, *p))
+{
+return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+}
+return false;
+}
+if (*p == c.anything)
+{
+return match(s, send, cx::next(p), pend, c, equal_to) ||
+(s != send && match(cx::next(s), send, p, pend, c, equal_to));
+}
+if (*p == c.single)
+{
+return s != send && match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+}
+if (*p == c.escape)
 {
 return match(s, send, cx::next(p), pend, c, equal_to, true);
 }
-if (escape || *p != c.asterisk)
+if (c.enum_enabled && *p == c.enum_open &&
+detail::is_enum(cx::next(p), pend, c, detail::is_enum_state::exclusion_or_first_item))
 {
-if (s == send)
+return match_enum(s, send, cx::next(p), pend, c, equal_to,
+detail::match_enum_state::exclusion_or_first_in_item);
+}
+if (s != send && equal_to(*s, *p))
 {
+return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+}
 return false;
-}
-if ((!escape && *p == c.question_mark) || equal_to(*s, *p))
-{
-return match(cx::next(s), send, cx::next(p), pend, c, equal_to, false);
-}
-return false;
-}
-return match(s, send, cx::next(p), pend, c, equal_to, false) ||
-((s != send) && match(cx::next(s), send, p, pend, c, equal_to, false));
 #else
 return p == pend
 ? s == send
-: !escape && *p == c.escape
+: escape
+? s != send && equal_to(*s, *p) &&
+match(cx::next(s), send, cx::next(p), pend, c, equal_to)
+: *p == c.anything
+? match(s, send, cx::next(p), pend, c, equal_to) ||
+(s != send && match(cx::next(s), send, p, pend, c, equal_to))
+: *p == c.single
+? s != send &&
+match(cx::next(s), send, cx::next(p), pend, c, equal_to)
+: *p == c.escape
 ? match(s, send, cx::next(p), pend, c, equal_to, true)
-:
-escape || *p != c.asterisk
-? s != send && ((!escape && *p == c.question_mark) || equal_to(*s, *p)) &&
-match(cx::next(s), send, cx::next(p), pend, c, equal_to, false)
-:
-match(s, send, cx::next(p), pend, c, equal_to, false) ||
-((s != send) && match(cx::next(s), send, p, pend, c, equal_to, false));
+: c.enum_enabled && *p == c.enum_open &&
+detail::is_enum(
+cx::next(p), pend, c,
+detail::is_enum_state::exclusion_or_first_item)
+? match_enum(s, send, cx::next(p), pend, c, equal_to,
+detail::match_enum_state::
+exclusion_or_first_in_item)
+: s != send && equal_to(*s, *p) &&
+match(cx::next(s), send, cx::next(p), pend, c,
+equal_to);
 #endif
 }
 template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>>
@@ -613,7 +985,8 @@ const EqualTo& equal_to = EqualTo())
 return match(cx::cbegin(sequence), cx::cend(std::forward<Sequence>(sequence)),
 cx::cbegin(pattern), cx::cend(std::forward<Pattern>(pattern)), c, equal_to);
 }
-template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>>
+template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>,
+typename = typename std::enable_if<!std::is_same<EqualTo, cards_type>::value>::type>
 constexpr bool match(Sequence&& sequence, Pattern&& pattern, const EqualTo& equal_to)
 {
 return match(std::forward<Sequence>(sequence), std::forward<Pattern>(pattern),

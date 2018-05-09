@@ -1,5 +1,5 @@
 // THIS FILE HAS BEEN GENERATED AUTOMATICALLY. DO NOT EDIT DIRECTLY.
-// Generated: 2018-04-27 20:08:52.300450472
+// Generated: 2018-05-09 09:34:45.195168351
 // Copyright Tomas Zeman 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -7,7 +7,7 @@
 #ifndef CX_HPP
 #define CX_HPP 
 #define CX_VERSION_MAJOR 1
-#define CX_VERSION_MINOR 0
+#define CX_VERSION_MINOR 1
 #define CX_VERSION_PATCH 0
 #ifndef CX_ALGORITHM_HPP
 #define CX_ALGORITHM_HPP 
@@ -330,11 +330,16 @@
 #endif
 #endif
 #endif
-#define cfg_HAS_CONSTEXPR14 __cpp_constexpr >= 201304
+#define cfg_HAS_CONSTEXPR14 (__cpp_constexpr >= 201304)
 #if cfg_HAS_CONSTEXPR14
 #define cfg_constexpr14 constexpr
 #else
 #define cfg_constexpr14 
+#endif
+#if cfg_HAS_CONSTEXPR14 && !(defined(__GNUC__) && __GNUC__ < 6 && !defined(__clang__))
+#define cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH 1
+#else
+#define cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH 0
 #endif
 #endif
 namespace cx
@@ -408,11 +413,11 @@ return data[pos];
 }
 constexpr const T& at(std::size_t pos) const
 {
-return pos < size() ? data[pos] : throw std::out_of_range("");
+return pos < size() ? data[pos] : throw std::out_of_range("The given position is out of range");
 }
 cfg_constexpr14 T& at(std::size_t pos)
 {
-return pos < size() ? data[pos] : throw std::out_of_range("");
+return pos < size() ? data[pos] : throw std::out_of_range("The given position is out of range");
 }
 T data[N > 0 ? N : 1];
 };
