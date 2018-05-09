@@ -183,9 +183,16 @@ struct cards<wchar_t>
 };
 
 template <typename T>
-constexpr cards<T> make_cards(T&& c1, T&& c2)
+constexpr cards<T> make_cards(T&& a, T&& s, T&& e)
 {
-  return {std::forward<T>(c1), std::forward<T>(c2)};
+  return {std::forward<T>(a), std::forward<T>(s), std::forward<T>(e)};
+}
+
+template <typename T>
+constexpr cards<T> make_cards(T&& a, T&& s, T&& e, T&& eo, T&& ec, T&& ee)
+{
+  return {std::forward<T>(a),  std::forward<T>(s),  std::forward<T>(e),
+          std::forward<T>(eo), std::forward<T>(ec), std::forward<T>(ee)};
 }
 
 }  // namespace wildcards
