@@ -84,10 +84,10 @@ constexpr bool is_enum(
     default:
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
       throw std::logic_error(
-          "The program execution should never end up here trowing this exception");
+          "The program execution should never end up here throwing this exception");
 #else
       return throw_logic_error(
-          "The program execution should never end up here trowing this exception");
+          "The program execution should never end up here throwing this exception");
 #endif
   }
 
@@ -109,7 +109,7 @@ constexpr bool is_enum(
                               ? *p == c.enum_close ||
                                     is_enum(cx::next(p), pend, c, is_enum_state::next_item)
                               : throw std::logic_error("The program execution should never end up "
-                                                       "here trowing this exception"));
+                                                       "here throwing this exception"));
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
@@ -251,10 +251,10 @@ constexpr bool match_enum(
     default:
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
       throw std::logic_error(
-          "The program execution should never end up here trowing this exception");
+          "The program execution should never end up here throwing this exception");
 #else
       return throw_logic_error(
-          "The program execution should never end up here trowing this exception");
+          "The program execution should never end up here throwing this exception");
 #endif
   }
 
@@ -340,7 +340,7 @@ constexpr bool match_enum(
 
                                              : throw std::logic_error(
                                                    "The program execution should never end up here "
-                                                   "trowing this exception");
+                                                   "throwing this exception");
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
