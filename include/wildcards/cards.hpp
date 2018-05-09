@@ -40,10 +40,17 @@ struct cards
   T enum_exclusion;
 };
 
+enum class cards_type
+{
+  standard,
+  extended
+};
+
 template <>
 struct cards<char>
 {
-  constexpr cards()
+  constexpr cards(cards_type type = cards_type::extended)
+      : enum_enabled{type == cards_type::extended}
   {
   }
 
@@ -76,7 +83,8 @@ struct cards<char>
 template <>
 struct cards<char16_t>
 {
-  constexpr cards()
+  constexpr cards(cards_type type = cards_type::extended)
+      : enum_enabled{type == cards_type::extended}
   {
   }
 
@@ -109,7 +117,8 @@ struct cards<char16_t>
 template <>
 struct cards<char32_t>
 {
-  constexpr cards()
+  constexpr cards(cards_type type = cards_type::extended)
+      : enum_enabled{type == cards_type::extended}
   {
   }
 
@@ -142,7 +151,8 @@ struct cards<char32_t>
 template <>
 struct cards<wchar_t>
 {
-  constexpr cards()
+  constexpr cards(cards_type type = cards_type::extended)
+      : enum_enabled{type == cards_type::extended}
   {
   }
 

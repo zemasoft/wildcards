@@ -6,8 +6,9 @@
 #ifndef WILDCARDS_MATCH_HPP
 #define WILDCARDS_MATCH_HPP
 
-#include <stdexcept>  // std::invalid_argument, std::logic_error
-#include <utility>    // std::forward
+#include <stdexcept>    // std::invalid_argument, std::logic_error
+#include <type_traits>  // std::enable_if, std::is_same
+#include <utility>      // std::forward
 
 #include "config.hpp"             // cfg_HAS_CONSTEXPR14
 #include "cx/functional.hpp"      // cx::equal_to
@@ -438,7 +439,8 @@ constexpr bool match(Sequence&& sequence, Pattern&& pattern,
                cx::cbegin(pattern), cx::cend(std::forward<Pattern>(pattern)), c, equal_to);
 }
 
-template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>>
+template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>,
+          typename = typename std::enable_if<!std::is_same<EqualTo, cards_type>::value>::type>
 constexpr bool match(Sequence&& sequence, Pattern&& pattern, const EqualTo& equal_to)
 {
   return match(std::forward<Sequence>(sequence), std::forward<Pattern>(pattern),
