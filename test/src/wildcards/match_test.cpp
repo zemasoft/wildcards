@@ -14,7 +14,7 @@ TEST_CASE("wildcards::detail::is_enum() is compliant", "[wildcards::detail::is_e
 {
   using wildcards::detail::is_enum;
 
-  SECTION("")
+  SECTION("checking valid enums")
   {
     constexpr char pattern1[] = "[a]";
     constexpr char pattern2[] = "[abc]";
@@ -45,7 +45,7 @@ TEST_CASE("wildcards::detail::is_enum() is compliant", "[wildcards::detail::is_e
     static_assert(is_enum(cx::begin(pattern11), cx::end(pattern11)), "");
   }
 
-  SECTION("")
+  SECTION("checking valid enums with exclusion")
   {
     constexpr char pattern1[] = "[!a]";
     constexpr char pattern2[] = "[!abc]";
@@ -76,7 +76,7 @@ TEST_CASE("wildcards::detail::is_enum() is compliant", "[wildcards::detail::is_e
     static_assert(is_enum(cx::begin(pattern11), cx::end(pattern11)), "");
   }
 
-  SECTION("")
+  SECTION("checking invalid enums")
   {
     constexpr char pattern1[] = "";
     constexpr char pattern2[] = "a";
@@ -112,7 +112,7 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
 {
   using wildcards::detail::match_enum;
 
-  SECTION("")
+  SECTION(R"(matching "[a]")")
   {
     constexpr char pattern[] = "[a]";
 
@@ -128,7 +128,7 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
                   "");
   }
 
-  SECTION("")
+  SECTION(R"(matching "[abc]")")
   {
     constexpr char pattern[] = "[abc]";
 
@@ -150,7 +150,7 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
                   "");
   }
 
-  SECTION("")
+  SECTION(R"(matching "[]]")")
   {
     constexpr char pattern[] = "[]]";
 
@@ -166,7 +166,7 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
                   "");
   }
 
-  SECTION("")
+  SECTION(R"(matching "[]abc]")")
   {
     constexpr char pattern[] = "[]abc]";
 
@@ -191,7 +191,7 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
                   "");
   }
 
-  SECTION("")
+  SECTION(R"(matching "[!a]")")
   {
     constexpr char pattern[] = "[!a]";
 
@@ -207,7 +207,7 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
                   "");
   }
 
-  SECTION("")
+  SECTION(R"(matching "[!abc]")")
   {
     constexpr char pattern[] = "[!abc]";
 
@@ -229,7 +229,7 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
                   "");
   }
 
-  SECTION("")
+  SECTION(R"(matching "[!]]")")
   {
     constexpr char pattern[] = "[!]]";
 
@@ -245,7 +245,7 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
                   "");
   }
 
-  SECTION("")
+  SECTION(R"(matching "[!]abc]")")
   {
     constexpr char pattern[] = "[!]abc]";
 
@@ -275,7 +275,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 {
   using wildcards::match;
 
-  SECTION("match with an empty pattern")
+  SECTION(R"(matching "")")
   {
     constexpr char pattern1[] = "";
     constexpr char pattern2[] = R"(\)";
@@ -287,7 +287,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match("Anything", pattern2), "");
   }
 
-  SECTION(R"(match with "A")")
+  SECTION(R"(matching "A")")
   {
     constexpr char pattern1[] = "A";
     constexpr char pattern2[] = R"(A\)";
@@ -320,7 +320,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match("Something", pattern4), "");
   }
 
-  SECTION(R"(match with "Hello!")")
+  SECTION(R"(matching "Hello!")")
   {
     constexpr char pattern1[] = "Hello!";
     constexpr char pattern2[] = R"(Hello!\)";
@@ -358,7 +358,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match("Hello!Hello!", pattern4), "");
   }
 
-  SECTION(R"(match with "*")")
+  SECTION(R"(matching "*")")
   {
     constexpr char pattern1[] = "*";
     constexpr char pattern2[] = R"(*\)";
@@ -381,7 +381,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match("Anything", pattern4), "");
   }
 
-  SECTION(R"(match with "?")")
+  SECTION(R"(matching "?")")
   {
     constexpr char pattern1[] = "?";
     constexpr char pattern2[] = R"(?\)";
@@ -414,7 +414,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match("Something", pattern4), "");
   }
 
-  SECTION(R"(match with "H?llo,*W*!")")
+  SECTION(R"(matching "H?llo,*W*!")")
   {
     constexpr char pattern[] = "H?llo,*W*!";
 
@@ -433,7 +433,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match("Hello, World!?", pattern), "");
   }
 
-  SECTION(R"zzz(match with R"(\\\* *\? \*\\)")zzz")
+  SECTION(R"zzz(matching R"(\\\* *\? \*\\)")zzz")
   {
     constexpr char pattern1[] = R"(\\\* *\? \*\\)";
     constexpr char pattern2[] = R"([\][*] *[?] [*][\])";
@@ -460,35 +460,35 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match(R"( Hello? *\)", pattern2), "");
   }
 
-  SECTION(R"(match with u"H?llo,*W*!")")
+  SECTION(R"(matching u"H?llo,*W*!")")
   {
     constexpr char16_t pattern[] = u"H?llo,*W*!";
 
     static_assert(match(u"Hello, World!", pattern), "");
   }
 
-  SECTION(R"(match with U"H?llo,*W*!")")
+  SECTION(R"(matching U"H?llo,*W*!")")
   {
     constexpr char32_t pattern[] = U"H?llo,*W*!";
 
     static_assert(match(U"Hello, World!", pattern), "");
   }
 
-  SECTION(R"(match with L"H?llo,*W*!")")
+  SECTION(R"(matching L"H?llo,*W*!")")
   {
     constexpr wchar_t pattern[] = L"H?llo,*W*!";
 
     static_assert(match(L"Hello, World!", pattern), "");
   }
 
-  SECTION(R"(match with "H_llo,%W%!")")
+  SECTION(R"(matching "H_llo,%W%!")")
   {
     constexpr char pattern[] = "H_llo,%W%!";
 
     static_assert(match("Hello, World!", pattern, {'%', '_', '\\'}), "");
   }
 
-  SECTION(R"(match with "H?llo,*W*!"_sv)")
+  SECTION(R"(matching "H?llo,*W*!"_sv)")
   {
     using namespace cx::literals;
 
@@ -497,7 +497,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match("Hello, World!"_sv, pattern), "");
   }
 
-  SECTION(R"(match with u"H?llo,*W*!"_sv)")
+  SECTION(R"(matching u"H?llo,*W*!"_sv)")
   {
     using namespace cx::literals;
 
@@ -506,7 +506,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match(u"Hello, World!"_sv, pattern), "");
   }
 
-  SECTION(R"(match with U"H?llo,*W*!"_sv)")
+  SECTION(R"(matching U"H?llo,*W*!"_sv)")
   {
     using namespace cx::literals;
 
@@ -515,7 +515,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match(U"Hello, World!"_sv, pattern), "");
   }
 
-  SECTION(R"(match with L"H?llo,*W*!"_sv)")
+  SECTION(R"(matching L"H?llo,*W*!"_sv)")
   {
     using namespace cx::literals;
 
@@ -524,7 +524,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match(L"Hello, World!"_sv, pattern), "");
   }
 
-  SECTION(R"(match with "H_llo,%W%!"_sv)")
+  SECTION(R"(matching "H_llo,%W%!"_sv)")
   {
     using namespace cx::literals;
 
@@ -533,7 +533,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match("Hello, World!"_sv, pattern, {'%', '_', '\\'}), "");
   }
 
-  SECTION(R"(match with "11*7?"_sv)")
+  SECTION(R"(matching "11*7?"_sv)")
   {
     struct equal_to
     {
@@ -554,7 +554,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 #endif
   }
 
-  SECTION(R"(match with "11%7_"_sv)")
+  SECTION(R"(matching "11%7_"_sv)")
   {
     struct equal_to
     {
