@@ -15,18 +15,18 @@ template <typename T>
 struct cards
 {
   constexpr cards(T a, T s, T e)
-      : anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}, enum_enabled{false}
+      : anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}, set_enabled{false}
   {
   }
 
-  constexpr cards(T a, T s, T e, T eo, T ec, T ee)
+  constexpr cards(T a, T s, T e, T so, T sc, T se)
       : anything{std::move(a)},
         single{std::move(s)},
         escape{std::move(e)},
-        enum_enabled{true},
-        enum_open{std::move(eo)},
-        enum_close{std::move(ec)},
-        enum_exclusion{std::move(ee)}
+        set_enabled{true},
+        set_open{std::move(so)},
+        set_close{std::move(sc)},
+        set_exclusion{std::move(se)}
   {
   }
 
@@ -34,10 +34,10 @@ struct cards
   T single;
   T escape;
 
-  bool enum_enabled;
-  T enum_open;
-  T enum_close;
-  T enum_exclusion;
+  bool set_enabled;
+  T set_open;
+  T set_close;
+  T set_exclusion;
 };
 
 enum class cards_type
@@ -50,23 +50,23 @@ template <>
 struct cards<char>
 {
   constexpr cards(cards_type type = cards_type::extended)
-      : enum_enabled{type == cards_type::extended}
+      : set_enabled{type == cards_type::extended}
   {
   }
 
   constexpr cards(char a, char s, char e)
-      : anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}, enum_enabled{false}
+      : anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}, set_enabled{false}
   {
   }
 
-  constexpr cards(char a, char s, char e, char eo, char ec, char ee)
+  constexpr cards(char a, char s, char e, char so, char sc, char se)
       : anything{std::move(a)},
         single{std::move(s)},
         escape{std::move(e)},
-        enum_enabled{true},
-        enum_open{std::move(eo)},
-        enum_close{std::move(ec)},
-        enum_exclusion{std::move(ee)}
+        set_enabled{true},
+        set_open{std::move(so)},
+        set_close{std::move(sc)},
+        set_exclusion{std::move(se)}
   {
   }
 
@@ -74,33 +74,33 @@ struct cards<char>
   char single{'?'};
   char escape{'\\'};
 
-  bool enum_enabled{true};
-  char enum_open{'['};
-  char enum_close{']'};
-  char enum_exclusion{'!'};
+  bool set_enabled{true};
+  char set_open{'['};
+  char set_close{']'};
+  char set_exclusion{'!'};
 };
 
 template <>
 struct cards<char16_t>
 {
   constexpr cards(cards_type type = cards_type::extended)
-      : enum_enabled{type == cards_type::extended}
+      : set_enabled{type == cards_type::extended}
   {
   }
 
   constexpr cards(char16_t a, char16_t s, char16_t e)
-      : anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}, enum_enabled{false}
+      : anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}, set_enabled{false}
   {
   }
 
-  constexpr cards(char16_t a, char16_t s, char16_t e, char16_t eo, char16_t ec, char16_t ee)
+  constexpr cards(char16_t a, char16_t s, char16_t e, char16_t so, char16_t sc, char16_t se)
       : anything{std::move(a)},
         single{std::move(s)},
         escape{std::move(e)},
-        enum_enabled{true},
-        enum_open{std::move(eo)},
-        enum_close{std::move(ec)},
-        enum_exclusion{std::move(ee)}
+        set_enabled{true},
+        set_open{std::move(so)},
+        set_close{std::move(sc)},
+        set_exclusion{std::move(se)}
   {
   }
 
@@ -108,33 +108,33 @@ struct cards<char16_t>
   char16_t single{u'?'};
   char16_t escape{u'\\'};
 
-  bool enum_enabled{true};
-  char16_t enum_open{u'['};
-  char16_t enum_close{u']'};
-  char16_t enum_exclusion{u'!'};
+  bool set_enabled{true};
+  char16_t set_open{u'['};
+  char16_t set_close{u']'};
+  char16_t set_exclusion{u'!'};
 };
 
 template <>
 struct cards<char32_t>
 {
   constexpr cards(cards_type type = cards_type::extended)
-      : enum_enabled{type == cards_type::extended}
+      : set_enabled{type == cards_type::extended}
   {
   }
 
   constexpr cards(char32_t a, char32_t s, char32_t e)
-      : anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}, enum_enabled{false}
+      : anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}, set_enabled{false}
   {
   }
 
-  constexpr cards(char32_t a, char32_t s, char32_t e, char32_t eo, char32_t ec, char32_t ee)
+  constexpr cards(char32_t a, char32_t s, char32_t e, char32_t so, char32_t sc, char32_t se)
       : anything{std::move(a)},
         single{std::move(s)},
         escape{std::move(e)},
-        enum_enabled{true},
-        enum_open{std::move(eo)},
-        enum_close{std::move(ec)},
-        enum_exclusion{std::move(ee)}
+        set_enabled{true},
+        set_open{std::move(so)},
+        set_close{std::move(sc)},
+        set_exclusion{std::move(se)}
   {
   }
 
@@ -142,33 +142,33 @@ struct cards<char32_t>
   char32_t single{U'?'};
   char32_t escape{U'\\'};
 
-  bool enum_enabled{true};
-  char32_t enum_open{U'['};
-  char32_t enum_close{U']'};
-  char32_t enum_exclusion{U'!'};
+  bool set_enabled{true};
+  char32_t set_open{U'['};
+  char32_t set_close{U']'};
+  char32_t set_exclusion{U'!'};
 };
 
 template <>
 struct cards<wchar_t>
 {
   constexpr cards(cards_type type = cards_type::extended)
-      : enum_enabled{type == cards_type::extended}
+      : set_enabled{type == cards_type::extended}
   {
   }
 
   constexpr cards(wchar_t a, wchar_t s, wchar_t e)
-      : anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}, enum_enabled{false}
+      : anything{std::move(a)}, single{std::move(s)}, escape{std::move(e)}, set_enabled{false}
   {
   }
 
-  constexpr cards(wchar_t a, wchar_t s, wchar_t e, wchar_t eo, wchar_t ec, wchar_t ee)
+  constexpr cards(wchar_t a, wchar_t s, wchar_t e, wchar_t so, wchar_t sc, wchar_t se)
       : anything{std::move(a)},
         single{std::move(s)},
         escape{std::move(e)},
-        enum_enabled{true},
-        enum_open{std::move(eo)},
-        enum_close{std::move(ec)},
-        enum_exclusion{std::move(ee)}
+        set_enabled{true},
+        set_open{std::move(so)},
+        set_close{std::move(sc)},
+        set_exclusion{std::move(se)}
   {
   }
 
@@ -176,10 +176,10 @@ struct cards<wchar_t>
   wchar_t single{L'?'};
   wchar_t escape{L'\\'};
 
-  bool enum_enabled{true};
-  wchar_t enum_open{L'['};
-  wchar_t enum_close{L']'};
-  wchar_t enum_exclusion{L'!'};
+  bool set_enabled{true};
+  wchar_t set_open{L'['};
+  wchar_t set_close{L']'};
+  wchar_t set_exclusion{L'!'};
 };
 
 template <typename T>
@@ -189,10 +189,10 @@ constexpr cards<T> make_cards(T&& a, T&& s, T&& e)
 }
 
 template <typename T>
-constexpr cards<T> make_cards(T&& a, T&& s, T&& e, T&& eo, T&& ec, T&& ee)
+constexpr cards<T> make_cards(T&& a, T&& s, T&& e, T&& so, T&& sc, T&& se)
 {
   return {std::forward<T>(a),  std::forward<T>(s),  std::forward<T>(e),
-          std::forward<T>(eo), std::forward<T>(ec), std::forward<T>(ee)};
+          std::forward<T>(so), std::forward<T>(sc), std::forward<T>(se)};
 }
 
 }  // namespace wildcards
