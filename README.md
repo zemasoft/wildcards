@@ -9,8 +9,8 @@
 Introduction
 ============
 
-Wildcards is a simple C++ library which implements matching using wildcards.
-It supports both runtime and compile time execution.
+Wildcards is a simple C++ header-only library which implements matching using
+wildcards. It supports both runtime and compile time execution.
 
 | Pattern  | Meaning                             |
 | -------- | ----------------------------------- |
@@ -25,9 +25,10 @@ Set cannot be empty. Any special character loses its special meaning in a set.
 Requirements
 ============
 
-Wildcards require a C++11 compiler to build. It has been tested with gcc 5.5,
-gcc 6.4, gcc 7.3, clang 4.0 (with libcxx), clang 5.0 (with libcxx), Xcode 9.0,
-Visual Studio 14 2015 and Visual Studio 15 2017.
+Wildcards requires a C++11 compiler to build. It has no external dependencies
+and has been tested with gcc 5.5, gcc 6.4, gcc 7.3, clang 4.0 (with libcxx),
+clang 5.0 (with libcxx), Xcode 9.0, Visual Studio 14 2015
+and Visual Studio 15 2017.
 
 Usage
 =====
