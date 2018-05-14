@@ -14,7 +14,7 @@ TEST_CASE("wildcards::detail::is_set() is compliant", "[wildcards::detail::is_se
 {
   using wildcards::detail::is_set;
 
-  SECTION("checking valid sets")
+  SECTION("checking sets without exclusion")
   {
     constexpr char pattern1[] = "[a]";
     constexpr char pattern2[] = "[abc]";
@@ -45,7 +45,7 @@ TEST_CASE("wildcards::detail::is_set() is compliant", "[wildcards::detail::is_se
     static_assert(is_set(cx::begin(pattern11), cx::end(pattern11)), "");
   }
 
-  SECTION("checking valid sets with exclusion")
+  SECTION("checking sets with exclusion")
   {
     constexpr char pattern1[] = "[!a]";
     constexpr char pattern2[] = "[!abc]";
@@ -76,7 +76,7 @@ TEST_CASE("wildcards::detail::is_set() is compliant", "[wildcards::detail::is_se
     static_assert(is_set(cx::begin(pattern11), cx::end(pattern11)), "");
   }
 
-  SECTION("checking invalid sets")
+  SECTION("checking non-sets")
   {
     constexpr char pattern1[] = "";
     constexpr char pattern2[] = "a";
@@ -105,6 +105,104 @@ TEST_CASE("wildcards::detail::is_set() is compliant", "[wildcards::detail::is_se
     static_assert(!is_set(cx::begin(pattern9), cx::end(pattern9)), "");
     static_assert(!is_set(cx::begin(pattern10), cx::end(pattern10)), "");
     static_assert(!is_set(cx::begin(pattern11), cx::end(pattern11)), "");
+  }
+}
+
+TEST_CASE("wildcards::detail::skip_set() is compliant", "[wildcards::detail::skip_set]")
+{
+  using wildcards::detail::skip_set;
+
+  SECTION("skipping sets without exclusion")
+  {
+    constexpr char pattern1[] = "[a]";
+    constexpr char pattern2[] = "[abc]";
+
+    constexpr char pattern3[] = "[]]";
+    constexpr char pattern4[] = "[]a]";
+    constexpr char pattern5[] = "[]abc]";
+    constexpr char pattern6[] = "[][]";
+    constexpr char pattern7[] = "[][a]";
+    constexpr char pattern8[] = "[][abc]";
+
+    constexpr char pattern9[] = "[[]";
+    constexpr char pattern10[] = "[[a]";
+    constexpr char pattern11[] = "[[abc]";
+
+    static_assert(skip_set(cx::begin(pattern1), cx::end(pattern1)) == cx::end(pattern1) - 1, "");
+    static_assert(skip_set(cx::begin(pattern2), cx::end(pattern2)) == cx::end(pattern2) - 1, "");
+
+    static_assert(skip_set(cx::begin(pattern3), cx::end(pattern3)) == cx::end(pattern3) - 1, "");
+    static_assert(skip_set(cx::begin(pattern4), cx::end(pattern4)) == cx::end(pattern4) - 1, "");
+    static_assert(skip_set(cx::begin(pattern5), cx::end(pattern5)) == cx::end(pattern5) - 1, "");
+    static_assert(skip_set(cx::begin(pattern6), cx::end(pattern6)) == cx::end(pattern6) - 1, "");
+    static_assert(skip_set(cx::begin(pattern7), cx::end(pattern7)) == cx::end(pattern7) - 1, "");
+    static_assert(skip_set(cx::begin(pattern8), cx::end(pattern8)) == cx::end(pattern8) - 1, "");
+
+    static_assert(skip_set(cx::begin(pattern9), cx::end(pattern9)) == cx::end(pattern9) - 1, "");
+    static_assert(skip_set(cx::begin(pattern10), cx::end(pattern10)) == cx::end(pattern10) - 1, "");
+    static_assert(skip_set(cx::begin(pattern11), cx::end(pattern11)) == cx::end(pattern11) - 1, "");
+  }
+
+  SECTION("skipping sets with exclusion")
+  {
+    constexpr char pattern1[] = "[!a]";
+    constexpr char pattern2[] = "[!abc]";
+
+    constexpr char pattern3[] = "[!]]";
+    constexpr char pattern4[] = "[!]a]";
+    constexpr char pattern5[] = "[!]abc]";
+    constexpr char pattern6[] = "[!][]";
+    constexpr char pattern7[] = "[!][a]";
+    constexpr char pattern8[] = "[!][abc]";
+
+    constexpr char pattern9[] = "[![]";
+    constexpr char pattern10[] = "[![a]";
+    constexpr char pattern11[] = "[![abc]";
+
+    static_assert(skip_set(cx::begin(pattern1), cx::end(pattern1)) == cx::end(pattern1) - 1, "");
+    static_assert(skip_set(cx::begin(pattern2), cx::end(pattern2)) == cx::end(pattern2) - 1, "");
+
+    static_assert(skip_set(cx::begin(pattern3), cx::end(pattern3)) == cx::end(pattern3) - 1, "");
+    static_assert(skip_set(cx::begin(pattern4), cx::end(pattern4)) == cx::end(pattern4) - 1, "");
+    static_assert(skip_set(cx::begin(pattern5), cx::end(pattern5)) == cx::end(pattern5) - 1, "");
+    static_assert(skip_set(cx::begin(pattern6), cx::end(pattern6)) == cx::end(pattern6) - 1, "");
+    static_assert(skip_set(cx::begin(pattern7), cx::end(pattern7)) == cx::end(pattern7) - 1, "");
+    static_assert(skip_set(cx::begin(pattern8), cx::end(pattern8)) == cx::end(pattern8) - 1, "");
+
+    static_assert(skip_set(cx::begin(pattern9), cx::end(pattern9)) == cx::end(pattern9) - 1, "");
+    static_assert(skip_set(cx::begin(pattern10), cx::end(pattern10)) == cx::end(pattern10) - 1, "");
+    static_assert(skip_set(cx::begin(pattern11), cx::end(pattern11)) == cx::end(pattern11) - 1, "");
+  }
+
+  SECTION("skipping non-sets")
+  {
+    char pattern1[] = "";
+    char pattern2[] = "a";
+    char pattern3[] = "!";
+
+    char pattern4[] = "[";
+    char pattern5[] = "[a";
+    char pattern6[] = "[]";
+    char pattern7[] = "[]a";
+
+    char pattern8[] = "[!";
+    char pattern9[] = "[!a";
+    char pattern10[] = "[!]";
+    char pattern11[] = "[!]a";
+
+    REQUIRE_THROWS(skip_set(cx::begin(pattern1), cx::end(pattern1)));
+    REQUIRE_THROWS(skip_set(cx::begin(pattern2), cx::end(pattern2)));
+    REQUIRE_THROWS(skip_set(cx::begin(pattern3), cx::end(pattern3)));
+
+    REQUIRE_THROWS(skip_set(cx::begin(pattern4), cx::end(pattern4)));
+    REQUIRE_THROWS(skip_set(cx::begin(pattern5), cx::end(pattern5)));
+    REQUIRE_THROWS(skip_set(cx::begin(pattern6), cx::end(pattern6)));
+    REQUIRE_THROWS(skip_set(cx::begin(pattern7), cx::end(pattern7)));
+
+    REQUIRE_THROWS(skip_set(cx::begin(pattern8), cx::end(pattern8)));
+    REQUIRE_THROWS(skip_set(cx::begin(pattern9), cx::end(pattern9)));
+    REQUIRE_THROWS(skip_set(cx::begin(pattern10), cx::end(pattern10)));
+    REQUIRE_THROWS(skip_set(cx::begin(pattern11), cx::end(pattern11)));
   }
 }
 

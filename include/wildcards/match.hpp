@@ -29,6 +29,23 @@ constexpr bool throw_logic_error(const char* what_arg)
   return what_arg == nullptr ? false : throw std::logic_error(what_arg);
 }
 
+template <typename T>
+constexpr T throw_logic_error(T t, const char* what_arg)
+{
+  return what_arg == nullptr ? t : throw std::logic_error(what_arg);
+}
+
+constexpr bool throw_invalid_argument(const char* what_arg)
+{
+  return what_arg == nullptr ? false : throw std::invalid_argument(what_arg);
+}
+
+template <typename T>
+constexpr T throw_invalid_argument(T t, const char* what_arg)
+{
+  return what_arg == nullptr ? t : throw std::invalid_argument(what_arg);
+}
+
 #endif
 
 enum class is_set_state
@@ -113,14 +130,114 @@ constexpr bool is_set(
 #endif  // cfg_HAS_CONSTEXPR14
 }
 
-#if !cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
-
-constexpr bool throw_invalid_argument(const char* what_arg)
+enum class skip_set_state
 {
-  return what_arg == nullptr ? false : throw std::invalid_argument(what_arg);
-}
+  open,
+  exclusion_or_first_item,
+  first_item,
+  next_item
+};
 
+template <typename PatternIterator>
+constexpr PatternIterator skip_set(
+    PatternIterator p, PatternIterator pend,
+    const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
+    skip_set_state state = skip_set_state::open)
+{
+#if cfg_HAS_CONSTEXPR14
+
+  if (!c.set_enabled)
+  {
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+    throw std::invalid_argument("The use of sets is disabled");
+#else
+    return throw_invalid_argument(p, "The use of sets is disabled");
 #endif
+  }
+
+  if (p == pend)
+  {
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+    throw std::invalid_argument("The given pattern is not a valid set");
+#else
+    return throw_invalid_argument(p, "The given pattern is not a valid set");
+#endif
+  }
+
+  switch (state)
+  {
+    case skip_set_state::open:
+      if (*p == c.set_open)
+      {
+        return skip_set(cx::next(p), pend, c, skip_set_state::exclusion_or_first_item);
+      }
+
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+      throw std::invalid_argument("The given pattern is not a valid set");
+#else
+      return throw_invalid_argument(p, "The given pattern is not a valid set");
+#endif
+
+    case skip_set_state::exclusion_or_first_item:
+      if (*p == c.set_exclusion)
+      {
+        return skip_set(cx::next(p), pend, c, skip_set_state::first_item);
+      }
+
+      return skip_set(cx::next(p), pend, c, skip_set_state::next_item);
+
+    case skip_set_state::first_item:
+      return skip_set(cx::next(p), pend, c, skip_set_state::next_item);
+
+    case skip_set_state::next_item:
+      if (*p == c.set_close)
+      {
+        return cx::next(p);
+      }
+
+      return skip_set(cx::next(p), pend, c, skip_set_state::next_item);
+
+    default:
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+      throw std::logic_error(
+          "The program execution should never end up here throwing this exception");
+#else
+      return throw_logic_error(
+          p, "The program execution should never end up here throwing this exception");
+#endif
+  }
+
+#else  // !cfg_HAS_CONSTEXPR14
+
+  return !c.set_enabled
+             ? throw std::invalid_argument("The use of sets is disabled")
+             : p == pend
+                   ? throw std::invalid_argument("The given pattern is not a valid set")
+                   :
+
+                   state == skip_set_state::open
+                       ? *p == c.set_open
+                             ? skip_set(cx::next(p), pend, c,
+                                        skip_set_state::exclusion_or_first_item)
+                             : throw std::invalid_argument("The given pattern is not a valid set")
+                       :
+
+                       state == skip_set_state::exclusion_or_first_item
+                           ? *p == c.set_exclusion
+                                 ? skip_set(cx::next(p), pend, c, skip_set_state::first_item)
+                                 : skip_set(cx::next(p), pend, c, skip_set_state::next_item)
+                           : state == skip_set_state::first_item
+                                 ? skip_set(cx::next(p), pend, c, skip_set_state::next_item)
+                                 : state == skip_set_state::next_item
+                                       ? *p == c.set_close ? cx::next(p)
+                                                           : skip_set(cx::next(p), pend, c,
+                                                                      skip_set_state::next_item)
+                                       : throw std::logic_error(
+                                             "The program execution should never end up "
+                                             "here throwing this exception");
+
+#endif  // cfg_HAS_CONSTEXPR14
+}
 
 enum class match_set_state
 {
