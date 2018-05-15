@@ -14,7 +14,7 @@ TEST_CASE("wildcards::detail::is_set() is compliant", "[wildcards::detail::is_se
 {
   using wildcards::detail::is_set;
 
-  SECTION("checking sets without exclusion")
+  SECTION("checking sets without not")
   {
     constexpr char pattern1[] = "[a]";
     constexpr char pattern2[] = "[abc]";
@@ -45,7 +45,7 @@ TEST_CASE("wildcards::detail::is_set() is compliant", "[wildcards::detail::is_se
     static_assert(is_set(cx::begin(pattern11), cx::end(pattern11)), "");
   }
 
-  SECTION("checking sets with exclusion")
+  SECTION("checking sets with not")
   {
     constexpr char pattern1[] = "[!a]";
     constexpr char pattern2[] = "[!abc]";
@@ -112,7 +112,7 @@ TEST_CASE("wildcards::detail::skip_set() is compliant", "[wildcards::detail::ski
 {
   using wildcards::detail::skip_set;
 
-  SECTION("skipping sets without exclusion")
+  SECTION("skipping sets without not")
   {
     constexpr char pattern1[] = "[a]";
     constexpr char pattern2[] = "[abc]";
@@ -143,7 +143,7 @@ TEST_CASE("wildcards::detail::skip_set() is compliant", "[wildcards::detail::ski
     static_assert(skip_set(cx::begin(pattern11), cx::end(pattern11)) == cx::end(pattern11) - 1, "");
   }
 
-  SECTION("skipping sets with exclusion")
+  SECTION("skipping sets with not")
   {
     constexpr char pattern1[] = "[!a]";
     constexpr char pattern2[] = "[!abc]";

@@ -19,14 +19,14 @@ struct cards
   {
   }
 
-  constexpr cards(T a, T s, T e, T so, T sc, T se)
+  constexpr cards(T a, T s, T e, T so, T sc, T sn)
       : anything{std::move(a)},
         single{std::move(s)},
         escape{std::move(e)},
         set_enabled{true},
         set_open{std::move(so)},
         set_close{std::move(sc)},
-        set_exclusion{std::move(se)}
+        set_not{std::move(sn)}
   {
   }
 
@@ -37,7 +37,7 @@ struct cards
   bool set_enabled;
   T set_open;
   T set_close;
-  T set_exclusion;
+  T set_not;
 };
 
 enum class cards_type
@@ -59,14 +59,14 @@ struct cards<char>
   {
   }
 
-  constexpr cards(char a, char s, char e, char so, char sc, char se)
+  constexpr cards(char a, char s, char e, char so, char sc, char sn)
       : anything{std::move(a)},
         single{std::move(s)},
         escape{std::move(e)},
         set_enabled{true},
         set_open{std::move(so)},
         set_close{std::move(sc)},
-        set_exclusion{std::move(se)}
+        set_not{std::move(sn)}
   {
   }
 
@@ -77,7 +77,7 @@ struct cards<char>
   bool set_enabled{true};
   char set_open{'['};
   char set_close{']'};
-  char set_exclusion{'!'};
+  char set_not{'!'};
 };
 
 template <>
@@ -93,14 +93,14 @@ struct cards<char16_t>
   {
   }
 
-  constexpr cards(char16_t a, char16_t s, char16_t e, char16_t so, char16_t sc, char16_t se)
+  constexpr cards(char16_t a, char16_t s, char16_t e, char16_t so, char16_t sc, char16_t sn)
       : anything{std::move(a)},
         single{std::move(s)},
         escape{std::move(e)},
         set_enabled{true},
         set_open{std::move(so)},
         set_close{std::move(sc)},
-        set_exclusion{std::move(se)}
+        set_not{std::move(sn)}
   {
   }
 
@@ -111,7 +111,7 @@ struct cards<char16_t>
   bool set_enabled{true};
   char16_t set_open{u'['};
   char16_t set_close{u']'};
-  char16_t set_exclusion{u'!'};
+  char16_t set_not{u'!'};
 };
 
 template <>
@@ -127,14 +127,14 @@ struct cards<char32_t>
   {
   }
 
-  constexpr cards(char32_t a, char32_t s, char32_t e, char32_t so, char32_t sc, char32_t se)
+  constexpr cards(char32_t a, char32_t s, char32_t e, char32_t so, char32_t sc, char32_t sn)
       : anything{std::move(a)},
         single{std::move(s)},
         escape{std::move(e)},
         set_enabled{true},
         set_open{std::move(so)},
         set_close{std::move(sc)},
-        set_exclusion{std::move(se)}
+        set_not{std::move(sn)}
   {
   }
 
@@ -145,7 +145,7 @@ struct cards<char32_t>
   bool set_enabled{true};
   char32_t set_open{U'['};
   char32_t set_close{U']'};
-  char32_t set_exclusion{U'!'};
+  char32_t set_not{U'!'};
 };
 
 template <>
@@ -161,14 +161,14 @@ struct cards<wchar_t>
   {
   }
 
-  constexpr cards(wchar_t a, wchar_t s, wchar_t e, wchar_t so, wchar_t sc, wchar_t se)
+  constexpr cards(wchar_t a, wchar_t s, wchar_t e, wchar_t so, wchar_t sc, wchar_t sn)
       : anything{std::move(a)},
         single{std::move(s)},
         escape{std::move(e)},
         set_enabled{true},
         set_open{std::move(so)},
         set_close{std::move(sc)},
-        set_exclusion{std::move(se)}
+        set_not{std::move(sn)}
   {
   }
 
@@ -179,7 +179,7 @@ struct cards<wchar_t>
   bool set_enabled{true};
   wchar_t set_open{L'['};
   wchar_t set_close{L']'};
-  wchar_t set_exclusion{L'!'};
+  wchar_t set_not{L'!'};
 };
 
 template <typename T>
@@ -189,10 +189,10 @@ constexpr cards<T> make_cards(T&& a, T&& s, T&& e)
 }
 
 template <typename T>
-constexpr cards<T> make_cards(T&& a, T&& s, T&& e, T&& so, T&& sc, T&& se)
+constexpr cards<T> make_cards(T&& a, T&& s, T&& e, T&& so, T&& sc, T&& sn)
 {
   return {std::forward<T>(a),  std::forward<T>(s),  std::forward<T>(e),
-          std::forward<T>(so), std::forward<T>(sc), std::forward<T>(se)};
+          std::forward<T>(so), std::forward<T>(sc), std::forward<T>(sn)};
 }
 
 }  // namespace wildcards
