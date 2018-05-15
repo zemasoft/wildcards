@@ -51,9 +51,9 @@ constexpr T throw_invalid_argument(T t, const char* what_arg)
 enum class is_set_state
 {
   open,
-  not_or_first_item,
-  first_item,
-  next_item
+  not_or_first,
+  first,
+  next
 };
 
 template <typename PatternIterator>
@@ -74,29 +74,29 @@ constexpr bool is_set(
     case is_set_state::open:
       if (*p == c.set_open)
       {
-        return is_set(cx::next(p), pend, c, is_set_state::not_or_first_item);
+        return is_set(cx::next(p), pend, c, is_set_state::not_or_first);
       }
 
       return false;
 
-    case is_set_state::not_or_first_item:
+    case is_set_state::not_or_first:
       if (*p == c.set_not)
       {
-        return is_set(cx::next(p), pend, c, is_set_state::first_item);
+        return is_set(cx::next(p), pend, c, is_set_state::first);
       }
 
-      return is_set(cx::next(p), pend, c, is_set_state::next_item);
+      return is_set(cx::next(p), pend, c, is_set_state::next);
 
-    case is_set_state::first_item:
-      return is_set(cx::next(p), pend, c, is_set_state::next_item);
+    case is_set_state::first:
+      return is_set(cx::next(p), pend, c, is_set_state::next);
 
-    case is_set_state::next_item:
+    case is_set_state::next:
       if (*p == c.set_close)
       {
         return true;
       }
 
-      return is_set(cx::next(p), pend, c, is_set_state::next_item);
+      return is_set(cx::next(p), pend, c, is_set_state::next);
 
     default:
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
@@ -112,17 +112,17 @@ constexpr bool is_set(
 
   return c.set_enabled && p != pend &&
          (state == is_set_state::open
-              ? *p == c.set_open && is_set(cx::next(p), pend, c, is_set_state::not_or_first_item)
+              ? *p == c.set_open && is_set(cx::next(p), pend, c, is_set_state::not_or_first)
               :
 
-              state == is_set_state::not_or_first_item
-                  ? *p == c.set_not ? is_set(cx::next(p), pend, c, is_set_state::first_item)
-                                    : is_set(cx::next(p), pend, c, is_set_state::next_item)
-                  : state == is_set_state::first_item
-                        ? is_set(cx::next(p), pend, c, is_set_state::next_item)
-                        : state == is_set_state::next_item
+              state == is_set_state::not_or_first
+                  ? *p == c.set_not ? is_set(cx::next(p), pend, c, is_set_state::first)
+                                    : is_set(cx::next(p), pend, c, is_set_state::next)
+                  : state == is_set_state::first
+                        ? is_set(cx::next(p), pend, c, is_set_state::next)
+                        : state == is_set_state::next
                               ? *p == c.set_close ||
-                                    is_set(cx::next(p), pend, c, is_set_state::next_item)
+                                    is_set(cx::next(p), pend, c, is_set_state::next)
                               : throw std::logic_error("The program execution should never end up "
                                                        "here throwing this exception"));
 
@@ -132,9 +132,9 @@ constexpr bool is_set(
 enum class skip_set_state
 {
   open,
-  not_or_first_item,
-  first_item,
-  next_item
+  not_or_first,
+  first,
+  next
 };
 
 template <typename PatternIterator>
@@ -168,7 +168,7 @@ constexpr PatternIterator skip_set(
     case skip_set_state::open:
       if (*p == c.set_open)
       {
-        return skip_set(cx::next(p), pend, c, skip_set_state::not_or_first_item);
+        return skip_set(cx::next(p), pend, c, skip_set_state::not_or_first);
       }
 
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
@@ -177,24 +177,24 @@ constexpr PatternIterator skip_set(
       return throw_invalid_argument(p, "The given pattern is not a valid set");
 #endif
 
-    case skip_set_state::not_or_first_item:
+    case skip_set_state::not_or_first:
       if (*p == c.set_not)
       {
-        return skip_set(cx::next(p), pend, c, skip_set_state::first_item);
+        return skip_set(cx::next(p), pend, c, skip_set_state::first);
       }
 
-      return skip_set(cx::next(p), pend, c, skip_set_state::next_item);
+      return skip_set(cx::next(p), pend, c, skip_set_state::next);
 
-    case skip_set_state::first_item:
-      return skip_set(cx::next(p), pend, c, skip_set_state::next_item);
+    case skip_set_state::first:
+      return skip_set(cx::next(p), pend, c, skip_set_state::next);
 
-    case skip_set_state::next_item:
+    case skip_set_state::next:
       if (*p == c.set_close)
       {
         return cx::next(p);
       }
 
-      return skip_set(cx::next(p), pend, c, skip_set_state::next_item);
+      return skip_set(cx::next(p), pend, c, skip_set_state::next);
 
     default:
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
@@ -216,20 +216,19 @@ constexpr PatternIterator skip_set(
 
                    state == skip_set_state::open
                        ? *p == c.set_open
-                             ? skip_set(cx::next(p), pend, c, skip_set_state::not_or_first_item)
+                             ? skip_set(cx::next(p), pend, c, skip_set_state::not_or_first)
                              : throw std::invalid_argument("The given pattern is not a valid set")
                        :
 
-                       state == skip_set_state::not_or_first_item
-                           ? *p == c.set_not
-                                 ? skip_set(cx::next(p), pend, c, skip_set_state::first_item)
-                                 : skip_set(cx::next(p), pend, c, skip_set_state::next_item)
-                           : state == skip_set_state::first_item
-                                 ? skip_set(cx::next(p), pend, c, skip_set_state::next_item)
-                                 : state == skip_set_state::next_item
-                                       ? *p == c.set_close ? cx::next(p)
-                                                           : skip_set(cx::next(p), pend, c,
-                                                                      skip_set_state::next_item)
+                       state == skip_set_state::not_or_first
+                           ? *p == c.set_not ? skip_set(cx::next(p), pend, c, skip_set_state::first)
+                                             : skip_set(cx::next(p), pend, c, skip_set_state::next)
+                           : state == skip_set_state::first
+                                 ? skip_set(cx::next(p), pend, c, skip_set_state::next)
+                                 : state == skip_set_state::next
+                                       ? *p == c.set_close
+                                             ? cx::next(p)
+                                             : skip_set(cx::next(p), pend, c, skip_set_state::next)
                                        : throw std::logic_error(
                                              "The program execution should never end up "
                                              "here throwing this exception");
@@ -240,11 +239,11 @@ constexpr PatternIterator skip_set(
 enum class match_set_state
 {
   open,
-  not_or_first_in_item,
-  first_out_item,
-  skip_next_in_item,
-  next_in_item,
-  next_out_item
+  not_or_first_in,
+  first_out,
+  skip_next_in,
+  next_in,
+  next_out
 };
 
 template <typename SequenceIterator, typename PatternIterator,
@@ -279,8 +278,7 @@ constexpr bool match_set(
     case match_set_state::open:
       if (*p == c.set_open)
       {
-        return match_set(s, send, cx::next(p), pend, c, equal_to,
-                         match_set_state::not_or_first_in_item);
+        return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::not_or_first_in);
       }
 
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
@@ -289,10 +287,10 @@ constexpr bool match_set(
       return throw_invalid_argument("The given pattern is not a valid set");
 #endif
 
-    case match_set_state::not_or_first_in_item:
+    case match_set_state::not_or_first_in:
       if (*p == c.set_not)
       {
-        return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::first_out_item);
+        return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::first_out);
       }
 
       if (s == send)
@@ -302,21 +300,20 @@ constexpr bool match_set(
 
       if (equal_to(*s, *p))
       {
-        return match_set(s, send, cx::next(p), pend, c, equal_to,
-                         match_set_state::skip_next_in_item);
+        return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::skip_next_in);
       }
 
-      return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::next_in_item);
+      return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::next_in);
 
-    case match_set_state::first_out_item:
+    case match_set_state::first_out:
       if (s == send || equal_to(*s, *p))
       {
         return false;
       }
 
-      return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::next_out_item);
+      return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::next_out);
 
-    case match_set_state::skip_next_in_item:
+    case match_set_state::skip_next_in:
       if (*p == c.set_close)
       {
         if (s == send)
@@ -329,7 +326,7 @@ constexpr bool match_set(
 
       return match_set(s, send, cx::next(p), pend, c, equal_to, state);
 
-    case match_set_state::next_in_item:
+    case match_set_state::next_in:
       if (*p == c.set_close || s == send)
       {
         return false;
@@ -337,13 +334,12 @@ constexpr bool match_set(
 
       if (equal_to(*s, *p))
       {
-        return match_set(s, send, cx::next(p), pend, c, equal_to,
-                         match_set_state::skip_next_in_item);
+        return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::skip_next_in);
       }
 
       return match_set(s, send, cx::next(p), pend, c, equal_to, state);
 
-    case match_set_state::next_out_item:
+    case match_set_state::next_out:
       if (*p == c.set_close)
       {
         if (s == send)
@@ -380,37 +376,37 @@ constexpr bool match_set(
                    : state == match_set_state::open
                          ? *p == c.set_open
                                ? match_set(s, send, cx::next(p), pend, c, equal_to,
-                                           match_set_state::not_or_first_in_item)
+                                           match_set_state::not_or_first_in)
                                :
 
                                throw std::invalid_argument("The given pattern is not a valid set")
                          :
 
-                         state == match_set_state::not_or_first_in_item
+                         state == match_set_state::not_or_first_in
                              ? *p == c.set_not
                                    ? match_set(s, send, cx::next(p), pend, c, equal_to,
-                                               match_set_state::first_out_item)
+                                               match_set_state::first_out)
                                    :
 
                                    s != send &&
                                        (equal_to(*s, *p)
                                             ? match_set(s, send, cx::next(p), pend, c, equal_to,
-                                                        match_set_state::skip_next_in_item)
+                                                        match_set_state::skip_next_in)
                                             :
 
                                             match_set(s, send, cx::next(p), pend, c, equal_to,
-                                                      match_set_state::next_in_item))
+                                                      match_set_state::next_in))
 
                              :
 
-                             state == match_set_state::first_out_item
+                             state == match_set_state::first_out
                                  ? s != send && !equal_to(*s, *p) &&
                                        match_set(s, send, cx::next(p), pend, c, equal_to,
-                                                 match_set_state::next_out_item)
+                                                 match_set_state::next_out)
 
                                  :
 
-                                 state == match_set_state::skip_next_in_item
+                                 state == match_set_state::skip_next_in
                                      ? *p == c.set_close
                                            ?
 
@@ -422,14 +418,14 @@ constexpr bool match_set(
 
                                      :
 
-                                     state == match_set_state::next_in_item
+                                     state == match_set_state::next_in
                                          ? *p != c.set_close && s != send &&
                                                (equal_to(*s, *p)
                                                     ?
 
                                                     match_set(s, send, cx::next(p), pend, c,
                                                               equal_to,
-                                                              match_set_state::skip_next_in_item)
+                                                              match_set_state::skip_next_in)
                                                     :
 
                                                     match_set(s, send, cx::next(p), pend, c,
@@ -437,7 +433,7 @@ constexpr bool match_set(
 
                                          :
 
-                                         state == match_set_state::next_out_item
+                                         state == match_set_state::next_out
                                              ? *p == c.set_close
                                                    ?
 
@@ -500,10 +496,10 @@ constexpr bool match(
   }
 
   if (c.set_enabled && *p == c.set_open &&
-      detail::is_set(cx::next(p), pend, c, detail::is_set_state::not_or_first_item))
+      detail::is_set(cx::next(p), pend, c, detail::is_set_state::not_or_first))
   {
     return match_set(s, send, cx::next(p), pend, c, equal_to,
-                     detail::match_set_state::not_or_first_in_item);
+                     detail::match_set_state::not_or_first_in);
   }
 
   if (s != send && equal_to(*s, *p))
@@ -529,12 +525,10 @@ constexpr bool match(
                                : *p == c.escape
                                      ? match(s, send, cx::next(p), pend, c, equal_to, true)
                                      : c.set_enabled && *p == c.set_open &&
-                                               detail::is_set(
-                                                   cx::next(p), pend, c,
-                                                   detail::is_set_state::not_or_first_item)
-                                           ? match_set(
-                                                 s, send, cx::next(p), pend, c, equal_to,
-                                                 detail::match_set_state::not_or_first_in_item)
+                                               detail::is_set(cx::next(p), pend, c,
+                                                              detail::is_set_state::not_or_first)
+                                           ? match_set(s, send, cx::next(p), pend, c, equal_to,
+                                                       detail::match_set_state::not_or_first_in)
                                            : s != send && equal_to(*s, *p) &&
                                                  match(cx::next(s), send, cx::next(p), pend, c,
                                                        equal_to);
