@@ -176,19 +176,19 @@ TEST_CASE("wildcards::detail::skip_set() is compliant", "[wildcards::detail::ski
 
   SECTION("skipping non-sets")
   {
-    char pattern1[] = "";
-    char pattern2[] = "a";
-    char pattern3[] = "!";
+    const char pattern1[] = "";
+    const char pattern2[] = "a";
+    const char pattern3[] = "!";
 
-    char pattern4[] = "[";
-    char pattern5[] = "[a";
-    char pattern6[] = "[]";
-    char pattern7[] = "[]a";
+    const char pattern4[] = "[";
+    const char pattern5[] = "[a";
+    const char pattern6[] = "[]";
+    const char pattern7[] = "[]a";
 
-    char pattern8[] = "[!";
-    char pattern9[] = "[!a";
-    char pattern10[] = "[!]";
-    char pattern11[] = "[!]a";
+    const char pattern8[] = "[!";
+    const char pattern9[] = "[!a";
+    const char pattern10[] = "[!]";
+    const char pattern11[] = "[!]a";
 
     REQUIRE_THROWS(skip_set(cx::begin(pattern1), cx::end(pattern1)));
     REQUIRE_THROWS(skip_set(cx::begin(pattern2), cx::end(pattern2)));
@@ -370,22 +370,22 @@ TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::ma
 
   SECTION("matching non-sets")
   {
-    char pattern1[] = "";
-    char pattern2[] = "a";
-    char pattern3[] = "!";
+    const char pattern1[] = "";
+    const char pattern2[] = "ab";  // FIXME: should be "a"
+    const char pattern3[] = "!a";  // FIXME: should be "!"
 
-    char pattern4[] = "[";
-    char pattern5[] = "[a";
-    char pattern6[] = "[]";
-    char pattern7[] = "[]a";
+    const char pattern4[] = "[";
+    const char pattern5[] = "[a";
+    const char pattern6[] = "[]";
+    const char pattern7[] = "[]a";
 
-    char pattern8[] = "[!";
-    char pattern9[] = "[!a";
-    char pattern10[] = "[!]";
-    char pattern11[] = "[!]a";
+    const char pattern8[] = "[!";
+    const char pattern9[] = "[!a";
+    const char pattern10[] = "[!]";
+    const char pattern11[] = "[!]a";
 
-    char seq1[] = "a";
-    char seq2[] = "b";
+    const char seq1[] = "a";
+    const char seq2[] = "b";
 
     REQUIRE_THROWS(
         match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern1), cx::end(pattern1)));
