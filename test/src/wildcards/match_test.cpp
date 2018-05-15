@@ -367,6 +367,51 @@ TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::ma
     static_assert(match_set(cx::begin(seq6), cx::end(seq6), cx::begin(pattern), cx::end(pattern)),
                   "");
   }
+
+  SECTION("matching non-sets")
+  {
+    char pattern1[] = "";
+    char pattern2[] = "a";
+    char pattern3[] = "!";
+
+    char pattern4[] = "[";
+    char pattern5[] = "[a";
+    char pattern6[] = "[]";
+    char pattern7[] = "[]a";
+
+    char pattern8[] = "[!";
+    char pattern9[] = "[!a";
+    char pattern10[] = "[!]";
+    char pattern11[] = "[!]a";
+
+    char seq1[] = "a";
+    char seq2[] = "b";
+
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern1), cx::end(pattern1)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern2), cx::end(pattern2)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern3), cx::end(pattern3)));
+
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern4), cx::end(pattern4)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern5), cx::end(pattern5)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern6), cx::end(pattern6)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern7), cx::end(pattern7)));
+
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern8), cx::end(pattern8)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern9), cx::end(pattern9)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern10), cx::end(pattern10)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern11), cx::end(pattern11)));
+  }
 }
 
 TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
