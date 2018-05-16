@@ -129,7 +129,7 @@ constexpr bool is_set(
 #endif  // cfg_HAS_CONSTEXPR14
 }
 
-enum class skip_set_state
+enum class set_end_state
 {
   open,
   not_or_first,
@@ -138,10 +138,10 @@ enum class skip_set_state
 };
 
 template <typename PatternIterator>
-constexpr PatternIterator skip_set(
+constexpr PatternIterator set_end(
     PatternIterator p, PatternIterator pend,
     const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
-    skip_set_state state = skip_set_state::open)
+    set_end_state state = set_end_state::open)
 {
 #if cfg_HAS_CONSTEXPR14
 
@@ -165,10 +165,10 @@ constexpr PatternIterator skip_set(
 
   switch (state)
   {
-    case skip_set_state::open:
+    case set_end_state::open:
       if (*p == c.set_open)
       {
-        return skip_set(cx::next(p), pend, c, skip_set_state::not_or_first);
+        return set_end(cx::next(p), pend, c, set_end_state::not_or_first);
       }
 
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
@@ -177,24 +177,24 @@ constexpr PatternIterator skip_set(
       return throw_invalid_argument(p, "The given pattern is not a valid set");
 #endif
 
-    case skip_set_state::not_or_first:
+    case set_end_state::not_or_first:
       if (*p == c.set_not)
       {
-        return skip_set(cx::next(p), pend, c, skip_set_state::first);
+        return set_end(cx::next(p), pend, c, set_end_state::first);
       }
 
-      return skip_set(cx::next(p), pend, c, skip_set_state::next);
+      return set_end(cx::next(p), pend, c, set_end_state::next);
 
-    case skip_set_state::first:
-      return skip_set(cx::next(p), pend, c, skip_set_state::next);
+    case set_end_state::first:
+      return set_end(cx::next(p), pend, c, set_end_state::next);
 
-    case skip_set_state::next:
+    case set_end_state::next:
       if (*p == c.set_close)
       {
         return cx::next(p);
       }
 
-      return skip_set(cx::next(p), pend, c, skip_set_state::next);
+      return set_end(cx::next(p), pend, c, set_end_state::next);
 
     default:
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
@@ -214,21 +214,21 @@ constexpr PatternIterator skip_set(
                    ? throw std::invalid_argument("The given pattern is not a valid set")
                    :
 
-                   state == skip_set_state::open
+                   state == set_end_state::open
                        ? *p == c.set_open
-                             ? skip_set(cx::next(p), pend, c, skip_set_state::not_or_first)
+                             ? set_end(cx::next(p), pend, c, set_end_state::not_or_first)
                              : throw std::invalid_argument("The given pattern is not a valid set")
                        :
 
-                       state == skip_set_state::not_or_first
-                           ? *p == c.set_not ? skip_set(cx::next(p), pend, c, skip_set_state::first)
-                                             : skip_set(cx::next(p), pend, c, skip_set_state::next)
-                           : state == skip_set_state::first
-                                 ? skip_set(cx::next(p), pend, c, skip_set_state::next)
-                                 : state == skip_set_state::next
+                       state == set_end_state::not_or_first
+                           ? *p == c.set_not ? set_end(cx::next(p), pend, c, set_end_state::first)
+                                             : set_end(cx::next(p), pend, c, set_end_state::next)
+                           : state == set_end_state::first
+                                 ? set_end(cx::next(p), pend, c, set_end_state::next)
+                                 : state == set_end_state::next
                                        ? *p == c.set_close
                                              ? cx::next(p)
-                                             : skip_set(cx::next(p), pend, c, skip_set_state::next)
+                                             : set_end(cx::next(p), pend, c, set_end_state::next)
                                        : throw std::logic_error(
                                              "The program execution should never end up "
                                              "here throwing this exception");
@@ -492,7 +492,7 @@ constexpr bool is_alt(
       if (c.set_enabled && *p == c.set_open &&
           is_set(cx::next(p), pend, c, is_set_state::not_or_first))
       {
-        return is_alt(skip_set(cx::next(p), pend, c, skip_set_state::not_or_first), pend, c, state);
+        return is_alt(set_end(cx::next(p), pend, c, set_end_state::not_or_first), pend, c, state);
       }
 
       if (*p == c.alt_open)

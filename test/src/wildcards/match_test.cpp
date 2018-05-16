@@ -108,9 +108,9 @@ TEST_CASE("wildcards::detail::is_set() is compliant", "[wildcards::detail::is_se
   }
 }
 
-TEST_CASE("wildcards::detail::skip_set() is compliant", "[wildcards::detail::skip_set]")
+TEST_CASE("wildcards::detail::set_end() is compliant", "[wildcards::detail::set_end]")
 {
-  using wildcards::detail::skip_set;
+  using wildcards::detail::set_end;
 
   SECTION("skipping sets without not")
   {
@@ -128,19 +128,19 @@ TEST_CASE("wildcards::detail::skip_set() is compliant", "[wildcards::detail::ski
     constexpr char pattern10[] = "[[a]";
     constexpr char pattern11[] = "[[abc]";
 
-    static_assert(skip_set(cx::begin(pattern1), cx::end(pattern1)) == cx::end(pattern1) - 1, "");
-    static_assert(skip_set(cx::begin(pattern2), cx::end(pattern2)) == cx::end(pattern2) - 1, "");
+    static_assert(set_end(cx::begin(pattern1), cx::end(pattern1)) == cx::end(pattern1) - 1, "");
+    static_assert(set_end(cx::begin(pattern2), cx::end(pattern2)) == cx::end(pattern2) - 1, "");
 
-    static_assert(skip_set(cx::begin(pattern3), cx::end(pattern3)) == cx::end(pattern3) - 1, "");
-    static_assert(skip_set(cx::begin(pattern4), cx::end(pattern4)) == cx::end(pattern4) - 1, "");
-    static_assert(skip_set(cx::begin(pattern5), cx::end(pattern5)) == cx::end(pattern5) - 1, "");
-    static_assert(skip_set(cx::begin(pattern6), cx::end(pattern6)) == cx::end(pattern6) - 1, "");
-    static_assert(skip_set(cx::begin(pattern7), cx::end(pattern7)) == cx::end(pattern7) - 1, "");
-    static_assert(skip_set(cx::begin(pattern8), cx::end(pattern8)) == cx::end(pattern8) - 1, "");
+    static_assert(set_end(cx::begin(pattern3), cx::end(pattern3)) == cx::end(pattern3) - 1, "");
+    static_assert(set_end(cx::begin(pattern4), cx::end(pattern4)) == cx::end(pattern4) - 1, "");
+    static_assert(set_end(cx::begin(pattern5), cx::end(pattern5)) == cx::end(pattern5) - 1, "");
+    static_assert(set_end(cx::begin(pattern6), cx::end(pattern6)) == cx::end(pattern6) - 1, "");
+    static_assert(set_end(cx::begin(pattern7), cx::end(pattern7)) == cx::end(pattern7) - 1, "");
+    static_assert(set_end(cx::begin(pattern8), cx::end(pattern8)) == cx::end(pattern8) - 1, "");
 
-    static_assert(skip_set(cx::begin(pattern9), cx::end(pattern9)) == cx::end(pattern9) - 1, "");
-    static_assert(skip_set(cx::begin(pattern10), cx::end(pattern10)) == cx::end(pattern10) - 1, "");
-    static_assert(skip_set(cx::begin(pattern11), cx::end(pattern11)) == cx::end(pattern11) - 1, "");
+    static_assert(set_end(cx::begin(pattern9), cx::end(pattern9)) == cx::end(pattern9) - 1, "");
+    static_assert(set_end(cx::begin(pattern10), cx::end(pattern10)) == cx::end(pattern10) - 1, "");
+    static_assert(set_end(cx::begin(pattern11), cx::end(pattern11)) == cx::end(pattern11) - 1, "");
   }
 
   SECTION("skipping sets with not")
@@ -159,19 +159,19 @@ TEST_CASE("wildcards::detail::skip_set() is compliant", "[wildcards::detail::ski
     constexpr char pattern10[] = "[![a]";
     constexpr char pattern11[] = "[![abc]";
 
-    static_assert(skip_set(cx::begin(pattern1), cx::end(pattern1)) == cx::end(pattern1) - 1, "");
-    static_assert(skip_set(cx::begin(pattern2), cx::end(pattern2)) == cx::end(pattern2) - 1, "");
+    static_assert(set_end(cx::begin(pattern1), cx::end(pattern1)) == cx::end(pattern1) - 1, "");
+    static_assert(set_end(cx::begin(pattern2), cx::end(pattern2)) == cx::end(pattern2) - 1, "");
 
-    static_assert(skip_set(cx::begin(pattern3), cx::end(pattern3)) == cx::end(pattern3) - 1, "");
-    static_assert(skip_set(cx::begin(pattern4), cx::end(pattern4)) == cx::end(pattern4) - 1, "");
-    static_assert(skip_set(cx::begin(pattern5), cx::end(pattern5)) == cx::end(pattern5) - 1, "");
-    static_assert(skip_set(cx::begin(pattern6), cx::end(pattern6)) == cx::end(pattern6) - 1, "");
-    static_assert(skip_set(cx::begin(pattern7), cx::end(pattern7)) == cx::end(pattern7) - 1, "");
-    static_assert(skip_set(cx::begin(pattern8), cx::end(pattern8)) == cx::end(pattern8) - 1, "");
+    static_assert(set_end(cx::begin(pattern3), cx::end(pattern3)) == cx::end(pattern3) - 1, "");
+    static_assert(set_end(cx::begin(pattern4), cx::end(pattern4)) == cx::end(pattern4) - 1, "");
+    static_assert(set_end(cx::begin(pattern5), cx::end(pattern5)) == cx::end(pattern5) - 1, "");
+    static_assert(set_end(cx::begin(pattern6), cx::end(pattern6)) == cx::end(pattern6) - 1, "");
+    static_assert(set_end(cx::begin(pattern7), cx::end(pattern7)) == cx::end(pattern7) - 1, "");
+    static_assert(set_end(cx::begin(pattern8), cx::end(pattern8)) == cx::end(pattern8) - 1, "");
 
-    static_assert(skip_set(cx::begin(pattern9), cx::end(pattern9)) == cx::end(pattern9) - 1, "");
-    static_assert(skip_set(cx::begin(pattern10), cx::end(pattern10)) == cx::end(pattern10) - 1, "");
-    static_assert(skip_set(cx::begin(pattern11), cx::end(pattern11)) == cx::end(pattern11) - 1, "");
+    static_assert(set_end(cx::begin(pattern9), cx::end(pattern9)) == cx::end(pattern9) - 1, "");
+    static_assert(set_end(cx::begin(pattern10), cx::end(pattern10)) == cx::end(pattern10) - 1, "");
+    static_assert(set_end(cx::begin(pattern11), cx::end(pattern11)) == cx::end(pattern11) - 1, "");
   }
 
   SECTION("skipping non-sets")
@@ -190,19 +190,19 @@ TEST_CASE("wildcards::detail::skip_set() is compliant", "[wildcards::detail::ski
     const char pattern10[] = "[!]";
     const char pattern11[] = "[!]a";
 
-    REQUIRE_THROWS(skip_set(cx::begin(pattern1), cx::end(pattern1)));
-    REQUIRE_THROWS(skip_set(cx::begin(pattern2), cx::end(pattern2)));
-    REQUIRE_THROWS(skip_set(cx::begin(pattern3), cx::end(pattern3)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern1), cx::end(pattern1)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern2), cx::end(pattern2)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern3), cx::end(pattern3)));
 
-    REQUIRE_THROWS(skip_set(cx::begin(pattern4), cx::end(pattern4)));
-    REQUIRE_THROWS(skip_set(cx::begin(pattern5), cx::end(pattern5)));
-    REQUIRE_THROWS(skip_set(cx::begin(pattern6), cx::end(pattern6)));
-    REQUIRE_THROWS(skip_set(cx::begin(pattern7), cx::end(pattern7)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern4), cx::end(pattern4)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern5), cx::end(pattern5)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern6), cx::end(pattern6)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern7), cx::end(pattern7)));
 
-    REQUIRE_THROWS(skip_set(cx::begin(pattern8), cx::end(pattern8)));
-    REQUIRE_THROWS(skip_set(cx::begin(pattern9), cx::end(pattern9)));
-    REQUIRE_THROWS(skip_set(cx::begin(pattern10), cx::end(pattern10)));
-    REQUIRE_THROWS(skip_set(cx::begin(pattern11), cx::end(pattern11)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern8), cx::end(pattern8)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern9), cx::end(pattern9)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern10), cx::end(pattern10)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern11), cx::end(pattern11)));
   }
 }
 
