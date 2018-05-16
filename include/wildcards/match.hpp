@@ -492,7 +492,8 @@ constexpr bool is_alt(
       if (c.set_enabled && *p == c.set_open &&
           is_set(cx::next(p), pend, c, is_set_state::not_or_first))
       {
-        return is_alt(set_end(cx::next(p), pend, c, set_end_state::not_or_first), pend, c, state, depth);
+        return is_alt(set_end(cx::next(p), pend, c, set_end_state::not_or_first), pend, c, state,
+                      depth);
       }
 
       if (*p == c.alt_open)
@@ -514,11 +515,42 @@ constexpr bool is_alt(
 
     case is_alt_state::escape:
       return is_alt(cx::next(p), pend, c, is_alt_state::next, depth);
+
+    default:
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+      throw std::logic_error(
+          "The program execution should never end up here throwing this exception");
+#else
+      return throw_logic_error(
+          p, "The program execution should never end up here throwing this exception");
+#endif
   }
 
 #else  // !cfg_HAS_CONSTEXPR14
 
-  throw std::runtime_error("Sorry, not implemented");
+  return c.alt_enabled && p != pend &&
+         (state == is_alt_state::open
+              ? *p == c.alt_open && is_alt(cx::next(p), pend, c, is_alt_state::next, depth + 1)
+              : state == is_alt_state::next
+                    ? *p == c.escape
+                          ? is_alt(cx::next(p), pend, c, is_alt_state::escape, depth)
+                          : c.set_enabled && *p == c.set_open &&
+                                    is_set(cx::next(p), pend, c, is_set_state::not_or_first)
+                                ? is_alt(set_end(cx::next(p), pend, c, set_end_state::not_or_first),
+                                         pend, c, state, depth)
+                                : *p == c.alt_open
+                                      ? is_alt(cx::next(p), pend, c, state, depth + 1)
+                                      : *p == c.alt_close
+                                            ? depth - 1 == 0 ||
+                                                  is_alt(cx::next(p), pend, c, state, depth - 1)
+                                            : is_alt(cx::next(p), pend, c, state, depth)
+                    :
+
+                    state == is_alt_state::escape
+                        ? is_alt(cx::next(p), pend, c, is_alt_state::next, depth)
+                        : throw std::logic_error(
+                              "The program execution should never end up here throwing this "
+                              "exception"));
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
