@@ -430,7 +430,7 @@ TEST_CASE("wildcards::detail::is_alt() is compliant", "[wildcards::detail::is_al
     constexpr char pattern7[] = "(\\()";
     constexpr char pattern8[] = "([(])";
 
-    constexpr char pattern9[] = R"((a\*\(b+c\)/([!abc]|sin\([abc]\)))";  // FIXME: should fail
+    constexpr char pattern9[] = R"((a\*\(b+c\)/([!abc]|sin\([abc]\))))";
 
     static_assert(is_alt(cx::begin(pattern1), cx::end(pattern1)), "");
     static_assert(is_alt(cx::begin(pattern2), cx::end(pattern2)), "");

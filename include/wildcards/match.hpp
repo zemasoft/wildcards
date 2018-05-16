@@ -478,7 +478,7 @@ constexpr bool is_alt(
     case is_alt_state::open:
       if (*p == c.alt_open)
       {
-        return is_alt(cx::next(p), pend, c, is_alt_state::next);
+        return is_alt(cx::next(p), pend, c, is_alt_state::next, depth + 1);
       }
 
       return false;
@@ -492,7 +492,7 @@ constexpr bool is_alt(
       if (c.set_enabled && *p == c.set_open &&
           is_set(cx::next(p), pend, c, is_set_state::not_or_first))
       {
-        return is_alt(set_end(cx::next(p), pend, c, set_end_state::not_or_first), pend, c, state);
+        return is_alt(set_end(cx::next(p), pend, c, set_end_state::not_or_first), pend, c, state, depth);
       }
 
       if (*p == c.alt_open)
@@ -502,7 +502,7 @@ constexpr bool is_alt(
 
       if (*p == c.alt_close)
       {
-        if (depth == 0)
+        if (depth - 1 == 0)
         {
           return true;
         }
