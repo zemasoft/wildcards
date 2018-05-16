@@ -297,8 +297,8 @@ TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::ma
     constexpr char seq2[] = "a";
     constexpr char seq3[] = "b";
 
-    static_assert(!match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
-                  "");
+    static_assert(
+        !match_set(cx::begin(seq1), cx::end(seq1) - 1, cx::begin(pattern), cx::end(pattern)), "");
     static_assert(!match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
                   "");
     static_assert(match_set(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
@@ -315,8 +315,8 @@ TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::ma
     constexpr char seq4[] = "c";
     constexpr char seq5[] = "d";
 
-    static_assert(!match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
-                  "");
+    static_assert(
+        !match_set(cx::begin(seq1), cx::end(seq1) - 1, cx::begin(pattern), cx::end(pattern)), "");
     static_assert(!match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
                   "");
     static_assert(!match_set(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
@@ -335,8 +335,8 @@ TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::ma
     constexpr char seq2[] = "]";
     constexpr char seq3[] = "a";
 
-    static_assert(!match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
-                  "");
+    static_assert(
+        !match_set(cx::begin(seq1), cx::end(seq1) - 1, cx::begin(pattern), cx::end(pattern)), "");
     static_assert(!match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
                   "");
     static_assert(match_set(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
@@ -354,8 +354,8 @@ TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::ma
     constexpr char seq5[] = "c";
     constexpr char seq6[] = "d";
 
-    static_assert(!match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
-                  "");
+    static_assert(
+        !match_set(cx::begin(seq1), cx::end(seq1) - 1, cx::begin(pattern), cx::end(pattern)), "");
     static_assert(!match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
                   "");
     static_assert(!match_set(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),

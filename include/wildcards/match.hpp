@@ -241,7 +241,6 @@ enum class match_set_state
   open,
   not_or_first_in,
   first_out,
-  skip_next_in,
   next_in,
   next_out
 };
@@ -300,7 +299,7 @@ constexpr bool match_set(
 
       if (equal_to(*s, *p))
       {
-        return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::skip_next_in);
+        return true;
       }
 
       return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::next_in);
@@ -313,19 +312,6 @@ constexpr bool match_set(
 
       return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::next_out);
 
-    case match_set_state::skip_next_in:
-      if (*p == c.set_close)
-      {
-        if (s == send)
-        {
-          return true;
-        }
-
-        return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
-      }
-
-      return match_set(s, send, cx::next(p), pend, c, equal_to, state);
-
     case match_set_state::next_in:
       if (*p == c.set_close || s == send)
       {
@@ -334,7 +320,7 @@ constexpr bool match_set(
 
       if (equal_to(*s, *p))
       {
-        return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::skip_next_in);
+        return true;
       }
 
       return match_set(s, send, cx::next(p), pend, c, equal_to, state);
@@ -342,12 +328,7 @@ constexpr bool match_set(
     case match_set_state::next_out:
       if (*p == c.set_close)
       {
-        if (s == send)
-        {
-          return true;
-        }
-
-        return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+        return true;
       }
 
       if (s == send || equal_to(*s, *p))
@@ -388,14 +369,9 @@ constexpr bool match_set(
                                                match_set_state::first_out)
                                    :
 
-                                   s != send &&
-                                       (equal_to(*s, *p)
-                                            ? match_set(s, send, cx::next(p), pend, c, equal_to,
-                                                        match_set_state::skip_next_in)
-                                            :
-
-                                            match_set(s, send, cx::next(p), pend, c, equal_to,
-                                                      match_set_state::next_in))
+                                   s != send && (equal_to(*s, *p) ||
+                                                 match_set(s, send, cx::next(p), pend, c, equal_to,
+                                                           match_set_state::next_in))
 
                              :
 
@@ -406,49 +382,23 @@ constexpr bool match_set(
 
                                  :
 
-                                 state == match_set_state::skip_next_in
-                                     ? *p == c.set_close
-                                           ?
-
-                                           s == send || match(cx::next(s), send, cx::next(p), pend,
-                                                              c, equal_to)
-                                           :
-
-                                           match_set(s, send, cx::next(p), pend, c, equal_to, state)
+                                 state == match_set_state::next_in
+                                     ? *p != c.set_close && s != send &&
+                                           (equal_to(*s, *p) || match_set(s, send, cx::next(p),
+                                                                          pend, c, equal_to, state))
 
                                      :
 
-                                     state == match_set_state::next_in
-                                         ? *p != c.set_close && s != send &&
-                                               (equal_to(*s, *p)
-                                                    ?
+                                     state == match_set_state::next_out
+                                         ? *p == c.set_close ||
+                                               (s != send && !equal_to(*s, *p) &&
+                                                match_set(s, send, cx::next(p), pend, c, equal_to,
+                                                          state))
 
-                                                    match_set(s, send, cx::next(p), pend, c,
-                                                              equal_to,
-                                                              match_set_state::skip_next_in)
-                                                    :
-
-                                                    match_set(s, send, cx::next(p), pend, c,
-                                                              equal_to, state))
-
-                                         :
-
-                                         state == match_set_state::next_out
-                                             ? *p == c.set_close
-                                                   ?
-
-                                                   s == send ||
-                                                       match(cx::next(s), send, cx::next(p), pend,
-                                                             c, equal_to)
-                                                   :
-
-                                                   s != send && !equal_to(*s, *p) &&
-                                                       match_set(s, send, cx::next(p), pend, c,
-                                                                 equal_to, state)
-
-                                             : throw std::logic_error(
-                                                   "The program execution should never end up here "
-                                                   "throwing this exception");
+                                         : throw std::logic_error(
+                                               "The program execution should never end up "
+                                               "here "
+                                               "throwing this exception");
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
@@ -601,7 +551,10 @@ constexpr bool match(
       detail::is_set(cx::next(p), pend, c, detail::is_set_state::not_or_first))
   {
     return match_set(s, send, cx::next(p), pend, c, equal_to,
-                     detail::match_set_state::not_or_first_in);
+                     detail::match_set_state::not_or_first_in) &&
+           match(cx::next(s), send,
+                 detail::set_end(cx::next(p), pend, c, detail::set_end_state::not_or_first), pend,
+                 c, equal_to);
   }
 
   if (s != send && equal_to(*s, *p))
@@ -630,7 +583,12 @@ constexpr bool match(
                                                detail::is_set(cx::next(p), pend, c,
                                                               detail::is_set_state::not_or_first)
                                            ? match_set(s, send, cx::next(p), pend, c, equal_to,
-                                                       detail::match_set_state::not_or_first_in)
+                                                       detail::match_set_state::not_or_first_in) &&
+                                                 match(cx::next(s), send,
+                                                       detail::set_end(
+                                                           cx::next(p), pend, c,
+                                                           detail::set_end_state::not_or_first),
+                                                       pend, c, equal_to)
                                            : s != send && equal_to(*s, *p) &&
                                                  match(cx::next(s), send, cx::next(p), pend, c,
                                                        equal_to);
