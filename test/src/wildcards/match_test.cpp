@@ -374,7 +374,7 @@ TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::ma
     const char pattern2[] = "ab";  // FIXME: should be "a"
     const char pattern3[] = "!a";  // FIXME: should be "!"
 
-    const char pattern4[] = "[";
+    const char pattern4[] = "[a";  // FIXME: should be "["
     const char pattern5[] = "[a";
     const char pattern6[] = "[]";
     const char pattern7[] = "[]a";
