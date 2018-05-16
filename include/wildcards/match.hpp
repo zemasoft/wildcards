@@ -6,7 +6,7 @@
 #ifndef WILDCARDS_MATCH_HPP
 #define WILDCARDS_MATCH_HPP
 
-#include <stdexcept>    // std::invalid_argument, std::logic_error
+#include <stdexcept>    // std::invalid_argument, std::logic_error, std::runtime_error
 #include <type_traits>  // std::enable_if, std::is_same
 #include <utility>      // std::forward
 
@@ -449,6 +449,76 @@ constexpr bool match_set(
                                              : throw std::logic_error(
                                                    "The program execution should never end up here "
                                                    "throwing this exception");
+
+#endif  // cfg_HAS_CONSTEXPR14
+}
+
+enum class is_alt_state
+{
+  open,
+  next,
+  escape
+};
+
+template <typename PatternIterator>
+constexpr bool is_alt(
+    PatternIterator p, PatternIterator pend,
+    const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
+    is_alt_state state = is_alt_state::open, int depth = 0)
+{
+#if cfg_HAS_CONSTEXPR14
+
+  if (!c.alt_enabled || p == pend)
+  {
+    return false;
+  }
+
+  switch (state)
+  {
+    case is_alt_state::open:
+      if (*p == c.alt_open)
+      {
+        return is_alt(cx::next(p), pend, c, is_alt_state::next);
+      }
+
+      return false;
+
+    case is_alt_state::next:
+      if (*p == c.escape)
+      {
+        return is_alt(cx::next(p), pend, c, is_alt_state::escape, depth);
+      }
+
+      if (c.set_enabled && *p == c.set_open &&
+          is_set(cx::next(p), pend, c, is_set_state::not_or_first))
+      {
+        return is_alt(skip_set(cx::next(p), pend, c, skip_set_state::not_or_first), pend, c, state);
+      }
+
+      if (*p == c.alt_open)
+      {
+        return is_alt(cx::next(p), pend, c, state, depth + 1);
+      }
+
+      if (*p == c.alt_close)
+      {
+        if (depth == 0)
+        {
+          return true;
+        }
+
+        return is_alt(cx::next(p), pend, c, state, depth - 1);
+      }
+
+      return is_alt(cx::next(p), pend, c, state, depth);
+
+    case is_alt_state::escape:
+      return is_alt(cx::next(p), pend, c, is_alt_state::next, depth);
+  }
+
+#else  // !cfg_HAS_CONSTEXPR14
+
+  throw std::runtime_error("Sorry, not implemented");
 
 #endif  // cfg_HAS_CONSTEXPR14
 }

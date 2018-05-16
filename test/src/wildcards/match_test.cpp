@@ -414,6 +414,65 @@ TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::ma
   }
 }
 
+TEST_CASE("wildcards::detail::is_alt() is compliant", "[wildcards::detail::is_alt]")
+{
+  using wildcards::detail::is_alt;
+
+  SECTION("checking alternatives")
+  {
+    constexpr char pattern1[] = "()";
+    constexpr char pattern2[] = "(a)";
+    constexpr char pattern3[] = "(())";
+    constexpr char pattern4[] = "((a))";
+    constexpr char pattern5[] = "(a()a)";
+    constexpr char pattern6[] = "(a(a)a)";
+
+    constexpr char pattern7[] = "(\\()";
+    constexpr char pattern8[] = "([(])";
+
+    constexpr char pattern9[] = R"((a\*\(b+c\)/([!abc]|sin\([abc]\)))";  // FIXME: should fail
+
+    static_assert(is_alt(cx::begin(pattern1), cx::end(pattern1)), "");
+    static_assert(is_alt(cx::begin(pattern2), cx::end(pattern2)), "");
+    static_assert(is_alt(cx::begin(pattern3), cx::end(pattern3)), "");
+    static_assert(is_alt(cx::begin(pattern4), cx::end(pattern4)), "");
+    static_assert(is_alt(cx::begin(pattern5), cx::end(pattern5)), "");
+    static_assert(is_alt(cx::begin(pattern6), cx::end(pattern6)), "");
+
+    static_assert(is_alt(cx::begin(pattern7), cx::end(pattern7)), "");
+    static_assert(is_alt(cx::begin(pattern8), cx::end(pattern8)), "");
+
+    static_assert(is_alt(cx::begin(pattern9), cx::end(pattern9)), "");
+  }
+
+  SECTION("checking non-alternatives")
+  {
+    constexpr char pattern1[] = "";
+    constexpr char pattern2[] = "a";
+    constexpr char pattern3[] = "|";
+
+    constexpr char pattern4[] = "(";
+    constexpr char pattern5[] = "(a";
+    constexpr char pattern6[] = "(|";
+    constexpr char pattern7[] = "(()";
+    constexpr char pattern8[] = "((a)";
+    constexpr char pattern9[] = "(a()";
+    constexpr char pattern10[] = "(a(a)";
+
+    static_assert(!is_alt(cx::begin(pattern1), cx::end(pattern1)), "");
+    static_assert(!is_alt(cx::begin(pattern2), cx::end(pattern2)), "");
+    static_assert(!is_alt(cx::begin(pattern3), cx::end(pattern3)), "");
+
+    static_assert(!is_alt(cx::begin(pattern4), cx::end(pattern4)), "");
+    static_assert(!is_alt(cx::begin(pattern5), cx::end(pattern5)), "");
+    static_assert(!is_alt(cx::begin(pattern6), cx::end(pattern6)), "");
+    static_assert(!is_alt(cx::begin(pattern7), cx::end(pattern7)), "");
+    static_assert(!is_alt(cx::begin(pattern8), cx::end(pattern8)), "");
+    static_assert(!is_alt(cx::begin(pattern9), cx::end(pattern9)), "");
+    static_assert(!is_alt(cx::begin(pattern10), cx::end(pattern10)), "");
+  }
+}
+
 TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 {
   using wildcards::match;
