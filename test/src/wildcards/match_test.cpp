@@ -12,6 +12,8 @@
 
 TEST_CASE("wildcards::detail::is_set() is compliant", "[wildcards::detail::is_set]")
 {
+  using wildcards::cards;
+  using wildcards::cards_type;
   using wildcards::detail::is_set;
 
   SECTION("checking sets without not")
@@ -106,10 +108,22 @@ TEST_CASE("wildcards::detail::is_set() is compliant", "[wildcards::detail::is_se
     static_assert(!is_set(cx::begin(pattern10), cx::end(pattern10)), "");
     static_assert(!is_set(cx::begin(pattern11), cx::end(pattern11)), "");
   }
+
+  SECTION("checking sets using standard and/or extented cards")
+  {
+    constexpr char pattern[] = "[a]";
+
+    static_assert(!is_set(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::standard}),
+                  "");
+    static_assert(is_set(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::extended}),
+                  "");
+  }
 }
 
 TEST_CASE("wildcards::detail::set_end() is compliant", "[wildcards::detail::set_end]")
 {
+  using wildcards::cards;
+  using wildcards::cards_type;
   using wildcards::detail::set_end;
 
   SECTION("skipping sets without not")
@@ -204,10 +218,22 @@ TEST_CASE("wildcards::detail::set_end() is compliant", "[wildcards::detail::set_
     REQUIRE_THROWS(set_end(cx::begin(pattern10), cx::end(pattern10)));
     REQUIRE_THROWS(set_end(cx::begin(pattern11), cx::end(pattern11)));
   }
+
+  SECTION("skipping sets using standard and/or extented cards")
+  {
+    const char pattern[] = "[a]";
+
+    REQUIRE_THROWS(
+        !set_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::standard}));
+    REQUIRE(set_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::extended}) ==
+            cx::end(pattern) - 1);
+  }
 }
 
 TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::match_set]")
 {
+  using wildcards::cards;
+  using wildcards::cards_type;
   using wildcards::detail::match_set;
 
   SECTION(R"(matching "[a]")")
@@ -396,38 +422,48 @@ TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::ma
 
     REQUIRE_THROWS(
         match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern4), cx::end(pattern4)));
-    REQUIRE_NOTHROW(
-        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern5), cx::end(pattern5)));
+    REQUIRE(match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern5), cx::end(pattern5)));
     REQUIRE_THROWS(
         match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern5), cx::end(pattern5)));
     REQUIRE_THROWS(
         match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern6), cx::end(pattern6)));
     REQUIRE_THROWS(
         match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern6), cx::end(pattern6)));
-    REQUIRE_NOTHROW(
-        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern7), cx::end(pattern7)));
+    REQUIRE(match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern7), cx::end(pattern7)));
     REQUIRE_THROWS(
         match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern7), cx::end(pattern7)));
 
     REQUIRE_THROWS(
         match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern8), cx::end(pattern8)));
-    REQUIRE_NOTHROW(
-        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern9), cx::end(pattern9)));
+    REQUIRE(!match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern9), cx::end(pattern9)));
     REQUIRE_THROWS(
         match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern9), cx::end(pattern9)));
     REQUIRE_THROWS(
         match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern10), cx::end(pattern10)));
     REQUIRE_THROWS(
         match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern10), cx::end(pattern10)));
-    REQUIRE_NOTHROW(
-        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern11), cx::end(pattern11)));
+    REQUIRE(!match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern11), cx::end(pattern11)));
     REQUIRE_THROWS(
         match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern11), cx::end(pattern11)));
+  }
+
+  SECTION("matching sets using standard and/or extented cards")
+  {
+    const char pattern[] = "[a]";
+
+    const char seq[] = "a";
+
+    REQUIRE_THROWS(!match_set(cx::begin(seq), cx::end(seq), cx::begin(pattern), cx::end(pattern),
+                              cards<char>{cards_type::standard}));
+    REQUIRE(match_set(cx::begin(seq), cx::end(seq), cx::begin(pattern), cx::end(pattern),
+                      cards<char>{cards_type::extended}));
   }
 }
 
 TEST_CASE("wildcards::detail::is_alt() is compliant", "[wildcards::detail::is_alt]")
 {
+  using wildcards::cards;
+  using wildcards::cards_type;
   using wildcards::detail::is_alt;
 
   SECTION("checking alternatives")
@@ -482,6 +518,16 @@ TEST_CASE("wildcards::detail::is_alt() is compliant", "[wildcards::detail::is_al
     static_assert(!is_alt(cx::begin(pattern8), cx::end(pattern8)), "");
     static_assert(!is_alt(cx::begin(pattern9), cx::end(pattern9)), "");
     static_assert(!is_alt(cx::begin(pattern10), cx::end(pattern10)), "");
+  }
+
+  SECTION("checking alternatives using standard and/or extented cards")
+  {
+    constexpr char pattern[] = "(a)";
+
+    static_assert(!is_alt(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::standard}),
+                  "");
+    static_assert(is_alt(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::extended}),
+                  "");
   }
 }
 
