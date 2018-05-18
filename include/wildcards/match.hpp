@@ -568,7 +568,7 @@ constexpr bool match(
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
     throw std::runtime_error("Sorry, alternatives not implemented");
 #else
-    return throw_runtime_error("Sorry, alternatives not implemented");
+    return detail::throw_runtime_error("Sorry, alternatives not implemented");
 #endif
   }
 
