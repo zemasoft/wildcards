@@ -6,7 +6,7 @@
 #ifndef WILDCARDS_MATCH_HPP
 #define WILDCARDS_MATCH_HPP
 
-#include <stdexcept>    // std::invalid_argument, std::logic_error
+#include <stdexcept>    // std::invalid_argument, std::logic_error, std::runtime_error
 #include <type_traits>  // std::enable_if, std::is_same
 #include <utility>      // std::forward
 
@@ -24,6 +24,17 @@ namespace detail
 
 #if !cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
 
+constexpr bool throw_invalid_argument(const char* what_arg)
+{
+  return what_arg == nullptr ? false : throw std::invalid_argument(what_arg);
+}
+
+template <typename T>
+constexpr T throw_invalid_argument(T t, const char* what_arg)
+{
+  return what_arg == nullptr ? t : throw std::invalid_argument(what_arg);
+}
+
 constexpr bool throw_logic_error(const char* what_arg)
 {
   return what_arg == nullptr ? false : throw std::logic_error(what_arg);
@@ -35,15 +46,9 @@ constexpr T throw_logic_error(T t, const char* what_arg)
   return what_arg == nullptr ? t : throw std::logic_error(what_arg);
 }
 
-constexpr bool throw_invalid_argument(const char* what_arg)
+constexpr bool throw_runtime_error(const char* what_arg)
 {
-  return what_arg == nullptr ? false : throw std::invalid_argument(what_arg);
-}
-
-template <typename T>
-constexpr T throw_invalid_argument(T t, const char* what_arg)
-{
-  return what_arg == nullptr ? t : throw std::invalid_argument(what_arg);
+  return what_arg == nullptr ? false : throw std::runtime_error(what_arg);
 }
 
 #endif
@@ -557,6 +562,16 @@ constexpr bool match(
                  c, equal_to);
   }
 
+  if (c.alt_enabled && *p == c.alt_open &&
+      detail::is_alt(cx::next(p), pend, c, detail::is_alt_state::next, 1))
+  {
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+    throw std::runtime_error("Sorry, alternatives not implemented");
+#else
+    return throw_runtime_error("Sorry, alternatives not implemented");
+#endif
+  }
+
   if (s != send && equal_to(*s, *p))
   {
     return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
@@ -589,9 +604,14 @@ constexpr bool match(
                                                            cx::next(p), pend, c,
                                                            detail::set_end_state::not_or_first),
                                                        pend, c, equal_to)
-                                           : s != send && equal_to(*s, *p) &&
-                                                 match(cx::next(s), send, cx::next(p), pend, c,
-                                                       equal_to);
+                                           : c.alt_enabled && *p == c.alt_open &&
+                                                     detail::is_alt(cx::next(p), pend, c,
+                                                                    detail::is_alt_state::next, 1)
+                                                 ? throw std::runtime_error(
+                                                       "Sorry, alternatives not implemented")
+                                                 : s != send && equal_to(*s, *p) &&
+                                                       match(cx::next(s), send, cx::next(p), pend,
+                                                             c, equal_to);
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
