@@ -3,7 +3,10 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include "wildcards/match.hpp"  // wildcards::match
+#include "wildcards/match.hpp"  // wildcards::cards, wildcards::cards_type,
+                                // wildcards::detail::is_alt, wildcards::detail::is_set,
+                                // wildcards::detail::match_set, wildcards::detail::set_end,
+                                // wildcards::match
 #include "cx/array.hpp"         // cx::array
 #include "cx/iterator.hpp"      // cx::begin, cx::end
 #include "cx/string_view.hpp"   // cx::literals

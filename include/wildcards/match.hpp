@@ -6,11 +6,11 @@
 #ifndef WILDCARDS_MATCH_HPP
 #define WILDCARDS_MATCH_HPP
 
-#include <stdexcept>    // std::invalid_argument, std::logic_error, std::runtime_error
+#include <stdexcept>    // std::invalid_argument, std::logic_error
 #include <type_traits>  // std::enable_if, std::is_same
 #include <utility>      // std::forward
 
-#include "config.hpp"             // cfg_HAS_CONSTEXPR14
+#include "config.hpp"             // cfg_HAS_CONSTEXPR14, cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
 #include "cx/functional.hpp"      // cx::equal_to
 #include "cx/iterator.hpp"        // cx::cbegin, cx::cend, cx::next
 #include "wildcards/cards.hpp"    // wildcards::cards
