@@ -12,6 +12,26 @@ namespace cx
 {
 
 template <typename T>
+struct less
+{
+  constexpr auto operator()(const T& lhs, const T& rhs) const -> decltype(lhs < rhs)
+  {
+    return lhs < rhs;
+  }
+};
+
+template <>
+struct less<void>
+{
+  template <typename T, typename U>
+  constexpr auto operator()(T&& lhs, U&& rhs) const
+      -> decltype(std::forward<T>(lhs) < std::forward<U>(rhs))
+  {
+    return std::forward<T>(lhs) < std::forward<U>(rhs);
+  }
+};
+
+template <typename T>
 struct equal_to
 {
   constexpr auto operator()(const T& lhs, const T& rhs) const -> decltype(lhs == rhs)

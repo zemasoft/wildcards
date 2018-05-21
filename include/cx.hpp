@@ -7,7 +7,7 @@
 #define CX_HPP
 
 #define CX_VERSION_MAJOR 1
-#define CX_VERSION_MINOR 1
+#define CX_VERSION_MINOR 2
 #define CX_VERSION_PATCH 0
 
 #include "cx/algorithm.hpp"

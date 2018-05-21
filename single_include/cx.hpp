@@ -1,5 +1,5 @@
 // THIS FILE HAS BEEN GENERATED AUTOMATICALLY. DO NOT EDIT DIRECTLY.
-// Generated: 2018-05-09 09:34:45.195168351
+// Generated: 2018-05-21 13:22:37.151231618
 // Copyright Tomas Zeman 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -7,7 +7,7 @@
 #ifndef CX_HPP
 #define CX_HPP 
 #define CX_VERSION_MAJOR 1
-#define CX_VERSION_MINOR 1
+#define CX_VERSION_MINOR 2
 #define CX_VERSION_PATCH 0
 #ifndef CX_ALGORITHM_HPP
 #define CX_ALGORITHM_HPP 
@@ -468,6 +468,24 @@ return a[Index];
 #include <utility>
 namespace cx
 {
+template <typename T>
+struct less
+{
+constexpr auto operator()(const T& lhs, const T& rhs) const -> decltype(lhs < rhs)
+{
+return lhs < rhs;
+}
+};
+template <>
+struct less<void>
+{
+template <typename T, typename U>
+constexpr auto operator()(T&& lhs, U&& rhs) const
+-> decltype(std::forward<T>(lhs) < std::forward<U>(rhs))
+{
+return std::forward<T>(lhs) < std::forward<U>(rhs);
+}
+};
 template <typename T>
 struct equal_to
 {

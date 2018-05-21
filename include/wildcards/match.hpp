@@ -6,11 +6,11 @@
 #ifndef WILDCARDS_MATCH_HPP
 #define WILDCARDS_MATCH_HPP
 
-#include <stdexcept>    // std::invalid_argument, std::logic_error
+#include <stdexcept>    // std::invalid_argument, std::logic_error, std::runtime_error
 #include <type_traits>  // std::enable_if, std::is_same
 #include <utility>      // std::forward
 
-#include "config.hpp"             // cfg_HAS_CONSTEXPR14
+#include "config.hpp"             // cfg_HAS_CONSTEXPR14, cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
 #include "cx/functional.hpp"      // cx::equal_to
 #include "cx/iterator.hpp"        // cx::cbegin, cx::cend, cx::next
 #include "wildcards/cards.hpp"    // wildcards::cards
@@ -24,162 +24,277 @@ namespace detail
 
 #if !cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
 
+constexpr bool throw_invalid_argument(const char* what_arg)
+{
+  return what_arg == nullptr ? false : throw std::invalid_argument(what_arg);
+}
+
+template <typename T>
+constexpr T throw_invalid_argument(T t, const char* what_arg)
+{
+  return what_arg == nullptr ? t : throw std::invalid_argument(what_arg);
+}
+
 constexpr bool throw_logic_error(const char* what_arg)
 {
   return what_arg == nullptr ? false : throw std::logic_error(what_arg);
 }
 
+template <typename T>
+constexpr T throw_logic_error(T t, const char* what_arg)
+{
+  return what_arg == nullptr ? t : throw std::logic_error(what_arg);
+}
+
+constexpr bool throw_runtime_error(const char* what_arg)
+{
+  return what_arg == nullptr ? false : throw std::runtime_error(what_arg);
+}
+
 #endif
 
-enum class is_enum_state
+enum class is_set_state
 {
   open,
-  exclusion_or_first_item,
-  first_item,
-  next_item
+  not_or_first,
+  first,
+  next
 };
 
 template <typename PatternIterator>
-constexpr bool is_enum(
+constexpr bool is_set(
     PatternIterator p, PatternIterator pend,
     const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
-    is_enum_state state = is_enum_state::open)
+    is_set_state state = is_set_state::open)
 {
 #if cfg_HAS_CONSTEXPR14
 
-  if (!c.enum_enabled || p == pend)
+  if (!c.set_enabled || p == pend)
   {
     return false;
   }
 
   switch (state)
   {
-    case is_enum_state::open:
-      if (*p == c.enum_open)
+    case is_set_state::open:
+      if (*p == c.set_open)
       {
-        return is_enum(cx::next(p), pend, c, is_enum_state::exclusion_or_first_item);
+        return is_set(cx::next(p), pend, c, is_set_state::not_or_first);
       }
 
       return false;
 
-    case is_enum_state::exclusion_or_first_item:
-      if (*p == c.enum_exclusion)
+    case is_set_state::not_or_first:
+      if (*p == c.set_not)
       {
-        return is_enum(cx::next(p), pend, c, is_enum_state::first_item);
+        return is_set(cx::next(p), pend, c, is_set_state::first);
       }
 
-      return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
+      return is_set(cx::next(p), pend, c, is_set_state::next);
 
-    case is_enum_state::first_item:
-      return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
+    case is_set_state::first:
+      return is_set(cx::next(p), pend, c, is_set_state::next);
 
-    case is_enum_state::next_item:
-      if (*p == c.enum_close)
+    case is_set_state::next:
+      if (*p == c.set_close)
       {
         return true;
       }
 
-      return is_enum(cx::next(p), pend, c, is_enum_state::next_item);
+      return is_set(cx::next(p), pend, c, is_set_state::next);
 
     default:
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
       throw std::logic_error(
-          "The program execution should never end up here trowing this exception");
+          "The program execution should never end up here throwing this exception");
 #else
       return throw_logic_error(
-          "The program execution should never end up here trowing this exception");
+          "The program execution should never end up here throwing this exception");
 #endif
   }
 
 #else  // !cfg_HAS_CONSTEXPR14
 
-  return c.enum_enabled && p != pend &&
-         (state == is_enum_state::open
-              ? *p == c.enum_open &&
-                    is_enum(cx::next(p), pend, c, is_enum_state::exclusion_or_first_item)
+  return c.set_enabled && p != pend &&
+         (state == is_set_state::open
+              ? *p == c.set_open && is_set(cx::next(p), pend, c, is_set_state::not_or_first)
               :
 
-              state == is_enum_state::exclusion_or_first_item
-                  ? *p == c.enum_exclusion
-                        ? is_enum(cx::next(p), pend, c, is_enum_state::first_item)
-                        : is_enum(cx::next(p), pend, c, is_enum_state::next_item)
-                  : state == is_enum_state::first_item
-                        ? is_enum(cx::next(p), pend, c, is_enum_state::next_item)
-                        : state == is_enum_state::next_item
-                              ? *p == c.enum_close ||
-                                    is_enum(cx::next(p), pend, c, is_enum_state::next_item)
+              state == is_set_state::not_or_first
+                  ? *p == c.set_not ? is_set(cx::next(p), pend, c, is_set_state::first)
+                                    : is_set(cx::next(p), pend, c, is_set_state::next)
+                  : state == is_set_state::first
+                        ? is_set(cx::next(p), pend, c, is_set_state::next)
+                        : state == is_set_state::next
+                              ? *p == c.set_close ||
+                                    is_set(cx::next(p), pend, c, is_set_state::next)
                               : throw std::logic_error("The program execution should never end up "
-                                                       "here trowing this exception"));
+                                                       "here throwing this exception"));
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
 
-#if !cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
-
-constexpr bool throw_invalid_argument(const char* what_arg)
-{
-  return what_arg == nullptr ? false : throw std::invalid_argument(what_arg);
-}
-
-#endif
-
-enum class match_enum_state
+enum class set_end_state
 {
   open,
-  exclusion_or_first_in_item,
-  first_out_item,
-  skip_next_in_item,
-  next_in_item,
-  next_out_item
+  not_or_first,
+  first,
+  next
 };
 
-template <typename SequenceIterator, typename PatternIterator,
-          typename EqualTo = cx::equal_to<void>>
-constexpr bool match_enum(
-    SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
+template <typename PatternIterator>
+constexpr PatternIterator set_end(
+    PatternIterator p, PatternIterator pend,
     const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
-    const EqualTo& equal_to = EqualTo(), match_enum_state state = match_enum_state::open)
+    set_end_state state = set_end_state::open)
 {
 #if cfg_HAS_CONSTEXPR14
 
-  if (!c.enum_enabled)
+  if (!c.set_enabled)
   {
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
-    throw std::invalid_argument("The use of enums is disabled");
+    throw std::invalid_argument("The use of sets is disabled");
 #else
-    return throw_invalid_argument("The use of enums is disabled");
+    return throw_invalid_argument(p, "The use of sets is disabled");
 #endif
   }
 
   if (p == pend)
   {
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
-    throw std::invalid_argument("The given pattern is not a valid enum");
+    throw std::invalid_argument("The given pattern is not a valid set");
 #else
-    return throw_invalid_argument("The given pattern is not a valid enum");
+    return throw_invalid_argument(p, "The given pattern is not a valid set");
 #endif
   }
 
   switch (state)
   {
-    case match_enum_state::open:
-      if (*p == c.enum_open)
+    case set_end_state::open:
+      if (*p == c.set_open)
       {
-        return match_enum(s, send, cx::next(p), pend, c, equal_to,
-                          match_enum_state::exclusion_or_first_in_item);
+        return set_end(cx::next(p), pend, c, set_end_state::not_or_first);
       }
 
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
-      throw std::invalid_argument("The given pattern is not a valid enum");
+      throw std::invalid_argument("The given pattern is not a valid set");
 #else
-      return throw_invalid_argument("The given pattern is not a valid enum");
+      return throw_invalid_argument(p, "The given pattern is not a valid set");
 #endif
 
-    case match_enum_state::exclusion_or_first_in_item:
-      if (*p == c.enum_exclusion)
+    case set_end_state::not_or_first:
+      if (*p == c.set_not)
       {
-        return match_enum(s, send, cx::next(p), pend, c, equal_to,
-                          match_enum_state::first_out_item);
+        return set_end(cx::next(p), pend, c, set_end_state::first);
+      }
+
+      return set_end(cx::next(p), pend, c, set_end_state::next);
+
+    case set_end_state::first:
+      return set_end(cx::next(p), pend, c, set_end_state::next);
+
+    case set_end_state::next:
+      if (*p == c.set_close)
+      {
+        return cx::next(p);
+      }
+
+      return set_end(cx::next(p), pend, c, set_end_state::next);
+
+    default:
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+      throw std::logic_error(
+          "The program execution should never end up here throwing this exception");
+#else
+      return throw_logic_error(
+          p, "The program execution should never end up here throwing this exception");
+#endif
+  }
+
+#else  // !cfg_HAS_CONSTEXPR14
+
+  return !c.set_enabled
+             ? throw std::invalid_argument("The use of sets is disabled")
+             : p == pend
+                   ? throw std::invalid_argument("The given pattern is not a valid set")
+                   :
+
+                   state == set_end_state::open
+                       ? *p == c.set_open
+                             ? set_end(cx::next(p), pend, c, set_end_state::not_or_first)
+                             : throw std::invalid_argument("The given pattern is not a valid set")
+                       :
+
+                       state == set_end_state::not_or_first
+                           ? *p == c.set_not ? set_end(cx::next(p), pend, c, set_end_state::first)
+                                             : set_end(cx::next(p), pend, c, set_end_state::next)
+                           : state == set_end_state::first
+                                 ? set_end(cx::next(p), pend, c, set_end_state::next)
+                                 : state == set_end_state::next
+                                       ? *p == c.set_close
+                                             ? cx::next(p)
+                                             : set_end(cx::next(p), pend, c, set_end_state::next)
+                                       : throw std::logic_error(
+                                             "The program execution should never end up "
+                                             "here throwing this exception");
+
+#endif  // cfg_HAS_CONSTEXPR14
+}
+
+enum class match_set_state
+{
+  open,
+  not_or_first_in,
+  first_out,
+  next_in,
+  next_out
+};
+
+template <typename SequenceIterator, typename PatternIterator,
+          typename EqualTo = cx::equal_to<void>>
+constexpr bool match_set(
+    SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
+    const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
+    const EqualTo& equal_to = EqualTo(), match_set_state state = match_set_state::open)
+{
+#if cfg_HAS_CONSTEXPR14
+
+  if (!c.set_enabled)
+  {
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+    throw std::invalid_argument("The use of sets is disabled");
+#else
+    return throw_invalid_argument("The use of sets is disabled");
+#endif
+  }
+
+  if (p == pend)
+  {
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+    throw std::invalid_argument("The given pattern is not a valid set");
+#else
+    return throw_invalid_argument("The given pattern is not a valid set");
+#endif
+  }
+
+  switch (state)
+  {
+    case match_set_state::open:
+      if (*p == c.set_open)
+      {
+        return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::not_or_first_in);
+      }
+
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+      throw std::invalid_argument("The given pattern is not a valid set");
+#else
+      return throw_invalid_argument("The given pattern is not a valid set");
+#endif
+
+    case match_set_state::not_or_first_in:
+      if (*p == c.set_not)
+      {
+        return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::first_out);
       }
 
       if (s == send)
@@ -189,56 +304,36 @@ constexpr bool match_enum(
 
       if (equal_to(*s, *p))
       {
-        return match_enum(s, send, cx::next(p), pend, c, equal_to,
-                          match_enum_state::skip_next_in_item);
+        return true;
       }
 
-      return match_enum(s, send, cx::next(p), pend, c, equal_to, match_enum_state::next_in_item);
+      return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::next_in);
 
-    case match_enum_state::first_out_item:
+    case match_set_state::first_out:
       if (s == send || equal_to(*s, *p))
       {
         return false;
       }
 
-      return match_enum(s, send, cx::next(p), pend, c, equal_to, match_enum_state::next_out_item);
+      return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::next_out);
 
-    case match_enum_state::skip_next_in_item:
-      if (*p == c.enum_close)
-      {
-        if (s == send)
-        {
-          return true;
-        }
-
-        return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
-      }
-
-      return match_enum(s, send, cx::next(p), pend, c, equal_to, state);
-
-    case match_enum_state::next_in_item:
-      if (*p == c.enum_close || s == send)
+    case match_set_state::next_in:
+      if (*p == c.set_close || s == send)
       {
         return false;
       }
 
       if (equal_to(*s, *p))
       {
-        return match_enum(s, send, cx::next(p), pend, c, equal_to,
-                          match_enum_state::skip_next_in_item);
+        return true;
       }
 
-      return match_enum(s, send, cx::next(p), pend, c, equal_to, state);
+      return match_set(s, send, cx::next(p), pend, c, equal_to, state);
 
-    case match_enum_state::next_out_item:
-      if (*p == c.enum_close)
+    case match_set_state::next_out:
+      if (*p == c.set_close)
       {
-        if (s == send)
-        {
-          return true;
-        }
-
-        return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+        return true;
       }
 
       if (s == send || equal_to(*s, *p))
@@ -246,101 +341,171 @@ constexpr bool match_enum(
         return false;
       }
 
-      return match_enum(s, send, cx::next(p), pend, c, equal_to, state);
+      return match_set(s, send, cx::next(p), pend, c, equal_to, state);
 
     default:
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
       throw std::logic_error(
-          "The program execution should never end up here trowing this exception");
+          "The program execution should never end up here throwing this exception");
 #else
       return throw_logic_error(
-          "The program execution should never end up here trowing this exception");
+          "The program execution should never end up here throwing this exception");
 #endif
   }
 
 #else  // !cfg_HAS_CONSTEXPR14
 
-  return !c.enum_enabled
-             ? throw std::invalid_argument("The use of enums is disabled")
+  return !c.set_enabled
+             ? throw std::invalid_argument("The use of sets is disabled")
              : p == pend
-                   ? throw std::invalid_argument("The given pattern is not a valid enum")
-                   : state == match_enum_state::open
-                         ? *p == c.enum_open
-                               ? match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                            match_enum_state::exclusion_or_first_in_item)
+                   ? throw std::invalid_argument("The given pattern is not a valid set")
+                   : state == match_set_state::open
+                         ? *p == c.set_open
+                               ? match_set(s, send, cx::next(p), pend, c, equal_to,
+                                           match_set_state::not_or_first_in)
                                :
 
-                               throw std::invalid_argument("The given pattern is not a valid enum")
+                               throw std::invalid_argument("The given pattern is not a valid set")
                          :
 
-                         state == match_enum_state::exclusion_or_first_in_item
-                             ? *p == c.enum_exclusion
-                                   ? match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                match_enum_state::first_out_item)
+                         state == match_set_state::not_or_first_in
+                             ? *p == c.set_not
+                                   ? match_set(s, send, cx::next(p), pend, c, equal_to,
+                                               match_set_state::first_out)
                                    :
 
-                                   s != send &&
-                                       (equal_to(*s, *p)
-                                            ? match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                         match_enum_state::skip_next_in_item)
-                                            :
-
-                                            match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                       match_enum_state::next_in_item))
+                                   s != send && (equal_to(*s, *p) ||
+                                                 match_set(s, send, cx::next(p), pend, c, equal_to,
+                                                           match_set_state::next_in))
 
                              :
 
-                             state == match_enum_state::first_out_item
+                             state == match_set_state::first_out
                                  ? s != send && !equal_to(*s, *p) &&
-                                       match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                  match_enum_state::next_out_item)
+                                       match_set(s, send, cx::next(p), pend, c, equal_to,
+                                                 match_set_state::next_out)
 
                                  :
 
-                                 state == match_enum_state::skip_next_in_item
-                                     ? *p == c.enum_close
-                                           ?
-
-                                           s == send || match(cx::next(s), send, cx::next(p), pend,
-                                                              c, equal_to)
-                                           :
-
-                                           match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                      state)
+                                 state == match_set_state::next_in
+                                     ? *p != c.set_close && s != send &&
+                                           (equal_to(*s, *p) || match_set(s, send, cx::next(p),
+                                                                          pend, c, equal_to, state))
 
                                      :
 
-                                     state == match_enum_state::next_in_item
-                                         ? *p != c.enum_close && s != send &&
-                                               (equal_to(*s, *p)
-                                                    ?
+                                     state == match_set_state::next_out
+                                         ? *p == c.set_close ||
+                                               (s != send && !equal_to(*s, *p) &&
+                                                match_set(s, send, cx::next(p), pend, c, equal_to,
+                                                          state))
 
-                                                    match_enum(s, send, cx::next(p), pend, c,
-                                                               equal_to,
-                                                               match_enum_state::skip_next_in_item)
-                                                    :
+                                         : throw std::logic_error(
+                                               "The program execution should never end up "
+                                               "here "
+                                               "throwing this exception");
 
-                                                    match_enum(s, send, cx::next(p), pend, c,
-                                                               equal_to, state))
+#endif  // cfg_HAS_CONSTEXPR14
+}
 
-                                         :
+enum class is_alt_state
+{
+  open,
+  next,
+  escape
+};
 
-                                         state == match_enum_state::next_out_item
-                                             ? *p == c.enum_close
-                                                   ?
+template <typename PatternIterator>
+constexpr bool is_alt(
+    PatternIterator p, PatternIterator pend,
+    const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
+    is_alt_state state = is_alt_state::open, int depth = 0)
+{
+#if cfg_HAS_CONSTEXPR14
 
-                                                   s == send ||
-                                                       match(cx::next(s), send, cx::next(p), pend,
-                                                             c, equal_to)
-                                                   :
+  if (!c.alt_enabled || p == pend)
+  {
+    return false;
+  }
 
-                                                   s != send && !equal_to(*s, *p) &&
-                                                       match_enum(s, send, cx::next(p), pend, c,
-                                                                  equal_to, state)
+  switch (state)
+  {
+    case is_alt_state::open:
+      if (*p == c.alt_open)
+      {
+        return is_alt(cx::next(p), pend, c, is_alt_state::next, depth + 1);
+      }
 
-                                             : throw std::logic_error(
-                                                   "The program execution should never end up here "
-                                                   "trowing this exception");
+      return false;
+
+    case is_alt_state::next:
+      if (*p == c.escape)
+      {
+        return is_alt(cx::next(p), pend, c, is_alt_state::escape, depth);
+      }
+
+      if (c.set_enabled && *p == c.set_open &&
+          is_set(cx::next(p), pend, c, is_set_state::not_or_first))
+      {
+        return is_alt(set_end(cx::next(p), pend, c, set_end_state::not_or_first), pend, c, state,
+                      depth);
+      }
+
+      if (*p == c.alt_open)
+      {
+        return is_alt(cx::next(p), pend, c, state, depth + 1);
+      }
+
+      if (*p == c.alt_close)
+      {
+        if (depth - 1 == 0)
+        {
+          return true;
+        }
+
+        return is_alt(cx::next(p), pend, c, state, depth - 1);
+      }
+
+      return is_alt(cx::next(p), pend, c, state, depth);
+
+    case is_alt_state::escape:
+      return is_alt(cx::next(p), pend, c, is_alt_state::next, depth);
+
+    default:
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+      throw std::logic_error(
+          "The program execution should never end up here throwing this exception");
+#else
+      return throw_logic_error(
+          p, "The program execution should never end up here throwing this exception");
+#endif
+  }
+
+#else  // !cfg_HAS_CONSTEXPR14
+
+  return c.alt_enabled && p != pend &&
+         (state == is_alt_state::open
+              ? *p == c.alt_open && is_alt(cx::next(p), pend, c, is_alt_state::next, depth + 1)
+              : state == is_alt_state::next
+                    ? *p == c.escape
+                          ? is_alt(cx::next(p), pend, c, is_alt_state::escape, depth)
+                          : c.set_enabled && *p == c.set_open &&
+                                    is_set(cx::next(p), pend, c, is_set_state::not_or_first)
+                                ? is_alt(set_end(cx::next(p), pend, c, set_end_state::not_or_first),
+                                         pend, c, state, depth)
+                                : *p == c.alt_open
+                                      ? is_alt(cx::next(p), pend, c, state, depth + 1)
+                                      : *p == c.alt_close
+                                            ? depth - 1 == 0 ||
+                                                  is_alt(cx::next(p), pend, c, state, depth - 1)
+                                            : is_alt(cx::next(p), pend, c, state, depth)
+                    :
+
+                    state == is_alt_state::escape
+                        ? is_alt(cx::next(p), pend, c, is_alt_state::next, depth)
+                        : throw std::logic_error(
+                              "The program execution should never end up here throwing this "
+                              "exception"));
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
@@ -387,11 +552,24 @@ constexpr bool match(
     return match(s, send, cx::next(p), pend, c, equal_to, true);
   }
 
-  if (c.enum_enabled && *p == c.enum_open &&
-      detail::is_enum(cx::next(p), pend, c, detail::is_enum_state::exclusion_or_first_item))
+  if (c.set_enabled && *p == c.set_open &&
+      detail::is_set(cx::next(p), pend, c, detail::is_set_state::not_or_first))
   {
-    return match_enum(s, send, cx::next(p), pend, c, equal_to,
-                      detail::match_enum_state::exclusion_or_first_in_item);
+    return match_set(s, send, cx::next(p), pend, c, equal_to,
+                     detail::match_set_state::not_or_first_in) &&
+           match(cx::next(s), send,
+                 detail::set_end(cx::next(p), pend, c, detail::set_end_state::not_or_first), pend,
+                 c, equal_to);
+  }
+
+  if (c.alt_enabled && *p == c.alt_open &&
+      detail::is_alt(cx::next(p), pend, c, detail::is_alt_state::next, 1))
+  {
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+    throw std::runtime_error("Sorry, alternatives not implemented");
+#else
+    return detail::throw_runtime_error("Sorry, alternatives not implemented");
+#endif
   }
 
   if (s != send && equal_to(*s, *p))
@@ -416,16 +594,24 @@ constexpr bool match(
                                      match(cx::next(s), send, cx::next(p), pend, c, equal_to)
                                : *p == c.escape
                                      ? match(s, send, cx::next(p), pend, c, equal_to, true)
-                                     : c.enum_enabled && *p == c.enum_open &&
-                                               detail::is_enum(
-                                                   cx::next(p), pend, c,
-                                                   detail::is_enum_state::exclusion_or_first_item)
-                                           ? match_enum(s, send, cx::next(p), pend, c, equal_to,
-                                                        detail::match_enum_state::
-                                                            exclusion_or_first_in_item)
-                                           : s != send && equal_to(*s, *p) &&
-                                                 match(cx::next(s), send, cx::next(p), pend, c,
-                                                       equal_to);
+                                     : c.set_enabled && *p == c.set_open &&
+                                               detail::is_set(cx::next(p), pend, c,
+                                                              detail::is_set_state::not_or_first)
+                                           ? match_set(s, send, cx::next(p), pend, c, equal_to,
+                                                       detail::match_set_state::not_or_first_in) &&
+                                                 match(cx::next(s), send,
+                                                       detail::set_end(
+                                                           cx::next(p), pend, c,
+                                                           detail::set_end_state::not_or_first),
+                                                       pend, c, equal_to)
+                                           : c.alt_enabled && *p == c.alt_open &&
+                                                     detail::is_alt(cx::next(p), pend, c,
+                                                                    detail::is_alt_state::next, 1)
+                                                 ? throw std::runtime_error(
+                                                       "Sorry, alternatives not implemented")
+                                                 : s != send && equal_to(*s, *p) &&
+                                                       match(cx::next(s), send, cx::next(p), pend,
+                                                             c, equal_to);
 
 #endif  // cfg_HAS_CONSTEXPR14
 }

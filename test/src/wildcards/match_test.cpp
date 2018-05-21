@@ -3,18 +3,23 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include "wildcards/match.hpp"  // wildcards::match
+#include "wildcards/match.hpp"  // wildcards::cards, wildcards::cards_type,
+                                // wildcards::detail::is_alt, wildcards::detail::is_set,
+                                // wildcards::detail::match_set, wildcards::detail::set_end,
+                                // wildcards::match
 #include "cx/array.hpp"         // cx::array
 #include "cx/iterator.hpp"      // cx::begin, cx::end
 #include "cx/string_view.hpp"   // cx::literals
 
 #include "catch.hpp"
 
-TEST_CASE("wildcards::detail::is_enum() is compliant", "[wildcards::detail::is_enum]")
+TEST_CASE("wildcards::detail::is_set() is compliant", "[wildcards::detail::is_set]")
 {
-  using wildcards::detail::is_enum;
+  using wildcards::cards;
+  using wildcards::cards_type;
+  using wildcards::detail::is_set;
 
-  SECTION("")
+  SECTION("checking sets without not")
   {
     constexpr char pattern1[] = "[a]";
     constexpr char pattern2[] = "[abc]";
@@ -30,22 +35,22 @@ TEST_CASE("wildcards::detail::is_enum() is compliant", "[wildcards::detail::is_e
     constexpr char pattern10[] = "[[a]";
     constexpr char pattern11[] = "[[abc]";
 
-    static_assert(is_enum(cx::begin(pattern1), cx::end(pattern1)), "");
-    static_assert(is_enum(cx::begin(pattern2), cx::end(pattern2)), "");
+    static_assert(is_set(cx::begin(pattern1), cx::end(pattern1)), "");
+    static_assert(is_set(cx::begin(pattern2), cx::end(pattern2)), "");
 
-    static_assert(is_enum(cx::begin(pattern3), cx::end(pattern3)), "");
-    static_assert(is_enum(cx::begin(pattern4), cx::end(pattern4)), "");
-    static_assert(is_enum(cx::begin(pattern5), cx::end(pattern5)), "");
-    static_assert(is_enum(cx::begin(pattern6), cx::end(pattern6)), "");
-    static_assert(is_enum(cx::begin(pattern7), cx::end(pattern7)), "");
-    static_assert(is_enum(cx::begin(pattern8), cx::end(pattern8)), "");
+    static_assert(is_set(cx::begin(pattern3), cx::end(pattern3)), "");
+    static_assert(is_set(cx::begin(pattern4), cx::end(pattern4)), "");
+    static_assert(is_set(cx::begin(pattern5), cx::end(pattern5)), "");
+    static_assert(is_set(cx::begin(pattern6), cx::end(pattern6)), "");
+    static_assert(is_set(cx::begin(pattern7), cx::end(pattern7)), "");
+    static_assert(is_set(cx::begin(pattern8), cx::end(pattern8)), "");
 
-    static_assert(is_enum(cx::begin(pattern9), cx::end(pattern9)), "");
-    static_assert(is_enum(cx::begin(pattern10), cx::end(pattern10)), "");
-    static_assert(is_enum(cx::begin(pattern11), cx::end(pattern11)), "");
+    static_assert(is_set(cx::begin(pattern9), cx::end(pattern9)), "");
+    static_assert(is_set(cx::begin(pattern10), cx::end(pattern10)), "");
+    static_assert(is_set(cx::begin(pattern11), cx::end(pattern11)), "");
   }
 
-  SECTION("")
+  SECTION("checking sets with not")
   {
     constexpr char pattern1[] = "[!a]";
     constexpr char pattern2[] = "[!abc]";
@@ -61,22 +66,22 @@ TEST_CASE("wildcards::detail::is_enum() is compliant", "[wildcards::detail::is_e
     constexpr char pattern10[] = "[![a]";
     constexpr char pattern11[] = "[![abc]";
 
-    static_assert(is_enum(cx::begin(pattern1), cx::end(pattern1)), "");
-    static_assert(is_enum(cx::begin(pattern2), cx::end(pattern2)), "");
+    static_assert(is_set(cx::begin(pattern1), cx::end(pattern1)), "");
+    static_assert(is_set(cx::begin(pattern2), cx::end(pattern2)), "");
 
-    static_assert(is_enum(cx::begin(pattern3), cx::end(pattern3)), "");
-    static_assert(is_enum(cx::begin(pattern4), cx::end(pattern4)), "");
-    static_assert(is_enum(cx::begin(pattern5), cx::end(pattern5)), "");
-    static_assert(is_enum(cx::begin(pattern6), cx::end(pattern6)), "");
-    static_assert(is_enum(cx::begin(pattern7), cx::end(pattern7)), "");
-    static_assert(is_enum(cx::begin(pattern8), cx::end(pattern8)), "");
+    static_assert(is_set(cx::begin(pattern3), cx::end(pattern3)), "");
+    static_assert(is_set(cx::begin(pattern4), cx::end(pattern4)), "");
+    static_assert(is_set(cx::begin(pattern5), cx::end(pattern5)), "");
+    static_assert(is_set(cx::begin(pattern6), cx::end(pattern6)), "");
+    static_assert(is_set(cx::begin(pattern7), cx::end(pattern7)), "");
+    static_assert(is_set(cx::begin(pattern8), cx::end(pattern8)), "");
 
-    static_assert(is_enum(cx::begin(pattern9), cx::end(pattern9)), "");
-    static_assert(is_enum(cx::begin(pattern10), cx::end(pattern10)), "");
-    static_assert(is_enum(cx::begin(pattern11), cx::end(pattern11)), "");
+    static_assert(is_set(cx::begin(pattern9), cx::end(pattern9)), "");
+    static_assert(is_set(cx::begin(pattern10), cx::end(pattern10)), "");
+    static_assert(is_set(cx::begin(pattern11), cx::end(pattern11)), "");
   }
 
-  SECTION("")
+  SECTION("checking non-sets")
   {
     constexpr char pattern1[] = "";
     constexpr char pattern2[] = "a";
@@ -92,27 +97,149 @@ TEST_CASE("wildcards::detail::is_enum() is compliant", "[wildcards::detail::is_e
     constexpr char pattern10[] = "[!]";
     constexpr char pattern11[] = "[!]a";
 
-    static_assert(!is_enum(cx::begin(pattern1), cx::end(pattern1)), "");
-    static_assert(!is_enum(cx::begin(pattern2), cx::end(pattern2)), "");
-    static_assert(!is_enum(cx::begin(pattern3), cx::end(pattern3)), "");
+    static_assert(!is_set(cx::begin(pattern1), cx::end(pattern1)), "");
+    static_assert(!is_set(cx::begin(pattern2), cx::end(pattern2)), "");
+    static_assert(!is_set(cx::begin(pattern3), cx::end(pattern3)), "");
 
-    static_assert(!is_enum(cx::begin(pattern4), cx::end(pattern4)), "");
-    static_assert(!is_enum(cx::begin(pattern5), cx::end(pattern5)), "");
-    static_assert(!is_enum(cx::begin(pattern6), cx::end(pattern6)), "");
-    static_assert(!is_enum(cx::begin(pattern7), cx::end(pattern7)), "");
+    static_assert(!is_set(cx::begin(pattern4), cx::end(pattern4)), "");
+    static_assert(!is_set(cx::begin(pattern5), cx::end(pattern5)), "");
+    static_assert(!is_set(cx::begin(pattern6), cx::end(pattern6)), "");
+    static_assert(!is_set(cx::begin(pattern7), cx::end(pattern7)), "");
 
-    static_assert(!is_enum(cx::begin(pattern8), cx::end(pattern8)), "");
-    static_assert(!is_enum(cx::begin(pattern9), cx::end(pattern9)), "");
-    static_assert(!is_enum(cx::begin(pattern10), cx::end(pattern10)), "");
-    static_assert(!is_enum(cx::begin(pattern11), cx::end(pattern11)), "");
+    static_assert(!is_set(cx::begin(pattern8), cx::end(pattern8)), "");
+    static_assert(!is_set(cx::begin(pattern9), cx::end(pattern9)), "");
+    static_assert(!is_set(cx::begin(pattern10), cx::end(pattern10)), "");
+    static_assert(!is_set(cx::begin(pattern11), cx::end(pattern11)), "");
+  }
+
+  SECTION("checking sets using standard and/or extented cards")
+  {
+    constexpr char pattern[] = "[a]";
+
+    static_assert(!is_set(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::standard}),
+                  "");
+    static_assert(is_set(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::extended}),
+                  "");
   }
 }
 
-TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::match_enum]")
+TEST_CASE("wildcards::detail::set_end() is compliant", "[wildcards::detail::set_end]")
 {
-  using wildcards::detail::match_enum;
+  using wildcards::cards;
+  using wildcards::cards_type;
+  using wildcards::detail::set_end;
 
-  SECTION("")
+  SECTION("skipping sets without not")
+  {
+    constexpr char pattern1[] = "[a]";
+    constexpr char pattern2[] = "[abc]";
+
+    constexpr char pattern3[] = "[]]";
+    constexpr char pattern4[] = "[]a]";
+    constexpr char pattern5[] = "[]abc]";
+    constexpr char pattern6[] = "[][]";
+    constexpr char pattern7[] = "[][a]";
+    constexpr char pattern8[] = "[][abc]";
+
+    constexpr char pattern9[] = "[[]";
+    constexpr char pattern10[] = "[[a]";
+    constexpr char pattern11[] = "[[abc]";
+
+    static_assert(set_end(cx::begin(pattern1), cx::end(pattern1)) == cx::end(pattern1) - 1, "");
+    static_assert(set_end(cx::begin(pattern2), cx::end(pattern2)) == cx::end(pattern2) - 1, "");
+
+    static_assert(set_end(cx::begin(pattern3), cx::end(pattern3)) == cx::end(pattern3) - 1, "");
+    static_assert(set_end(cx::begin(pattern4), cx::end(pattern4)) == cx::end(pattern4) - 1, "");
+    static_assert(set_end(cx::begin(pattern5), cx::end(pattern5)) == cx::end(pattern5) - 1, "");
+    static_assert(set_end(cx::begin(pattern6), cx::end(pattern6)) == cx::end(pattern6) - 1, "");
+    static_assert(set_end(cx::begin(pattern7), cx::end(pattern7)) == cx::end(pattern7) - 1, "");
+    static_assert(set_end(cx::begin(pattern8), cx::end(pattern8)) == cx::end(pattern8) - 1, "");
+
+    static_assert(set_end(cx::begin(pattern9), cx::end(pattern9)) == cx::end(pattern9) - 1, "");
+    static_assert(set_end(cx::begin(pattern10), cx::end(pattern10)) == cx::end(pattern10) - 1, "");
+    static_assert(set_end(cx::begin(pattern11), cx::end(pattern11)) == cx::end(pattern11) - 1, "");
+  }
+
+  SECTION("skipping sets with not")
+  {
+    constexpr char pattern1[] = "[!a]";
+    constexpr char pattern2[] = "[!abc]";
+
+    constexpr char pattern3[] = "[!]]";
+    constexpr char pattern4[] = "[!]a]";
+    constexpr char pattern5[] = "[!]abc]";
+    constexpr char pattern6[] = "[!][]";
+    constexpr char pattern7[] = "[!][a]";
+    constexpr char pattern8[] = "[!][abc]";
+
+    constexpr char pattern9[] = "[![]";
+    constexpr char pattern10[] = "[![a]";
+    constexpr char pattern11[] = "[![abc]";
+
+    static_assert(set_end(cx::begin(pattern1), cx::end(pattern1)) == cx::end(pattern1) - 1, "");
+    static_assert(set_end(cx::begin(pattern2), cx::end(pattern2)) == cx::end(pattern2) - 1, "");
+
+    static_assert(set_end(cx::begin(pattern3), cx::end(pattern3)) == cx::end(pattern3) - 1, "");
+    static_assert(set_end(cx::begin(pattern4), cx::end(pattern4)) == cx::end(pattern4) - 1, "");
+    static_assert(set_end(cx::begin(pattern5), cx::end(pattern5)) == cx::end(pattern5) - 1, "");
+    static_assert(set_end(cx::begin(pattern6), cx::end(pattern6)) == cx::end(pattern6) - 1, "");
+    static_assert(set_end(cx::begin(pattern7), cx::end(pattern7)) == cx::end(pattern7) - 1, "");
+    static_assert(set_end(cx::begin(pattern8), cx::end(pattern8)) == cx::end(pattern8) - 1, "");
+
+    static_assert(set_end(cx::begin(pattern9), cx::end(pattern9)) == cx::end(pattern9) - 1, "");
+    static_assert(set_end(cx::begin(pattern10), cx::end(pattern10)) == cx::end(pattern10) - 1, "");
+    static_assert(set_end(cx::begin(pattern11), cx::end(pattern11)) == cx::end(pattern11) - 1, "");
+  }
+
+  SECTION("skipping non-sets")
+  {
+    const char pattern1[] = "";
+    const char pattern2[] = "a";
+    const char pattern3[] = "!";
+
+    const char pattern4[] = "[";
+    const char pattern5[] = "[a";
+    const char pattern6[] = "[]";
+    const char pattern7[] = "[]a";
+
+    const char pattern8[] = "[!";
+    const char pattern9[] = "[!a";
+    const char pattern10[] = "[!]";
+    const char pattern11[] = "[!]a";
+
+    REQUIRE_THROWS(set_end(cx::begin(pattern1), cx::end(pattern1)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern2), cx::end(pattern2)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern3), cx::end(pattern3)));
+
+    REQUIRE_THROWS(set_end(cx::begin(pattern4), cx::end(pattern4)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern5), cx::end(pattern5)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern6), cx::end(pattern6)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern7), cx::end(pattern7)));
+
+    REQUIRE_THROWS(set_end(cx::begin(pattern8), cx::end(pattern8)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern9), cx::end(pattern9)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern10), cx::end(pattern10)));
+    REQUIRE_THROWS(set_end(cx::begin(pattern11), cx::end(pattern11)));
+  }
+
+  SECTION("skipping sets using standard and/or extented cards")
+  {
+    const char pattern[] = "[a]";
+
+    REQUIRE_THROWS(
+        !set_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::standard}));
+    REQUIRE(set_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::extended}) ==
+            cx::end(pattern) - 1);
+  }
+}
+
+TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::match_set]")
+{
+  using wildcards::cards;
+  using wildcards::cards_type;
+  using wildcards::detail::match_set;
+
+  SECTION(R"(matching "[a]")")
   {
     constexpr char pattern[] = "[a]";
 
@@ -120,15 +247,15 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
     constexpr char seq2[] = "a";
     constexpr char seq3[] = "b";
 
-    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+    static_assert(!match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
+    static_assert(match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(!match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+    static_assert(!match_set(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
                   "");
   }
 
-  SECTION("")
+  SECTION(R"(matching "[abc]")")
   {
     constexpr char pattern[] = "[abc]";
 
@@ -138,19 +265,19 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
     constexpr char seq4[] = "c";
     constexpr char seq5[] = "d";
 
-    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+    static_assert(!match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
+    static_assert(match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+    static_assert(match_set(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(match_enum(cx::begin(seq4), cx::end(seq4), cx::begin(pattern), cx::end(pattern)),
+    static_assert(match_set(cx::begin(seq4), cx::end(seq4), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(!match_enum(cx::begin(seq5), cx::end(seq5), cx::begin(pattern), cx::end(pattern)),
+    static_assert(!match_set(cx::begin(seq5), cx::end(seq5), cx::begin(pattern), cx::end(pattern)),
                   "");
   }
 
-  SECTION("")
+  SECTION(R"(matching "[]]")")
   {
     constexpr char pattern[] = "[]]";
 
@@ -158,15 +285,15 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
     constexpr char seq2[] = "]";
     constexpr char seq3[] = "a";
 
-    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+    static_assert(!match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
+    static_assert(match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(!match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+    static_assert(!match_set(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
                   "");
   }
 
-  SECTION("")
+  SECTION(R"(matching "[]abc]")")
   {
     constexpr char pattern[] = "[]abc]";
 
@@ -177,21 +304,21 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
     constexpr char seq5[] = "c";
     constexpr char seq6[] = "d";
 
-    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+    static_assert(!match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
+    static_assert(match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+    static_assert(match_set(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(match_enum(cx::begin(seq4), cx::end(seq4), cx::begin(pattern), cx::end(pattern)),
+    static_assert(match_set(cx::begin(seq4), cx::end(seq4), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(match_enum(cx::begin(seq5), cx::end(seq5), cx::begin(pattern), cx::end(pattern)),
+    static_assert(match_set(cx::begin(seq5), cx::end(seq5), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(!match_enum(cx::begin(seq6), cx::end(seq6), cx::begin(pattern), cx::end(pattern)),
+    static_assert(!match_set(cx::begin(seq6), cx::end(seq6), cx::begin(pattern), cx::end(pattern)),
                   "");
   }
 
-  SECTION("")
+  SECTION(R"(matching "[!a]")")
   {
     constexpr char pattern[] = "[!a]";
 
@@ -199,15 +326,15 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
     constexpr char seq2[] = "a";
     constexpr char seq3[] = "b";
 
-    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+    static_assert(
+        !match_set(cx::begin(seq1), cx::end(seq1) - 1, cx::begin(pattern), cx::end(pattern)), "");
+    static_assert(!match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(!match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
-                  "");
-    static_assert(match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+    static_assert(match_set(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
                   "");
   }
 
-  SECTION("")
+  SECTION(R"(matching "[!abc]")")
   {
     constexpr char pattern[] = "[!abc]";
 
@@ -217,19 +344,19 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
     constexpr char seq4[] = "c";
     constexpr char seq5[] = "d";
 
-    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+    static_assert(
+        !match_set(cx::begin(seq1), cx::end(seq1) - 1, cx::begin(pattern), cx::end(pattern)), "");
+    static_assert(!match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(!match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
+    static_assert(!match_set(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(!match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+    static_assert(!match_set(cx::begin(seq4), cx::end(seq4), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(!match_enum(cx::begin(seq4), cx::end(seq4), cx::begin(pattern), cx::end(pattern)),
-                  "");
-    static_assert(match_enum(cx::begin(seq5), cx::end(seq5), cx::begin(pattern), cx::end(pattern)),
+    static_assert(match_set(cx::begin(seq5), cx::end(seq5), cx::begin(pattern), cx::end(pattern)),
                   "");
   }
 
-  SECTION("")
+  SECTION(R"(matching "[!]]")")
   {
     constexpr char pattern[] = "[!]]";
 
@@ -237,15 +364,15 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
     constexpr char seq2[] = "]";
     constexpr char seq3[] = "a";
 
-    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+    static_assert(
+        !match_set(cx::begin(seq1), cx::end(seq1) - 1, cx::begin(pattern), cx::end(pattern)), "");
+    static_assert(!match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(!match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
-                  "");
-    static_assert(match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+    static_assert(match_set(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
                   "");
   }
 
-  SECTION("")
+  SECTION(R"(matching "[!]abc]")")
   {
     constexpr char pattern[] = "[!]abc]";
 
@@ -256,17 +383,153 @@ TEST_CASE("wildcards::detail::match_enum() is compliant", "[wildcards::detail::m
     constexpr char seq5[] = "c";
     constexpr char seq6[] = "d";
 
-    static_assert(!match_enum(cx::begin(seq1), cx::end(seq1), cx::begin(pattern), cx::end(pattern)),
+    static_assert(
+        !match_set(cx::begin(seq1), cx::end(seq1) - 1, cx::begin(pattern), cx::end(pattern)), "");
+    static_assert(!match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(!match_enum(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
+    static_assert(!match_set(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(!match_enum(cx::begin(seq3), cx::end(seq3), cx::begin(pattern), cx::end(pattern)),
+    static_assert(!match_set(cx::begin(seq4), cx::end(seq4), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(!match_enum(cx::begin(seq4), cx::end(seq4), cx::begin(pattern), cx::end(pattern)),
+    static_assert(!match_set(cx::begin(seq5), cx::end(seq5), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(!match_enum(cx::begin(seq5), cx::end(seq5), cx::begin(pattern), cx::end(pattern)),
+    static_assert(match_set(cx::begin(seq6), cx::end(seq6), cx::begin(pattern), cx::end(pattern)),
                   "");
-    static_assert(match_enum(cx::begin(seq6), cx::end(seq6), cx::begin(pattern), cx::end(pattern)),
+  }
+
+  SECTION("matching non-sets")
+  {
+    const char pattern1[] = "";
+    const char pattern2[] = "ax";  // FIXME: should be "a"
+    const char pattern3[] = "!x";  // FIXME: should be "!"
+
+    const char pattern4[] = "[x";  // FIXME: should be "["
+    const char pattern5[] = "[a";
+    const char pattern6[] = "[]";
+    const char pattern7[] = "[]a";
+
+    const char pattern8[] = "[!";
+    const char pattern9[] = "[!a";
+    const char pattern10[] = "[!]";
+    const char pattern11[] = "[!]a";
+
+    const char seq1[] = "a";
+    const char seq2[] = "b";
+
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern1), cx::end(pattern1)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern2), cx::end(pattern2)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern3), cx::end(pattern3)));
+
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern4), cx::end(pattern4)));
+    REQUIRE(match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern5), cx::end(pattern5)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern5), cx::end(pattern5)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern6), cx::end(pattern6)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern6), cx::end(pattern6)));
+    REQUIRE(match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern7), cx::end(pattern7)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern7), cx::end(pattern7)));
+
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern8), cx::end(pattern8)));
+    REQUIRE(!match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern9), cx::end(pattern9)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern9), cx::end(pattern9)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern10), cx::end(pattern10)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern10), cx::end(pattern10)));
+    REQUIRE(!match_set(cx::begin(seq1), cx::end(seq1), cx::begin(pattern11), cx::end(pattern11)));
+    REQUIRE_THROWS(
+        match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern11), cx::end(pattern11)));
+  }
+
+  SECTION("matching sets using standard and/or extented cards")
+  {
+    const char pattern[] = "[a]";
+
+    const char seq[] = "a";
+
+    REQUIRE_THROWS(!match_set(cx::begin(seq), cx::end(seq), cx::begin(pattern), cx::end(pattern),
+                              cards<char>{cards_type::standard}));
+    REQUIRE(match_set(cx::begin(seq), cx::end(seq), cx::begin(pattern), cx::end(pattern),
+                      cards<char>{cards_type::extended}));
+  }
+}
+
+TEST_CASE("wildcards::detail::is_alt() is compliant", "[wildcards::detail::is_alt]")
+{
+  using wildcards::cards;
+  using wildcards::cards_type;
+  using wildcards::detail::is_alt;
+
+  SECTION("checking alternatives")
+  {
+    constexpr char pattern1[] = "()";
+    constexpr char pattern2[] = "(a)";
+    constexpr char pattern3[] = "(())";
+    constexpr char pattern4[] = "((a))";
+    constexpr char pattern5[] = "(a()a)";
+    constexpr char pattern6[] = "(a(a)a)";
+
+    constexpr char pattern7[] = "(\\()";
+    constexpr char pattern8[] = "([(])";
+
+    constexpr char pattern9[] = R"((a\*\(b+c\)/([!abc]|sin\([abc]\))))";
+
+    static_assert(is_alt(cx::begin(pattern1), cx::end(pattern1)), "");
+    static_assert(is_alt(cx::begin(pattern2), cx::end(pattern2)), "");
+    static_assert(is_alt(cx::begin(pattern3), cx::end(pattern3)), "");
+    static_assert(is_alt(cx::begin(pattern4), cx::end(pattern4)), "");
+    static_assert(is_alt(cx::begin(pattern5), cx::end(pattern5)), "");
+    static_assert(is_alt(cx::begin(pattern6), cx::end(pattern6)), "");
+
+    static_assert(is_alt(cx::begin(pattern7), cx::end(pattern7)), "");
+    static_assert(is_alt(cx::begin(pattern8), cx::end(pattern8)), "");
+
+    static_assert(is_alt(cx::begin(pattern9), cx::end(pattern9)), "");
+  }
+
+  SECTION("checking non-alternatives")
+  {
+    constexpr char pattern1[] = "";
+    constexpr char pattern2[] = "a";
+    constexpr char pattern3[] = "|";
+
+    constexpr char pattern4[] = "(";
+    constexpr char pattern5[] = "(a";
+    constexpr char pattern6[] = "(|";
+    constexpr char pattern7[] = "(()";
+    constexpr char pattern8[] = "((a)";
+    constexpr char pattern9[] = "(a()";
+    constexpr char pattern10[] = "(a(a)";
+
+    static_assert(!is_alt(cx::begin(pattern1), cx::end(pattern1)), "");
+    static_assert(!is_alt(cx::begin(pattern2), cx::end(pattern2)), "");
+    static_assert(!is_alt(cx::begin(pattern3), cx::end(pattern3)), "");
+
+    static_assert(!is_alt(cx::begin(pattern4), cx::end(pattern4)), "");
+    static_assert(!is_alt(cx::begin(pattern5), cx::end(pattern5)), "");
+    static_assert(!is_alt(cx::begin(pattern6), cx::end(pattern6)), "");
+    static_assert(!is_alt(cx::begin(pattern7), cx::end(pattern7)), "");
+    static_assert(!is_alt(cx::begin(pattern8), cx::end(pattern8)), "");
+    static_assert(!is_alt(cx::begin(pattern9), cx::end(pattern9)), "");
+    static_assert(!is_alt(cx::begin(pattern10), cx::end(pattern10)), "");
+  }
+
+  SECTION("checking alternatives using standard and/or extented cards")
+  {
+    constexpr char pattern[] = "(a)";
+
+    static_assert(!is_alt(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::standard}),
+                  "");
+    static_assert(is_alt(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::extended}),
                   "");
   }
 }
@@ -275,7 +538,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 {
   using wildcards::match;
 
-  SECTION("match with an empty pattern")
+  SECTION(R"(matching "")")
   {
     constexpr char pattern1[] = "";
     constexpr char pattern2[] = R"(\)";
@@ -287,7 +550,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match("Anything", pattern2), "");
   }
 
-  SECTION(R"(match with "A")")
+  SECTION(R"(matching "A")")
   {
     constexpr char pattern1[] = "A";
     constexpr char pattern2[] = R"(A\)";
@@ -320,7 +583,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match("Something", pattern4), "");
   }
 
-  SECTION(R"(match with "Hello!")")
+  SECTION(R"(matching "Hello!")")
   {
     constexpr char pattern1[] = "Hello!";
     constexpr char pattern2[] = R"(Hello!\)";
@@ -358,7 +621,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match("Hello!Hello!", pattern4), "");
   }
 
-  SECTION(R"(match with "*")")
+  SECTION(R"(matching "*")")
   {
     constexpr char pattern1[] = "*";
     constexpr char pattern2[] = R"(*\)";
@@ -381,7 +644,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match("Anything", pattern4), "");
   }
 
-  SECTION(R"(match with "?")")
+  SECTION(R"(matching "?")")
   {
     constexpr char pattern1[] = "?";
     constexpr char pattern2[] = R"(?\)";
@@ -414,7 +677,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match("Something", pattern4), "");
   }
 
-  SECTION(R"(match with "H?llo,*W*!")")
+  SECTION(R"(matching "H?llo,*W*!")")
   {
     constexpr char pattern[] = "H?llo,*W*!";
 
@@ -433,7 +696,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match("Hello, World!?", pattern), "");
   }
 
-  SECTION(R"zzz(match with R"(\\\* *\? \*\\)")zzz")
+  SECTION(R"zzz(matching R"(\\\* *\? \*\\)")zzz")
   {
     constexpr char pattern1[] = R"(\\\* *\? \*\\)";
     constexpr char pattern2[] = R"([\][*] *[?] [*][\])";
@@ -460,35 +723,35 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match(R"( Hello? *\)", pattern2), "");
   }
 
-  SECTION(R"(match with u"H?llo,*W*!")")
+  SECTION(R"(matching u"H?llo,*W*!")")
   {
     constexpr char16_t pattern[] = u"H?llo,*W*!";
 
     static_assert(match(u"Hello, World!", pattern), "");
   }
 
-  SECTION(R"(match with U"H?llo,*W*!")")
+  SECTION(R"(matching U"H?llo,*W*!")")
   {
     constexpr char32_t pattern[] = U"H?llo,*W*!";
 
     static_assert(match(U"Hello, World!", pattern), "");
   }
 
-  SECTION(R"(match with L"H?llo,*W*!")")
+  SECTION(R"(matching L"H?llo,*W*!")")
   {
     constexpr wchar_t pattern[] = L"H?llo,*W*!";
 
     static_assert(match(L"Hello, World!", pattern), "");
   }
 
-  SECTION(R"(match with "H_llo,%W%!")")
+  SECTION(R"(matching "H_llo,%W%!")")
   {
     constexpr char pattern[] = "H_llo,%W%!";
 
     static_assert(match("Hello, World!", pattern, {'%', '_', '\\'}), "");
   }
 
-  SECTION(R"(match with "H?llo,*W*!"_sv)")
+  SECTION(R"(matching "H?llo,*W*!"_sv)")
   {
     using namespace cx::literals;
 
@@ -497,7 +760,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match("Hello, World!"_sv, pattern), "");
   }
 
-  SECTION(R"(match with u"H?llo,*W*!"_sv)")
+  SECTION(R"(matching u"H?llo,*W*!"_sv)")
   {
     using namespace cx::literals;
 
@@ -506,7 +769,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match(u"Hello, World!"_sv, pattern), "");
   }
 
-  SECTION(R"(match with U"H?llo,*W*!"_sv)")
+  SECTION(R"(matching U"H?llo,*W*!"_sv)")
   {
     using namespace cx::literals;
 
@@ -515,7 +778,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match(U"Hello, World!"_sv, pattern), "");
   }
 
-  SECTION(R"(match with L"H?llo,*W*!"_sv)")
+  SECTION(R"(matching L"H?llo,*W*!"_sv)")
   {
     using namespace cx::literals;
 
@@ -524,7 +787,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match(L"Hello, World!"_sv, pattern), "");
   }
 
-  SECTION(R"(match with "H_llo,%W%!"_sv)")
+  SECTION(R"(matching "H_llo,%W%!"_sv)")
   {
     using namespace cx::literals;
 
@@ -533,7 +796,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match("Hello, World!"_sv, pattern, {'%', '_', '\\'}), "");
   }
 
-  SECTION(R"(match with "11*7?"_sv)")
+  SECTION(R"(matching "11*7?"_sv)")
   {
     struct equal_to
     {
@@ -554,7 +817,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 #endif
   }
 
-  SECTION(R"(match with "11%7_"_sv)")
+  SECTION(R"(matching "11%7_"_sv)")
   {
     struct equal_to
     {
