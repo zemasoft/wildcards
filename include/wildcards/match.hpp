@@ -510,6 +510,136 @@ constexpr bool is_alt(
 #endif  // cfg_HAS_CONSTEXPR14
 }
 
+enum class alt_end_state
+{
+  open,
+  next,
+  escape
+};
+
+template <typename PatternIterator>
+constexpr PatternIterator alt_end(
+    PatternIterator p, PatternIterator pend,
+    const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
+    alt_end_state state = alt_end_state::open, int depth = 0)
+{
+#if cfg_HAS_CONSTEXPR14
+
+  if (!c.alt_enabled)
+  {
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+    throw std::invalid_argument("The use of alternatives is disabled");
+#else
+    return throw_invalid_argument(p, "The use of alternatives is disabled");
+#endif
+  }
+
+  if (p == pend)
+  {
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+    throw std::invalid_argument("The given pattern is not a valid alternative");
+#else
+    return throw_invalid_argument(p, "The given pattern is not a valid alternative");
+#endif
+  }
+
+  switch (state)
+  {
+    case alt_end_state::open:
+      if (*p == c.alt_open)
+      {
+        return alt_end(cx::next(p), pend, c, alt_end_state::next, depth + 1);
+      }
+
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+      throw std::invalid_argument("The given pattern is not a valid alternative");
+#else
+      return throw_invalid_argument(p, "The given pattern is not a valid alternative");
+#endif
+
+    case alt_end_state::next:
+      if (*p == c.escape)
+      {
+        return alt_end(cx::next(p), pend, c, alt_end_state::escape, depth);
+      }
+
+      if (c.set_enabled && *p == c.set_open &&
+          is_set(cx::next(p), pend, c, is_set_state::not_or_first))
+      {
+        return alt_end(set_end(cx::next(p), pend, c, set_end_state::not_or_first), pend, c, state,
+                       depth);
+      }
+
+      if (*p == c.alt_open)
+      {
+        return alt_end(cx::next(p), pend, c, state, depth + 1);
+      }
+
+      if (*p == c.alt_close)
+      {
+        if (depth - 1 == 0)
+        {
+          return cx::next(p);
+        }
+
+        return alt_end(cx::next(p), pend, c, state, depth - 1);
+      }
+
+      return alt_end(cx::next(p), pend, c, state, depth);
+
+    case alt_end_state::escape:
+      return alt_end(cx::next(p), pend, c, alt_end_state::next, depth);
+
+    default:
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+      throw std::logic_error(
+          "The program execution should never end up here throwing this exception");
+#else
+      return throw_logic_error(
+          p, "The program execution should never end up here throwing this exception");
+#endif
+  }
+
+#else  // !cfg_HAS_CONSTEXPR14
+
+  return !c.alt_enabled
+             ? throw std::invalid_argument("The use of alternatives is disabled")
+             : p == pend
+                   ? throw std::invalid_argument("The given pattern is not a valid alternative")
+                   : state == alt_end_state::open
+                         ? *p == c.alt_open
+                               ? alt_end(cx::next(p), pend, c, alt_end_state::next, depth + 1)
+                               : throw std::invalid_argument(
+                                     "The given pattern is not a valid alternative")
+                         : state == alt_end_state::next
+                               ? *p == c.escape
+                                     ? alt_end(cx::next(p), pend, c, alt_end_state::escape, depth)
+                                     : c.set_enabled && *p == c.set_open &&
+                                               is_set(cx::next(p), pend, c,
+                                                      is_set_state::not_or_first)
+                                           ? alt_end(set_end(cx::next(p), pend, c,
+                                                             set_end_state::not_or_first),
+                                                     pend, c, state, depth)
+                                           : *p == c.alt_open
+                                                 ? alt_end(cx::next(p), pend, c, state, depth + 1)
+                                                 : *p == c.alt_close
+                                                       ? depth - 1 == 0
+                                                             ? cx::next(p)
+                                                             : alt_end(cx::next(p), pend, c, state,
+                                                                       depth - 1)
+                                                       : alt_end(cx::next(p), pend, c, state, depth)
+                               :
+
+                               state == alt_end_state::escape
+                                   ? alt_end(cx::next(p), pend, c, alt_end_state::next, depth)
+                                   : throw std::logic_error(
+                                         "The program execution should never end up here throwing "
+                                         "this "
+                                         "exception");
+
+#endif  // cfg_HAS_CONSTEXPR14
+}
+
 }  // namespace detail
 
 template <typename SequenceIterator, typename PatternIterator,

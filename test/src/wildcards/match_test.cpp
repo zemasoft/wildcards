@@ -4,9 +4,9 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include "wildcards/match.hpp"  // wildcards::cards, wildcards::cards_type,
-                                // wildcards::detail::is_alt, wildcards::detail::is_set,
-                                // wildcards::detail::match_set, wildcards::detail::set_end,
-                                // wildcards::match
+                                // wildcards::detail::alt_end, wildcards::detail::is_alt,
+                                // wildcards::detail::is_set, wildcards::detail::match_set,
+                                // wildcards::detail::set_end, wildcards::match
 #include "cx/array.hpp"         // cx::array
 #include "cx/iterator.hpp"      // cx::begin, cx::end
 #include "cx/string_view.hpp"   // cx::literals
@@ -227,7 +227,7 @@ TEST_CASE("wildcards::detail::set_end() is compliant", "[wildcards::detail::set_
     const char pattern[] = "[a]";
 
     REQUIRE_THROWS(
-        !set_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::standard}));
+        set_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::standard}));
     REQUIRE(set_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::extended}) ==
             cx::end(pattern) - 1);
   }
@@ -531,6 +531,77 @@ TEST_CASE("wildcards::detail::is_alt() is compliant", "[wildcards::detail::is_al
                   "");
     static_assert(is_alt(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::extended}),
                   "");
+  }
+}
+
+TEST_CASE("wildcards::detail::alt_end() is compliant", "[wildcards::detail::alt_end]")
+{
+  using wildcards::cards;
+  using wildcards::cards_type;
+  using wildcards::detail::alt_end;
+
+  SECTION("skipping alternatives")
+  {
+    constexpr char pattern1[] = "()";
+    constexpr char pattern2[] = "(a)";
+    constexpr char pattern3[] = "(())";
+    constexpr char pattern4[] = "((a))";
+    constexpr char pattern5[] = "(a()a)";
+    constexpr char pattern6[] = "(a(a)a)";
+
+    constexpr char pattern7[] = "(\\()";
+    constexpr char pattern8[] = "([(])";
+
+    constexpr char pattern9[] = R"((a\*\(b+c\)/([!abc]|sin\([abc]\))))";
+
+    static_assert(alt_end(cx::begin(pattern1), cx::end(pattern1)) == cx::end(pattern1) - 1, "");
+    static_assert(alt_end(cx::begin(pattern2), cx::end(pattern2)) == cx::end(pattern2) - 1, "");
+    static_assert(alt_end(cx::begin(pattern3), cx::end(pattern3)) == cx::end(pattern3) - 1, "");
+    static_assert(alt_end(cx::begin(pattern4), cx::end(pattern4)) == cx::end(pattern4) - 1, "");
+    static_assert(alt_end(cx::begin(pattern5), cx::end(pattern5)) == cx::end(pattern5) - 1, "");
+    static_assert(alt_end(cx::begin(pattern6), cx::end(pattern6)) == cx::end(pattern6) - 1, "");
+
+    static_assert(alt_end(cx::begin(pattern7), cx::end(pattern7)) == cx::end(pattern7) - 1, "");
+    static_assert(alt_end(cx::begin(pattern8), cx::end(pattern8)) == cx::end(pattern8) - 1, "");
+
+    static_assert(alt_end(cx::begin(pattern9), cx::end(pattern9)) == cx::end(pattern9) - 1, "");
+  }
+
+  SECTION("skipping non-alternatives")
+  {
+    char pattern1[] = "";
+    char pattern2[] = "a";
+    char pattern3[] = "|";
+
+    char pattern4[] = "(";
+    char pattern5[] = "(a";
+    char pattern6[] = "(|";
+    char pattern7[] = "(()";
+    char pattern8[] = "((a)";
+    char pattern9[] = "(a()";
+    char pattern10[] = "(a(a)";
+
+    REQUIRE_THROWS(alt_end(cx::begin(pattern1), cx::end(pattern1)));
+    REQUIRE_THROWS(alt_end(cx::begin(pattern2), cx::end(pattern2)));
+    REQUIRE_THROWS(alt_end(cx::begin(pattern3), cx::end(pattern3)));
+
+    REQUIRE_THROWS(alt_end(cx::begin(pattern4), cx::end(pattern4)));
+    REQUIRE_THROWS(alt_end(cx::begin(pattern5), cx::end(pattern5)));
+    REQUIRE_THROWS(alt_end(cx::begin(pattern6), cx::end(pattern6)));
+    REQUIRE_THROWS(alt_end(cx::begin(pattern7), cx::end(pattern7)));
+    REQUIRE_THROWS(alt_end(cx::begin(pattern8), cx::end(pattern8)));
+    REQUIRE_THROWS(alt_end(cx::begin(pattern9), cx::end(pattern9)));
+    REQUIRE_THROWS(alt_end(cx::begin(pattern10), cx::end(pattern10)));
+  }
+
+  SECTION("skipping alternatives using standard and/or extented cards")
+  {
+    char pattern[] = "(a)";
+
+    REQUIRE_THROWS(
+        alt_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::standard}));
+    REQUIRE(alt_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::extended}) ==
+            cx::end(pattern) - 1);
   }
 }
 
