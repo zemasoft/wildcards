@@ -19,6 +19,27 @@
 namespace wildcards
 {
 
+template <typename SequenceIterator, typename PatternIterator>
+struct match_result
+{
+  bool res;
+  SequenceIterator s;
+  PatternIterator p;
+
+  constexpr operator bool() const
+  {
+    return res;
+  }
+};
+
+template <typename SequenceIterator, typename PatternIterator>
+constexpr match_result<SequenceIterator, PatternIterator> make_match_result(bool res,
+                                                                            SequenceIterator s,
+                                                                            PatternIterator p)
+{
+  return {res, s, p};
+}
+
 namespace detail
 {
 
@@ -252,7 +273,7 @@ enum class match_set_state
 
 template <typename SequenceIterator, typename PatternIterator,
           typename EqualTo = cx::equal_to<void>>
-constexpr bool match_set(
+constexpr match_result<SequenceIterator, PatternIterator> match_set(
     SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
     const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
     const EqualTo& equal_to = EqualTo(), match_set_state state = match_set_state::open)
@@ -264,7 +285,7 @@ constexpr bool match_set(
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
     throw std::invalid_argument("The use of sets is disabled");
 #else
-    return throw_invalid_argument("The use of sets is disabled");
+    return throw_invalid_argument(make_match_result(false, s, p), "The use of sets is disabled");
 #endif
   }
 
@@ -273,7 +294,8 @@ constexpr bool match_set(
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
     throw std::invalid_argument("The given pattern is not a valid set");
 #else
-    return throw_invalid_argument("The given pattern is not a valid set");
+    return throw_invalid_argument(make_match_result(false, s, p),
+                                  "The given pattern is not a valid set");
 #endif
   }
 
@@ -288,7 +310,8 @@ constexpr bool match_set(
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
       throw std::invalid_argument("The given pattern is not a valid set");
 #else
-      return throw_invalid_argument("The given pattern is not a valid set");
+      return throw_invalid_argument(make_match_result(false, s, p),
+                                    "The given pattern is not a valid set");
 #endif
 
     case match_set_state::not_or_first_in:
@@ -299,12 +322,12 @@ constexpr bool match_set(
 
       if (s == send)
       {
-        return false;
+        return make_match_result(false, s, p);
       }
 
       if (equal_to(*s, *p))
       {
-        return true;
+        return make_match_result(true, s, p);
       }
 
       return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::next_in);
@@ -312,7 +335,7 @@ constexpr bool match_set(
     case match_set_state::first_out:
       if (s == send || equal_to(*s, *p))
       {
-        return false;
+        return make_match_result(false, s, p);
       }
 
       return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::next_out);
@@ -320,12 +343,12 @@ constexpr bool match_set(
     case match_set_state::next_in:
       if (*p == c.set_close || s == send)
       {
-        return false;
+        return make_match_result(false, s, p);
       }
 
       if (equal_to(*s, *p))
       {
-        return true;
+        return make_match_result(true, s, p);
       }
 
       return match_set(s, send, cx::next(p), pend, c, equal_to, state);
@@ -333,12 +356,12 @@ constexpr bool match_set(
     case match_set_state::next_out:
       if (*p == c.set_close)
       {
-        return true;
+        return make_match_result(true, s, p);
       }
 
       if (s == send || equal_to(*s, *p))
       {
-        return false;
+        return make_match_result(false, s, p);
       }
 
       return match_set(s, send, cx::next(p), pend, c, equal_to, state);
@@ -349,6 +372,7 @@ constexpr bool match_set(
           "The program execution should never end up here throwing this exception");
 #else
       return throw_logic_error(
+          make_match_result(false, s, p),
           "The program execution should never end up here throwing this exception");
 #endif
   }
@@ -374,31 +398,38 @@ constexpr bool match_set(
                                                match_set_state::first_out)
                                    :
 
-                                   s != send && (equal_to(*s, *p) ||
-                                                 match_set(s, send, cx::next(p), pend, c, equal_to,
-                                                           match_set_state::next_in))
+                                   s == send ? make_match_result(false, s, p)
+                                             : equal_to(*s, *p)
+                                                   ? make_match_result(true, s, p)
+                                                   : match_set(s, send, cx::next(p), pend, c,
+                                                               equal_to, match_set_state::next_in)
 
                              :
 
                              state == match_set_state::first_out
-                                 ? s != send && !equal_to(*s, *p) &&
-                                       match_set(s, send, cx::next(p), pend, c, equal_to,
-                                                 match_set_state::next_out)
+                                 ? s == send || equal_to(*s, *p)
+                                       ? make_match_result(false, s, p)
+                                       : match_set(s, send, cx::next(p), pend, c, equal_to,
+                                                   match_set_state::next_out)
 
                                  :
 
                                  state == match_set_state::next_in
-                                     ? *p != c.set_close && s != send &&
-                                           (equal_to(*s, *p) || match_set(s, send, cx::next(p),
-                                                                          pend, c, equal_to, state))
+                                     ? *p == c.set_close || s == send
+                                           ? make_match_result(false, s, p)
+                                           : equal_to(*s, *p) ? make_match_result(true, s, p)
+                                                              : match_set(s, send, cx::next(p),
+                                                                          pend, c, equal_to, state)
 
                                      :
 
                                      state == match_set_state::next_out
-                                         ? *p == c.set_close ||
-                                               (s != send && !equal_to(*s, *p) &&
-                                                match_set(s, send, cx::next(p), pend, c, equal_to,
-                                                          state))
+                                         ? *p == c.set_close
+                                               ? make_match_result(true, s, p)
+                                               : s == send || equal_to(*s, *p)
+                                                     ? make_match_result(false, s, p)
+                                                     : match_set(s, send, cx::next(p), pend, c,
+                                                                 equal_to, state)
 
                                          : throw std::logic_error(
                                                "The program execution should never end up "
