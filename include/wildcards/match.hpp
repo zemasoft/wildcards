@@ -96,7 +96,12 @@ constexpr bool is_set(
 {
 #if cfg_HAS_CONSTEXPR14
 
-  while (c.set_enabled && p != pend)
+  if (!c.set_enabled)
+  {
+    return false;
+  }
+
+  while (p != pend)
   {
     switch (state)
     {
@@ -185,26 +190,17 @@ constexpr PatternIterator set_end(
 {
 #if cfg_HAS_CONSTEXPR14
 
-  while (true)
+  if (!c.set_enabled)
   {
-    if (!c.set_enabled)
-    {
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR14
-      throw std::invalid_argument("The use of sets is disabled");
+    throw std::invalid_argument("The use of sets is disabled");
 #else
-      return throw_invalid_argument(p, "The use of sets is disabled");
+    return throw_invalid_argument(p, "The use of sets is disabled");
 #endif
-    }
+  }
 
-    if (p == pend)
-    {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
-      throw std::invalid_argument("The given pattern is not a valid set");
-#else
-      return throw_invalid_argument(p, "The given pattern is not a valid set");
-#endif
-    }
-
+  while (p != pend)
+  {
     switch (state)
     {
       case set_end_state::open:
@@ -258,10 +254,9 @@ constexpr PatternIterator set_end(
   }
 
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR14
-  throw std::logic_error("The program execution should never end up here throwing this exception");
+  throw std::invalid_argument("The given pattern is not a valid set");
 #else
-  return throw_logic_error(
-      p, "The program execution should never end up here throwing this exception");
+  return throw_invalid_argument(p, "The given pattern is not a valid set");
 #endif
 
 #else  // !cfg_HAS_CONSTEXPR14
@@ -312,27 +307,17 @@ constexpr match_result<SequenceIterator, PatternIterator> match_set(
 {
 #if cfg_HAS_CONSTEXPR14
 
-  while (true)
+  if (!c.set_enabled)
   {
-    if (!c.set_enabled)
-    {
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR14
-      throw std::invalid_argument("The use of sets is disabled");
+    throw std::invalid_argument("The use of sets is disabled");
 #else
-      return throw_invalid_argument(make_match_result(false, s, p), "The use of sets is disabled");
+    return throw_invalid_argument(make_match_result(false, s, p), "The use of sets is disabled");
 #endif
-    }
+  }
 
-    if (p == pend)
-    {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
-      throw std::invalid_argument("The given pattern is not a valid set");
-#else
-      return throw_invalid_argument(make_match_result(false, s, p),
-                                    "The given pattern is not a valid set");
-#endif
-    }
-
+  while (p != pend)
+  {
     switch (state)
     {
       case match_set_state::open:
@@ -421,11 +406,10 @@ constexpr match_result<SequenceIterator, PatternIterator> match_set(
   }
 
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR14
-  throw std::logic_error("The program execution should never end up here throwing this exception");
+  throw std::invalid_argument("The given pattern is not a valid set");
 #else
-  return throw_logic_error(
-      make_match_result(false, s, p),
-      "The program execution should never end up here throwing this exception");
+  return throw_invalid_argument(make_match_result(false, s, p),
+                                "The given pattern is not a valid set");
 #endif
 
 #else  // !cfg_HAS_CONSTEXPR14
