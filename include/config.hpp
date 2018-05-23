@@ -16,7 +16,7 @@
 #define cfg_constexpr14
 #endif
 
-#if cfg_HAS_CONSTEXPR14 && !(defined(__GNUC__) && __GNUC__ < 6 && !defined(__clang__))
+#if cfg_HAS_CONSTEXPR14 && !(defined(__GNUC__) && !defined(__clang__))
 #define cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH 1
 #else
 #define cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH 0
