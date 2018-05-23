@@ -8,7 +8,7 @@
 
 #include <stdexcept>    // std::invalid_argument, std::logic_error, std::runtime_error
 #include <type_traits>  // std::enable_if, std::is_same
-#include <utility>      // std::forward
+#include <utility>      // std::forward, std::move
 
 #include "config.hpp"             // cfg_HAS_CONSTEXPR14, cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
 #include "cx/functional.hpp"      // cx::equal_to
@@ -37,7 +37,7 @@ constexpr match_result<SequenceIterator, PatternIterator> make_match_result(bool
                                                                             SequenceIterator s,
                                                                             PatternIterator p)
 {
-  return {res, s, p};
+  return {std::move(res), std::move(s), std::move(p)};
 }
 
 namespace detail
@@ -70,6 +70,12 @@ constexpr T throw_logic_error(T t, const char* what_arg)
 constexpr bool throw_runtime_error(const char* what_arg)
 {
   return what_arg == nullptr ? false : throw std::runtime_error(what_arg);
+}
+
+template <typename T>
+constexpr T throw_runtime_error(T t, const char* what_arg)
+{
+  return what_arg == nullptr ? t : throw std::runtime_error(what_arg);
 }
 
 #endif
@@ -675,7 +681,7 @@ constexpr PatternIterator alt_end(
 
 template <typename SequenceIterator, typename PatternIterator,
           typename EqualTo = cx::equal_to<void>>
-constexpr bool match(
+constexpr match_result<SequenceIterator, PatternIterator> match(
     SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
     const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
     const EqualTo& equal_to = EqualTo(), bool escape = false)
@@ -684,28 +690,44 @@ constexpr bool match(
 
   if (p == pend)
   {
-    return s == send;
+    return make_match_result(s == send, s, p);
   }
 
   if (escape)
   {
-    if (s != send && equal_to(*s, *p))
+    if (s == send || !equal_to(*s, *p))
     {
-      return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+      return make_match_result(false, s, p);
     }
 
-    return false;
+    return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
   }
 
   if (*p == c.anything)
   {
-    return match(s, send, cx::next(p), pend, c, equal_to) ||
-           (s != send && match(cx::next(s), send, p, pend, c, equal_to));
+    auto result = match(s, send, cx::next(p), pend, c, equal_to);
+
+    if (result)
+    {
+      return result;
+    }
+
+    if (s == send)
+    {
+      return make_match_result(false, s, p);
+    }
+
+    return match(cx::next(s), send, p, pend, c, equal_to);
   }
 
   if (*p == c.single)
   {
-    return s != send && match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+    if (s == send)
+    {
+      return make_match_result(false, s, p);
+    }
+
+    return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
   }
 
   if (*p == c.escape)
@@ -716,9 +738,15 @@ constexpr bool match(
   if (c.set_enabled && *p == c.set_open &&
       detail::is_set(cx::next(p), pend, c, detail::is_set_state::not_or_first))
   {
-    return match_set(s, send, cx::next(p), pend, c, equal_to,
-                     detail::match_set_state::not_or_first_in) &&
-           match(cx::next(s), send,
+    auto result = match_set(s, send, cx::next(p), pend, c, equal_to,
+                            detail::match_set_state::not_or_first_in);
+
+    if (!result)
+    {
+      return result;
+    }
+
+    return match(cx::next(s), send,
                  detail::set_end(cx::next(p), pend, c, detail::set_end_state::not_or_first), pend,
                  c, equal_to);
   }
@@ -729,50 +757,59 @@ constexpr bool match(
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
     throw std::runtime_error("Sorry, alternatives not implemented");
 #else
-    return detail::throw_runtime_error("Sorry, alternatives not implemented");
+    return detail::throw_runtime_error(make_match_result(false, s, p),
+                                       "Sorry, alternatives not implemented");
 #endif
   }
 
-  if (s != send && equal_to(*s, *p))
+  if (s == send || !equal_to(*s, *p))
   {
-    return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+    return make_match_result(false, s, p);
   }
 
-  return false;
+  return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
 
 #else  // !cfg_HAS_CONSTEXPR14
 
   return p == pend
-             ? s == send
+             ? make_match_result(s == send, s, p)
              : escape
-                   ? s != send && equal_to(*s, *p) &&
-                         match(cx::next(s), send, cx::next(p), pend, c, equal_to)
+                   ? s == send || !equal_to(*s, *p)
+                         ? make_match_result(false, s, p)
+                         : match(cx::next(s), send, cx::next(p), pend, c, equal_to)
                    : *p == c.anything
-                         ? match(s, send, cx::next(p), pend, c, equal_to) ||
-                               (s != send && match(cx::next(s), send, p, pend, c, equal_to))
+                         ? match(s, send, cx::next(p), pend, c, equal_to)
+                               ? match(s, send, cx::next(p), pend, c, equal_to)
+                               : s == send ? make_match_result(false, s, p)
+                                           : match(cx::next(s), send, p, pend, c, equal_to)
                          : *p == c.single
-                               ? s != send &&
-                                     match(cx::next(s), send, cx::next(p), pend, c, equal_to)
+                               ? s == send
+                                     ? make_match_result(false, s, p)
+                                     : match(cx::next(s), send, cx::next(p), pend, c, equal_to)
                                : *p == c.escape
                                      ? match(s, send, cx::next(p), pend, c, equal_to, true)
                                      : c.set_enabled && *p == c.set_open &&
                                                detail::is_set(cx::next(p), pend, c,
                                                               detail::is_set_state::not_or_first)
-                                           ? match_set(s, send, cx::next(p), pend, c, equal_to,
-                                                       detail::match_set_state::not_or_first_in) &&
-                                                 match(cx::next(s), send,
-                                                       detail::set_end(
-                                                           cx::next(p), pend, c,
-                                                           detail::set_end_state::not_or_first),
-                                                       pend, c, equal_to)
+                                           ? !match_set(s, send, cx::next(p), pend, c, equal_to,
+                                                        detail::match_set_state::not_or_first_in)
+                                                 ? match_set(
+                                                       s, send, cx::next(p), pend, c, equal_to,
+                                                       detail::match_set_state::not_or_first_in)
+                                                 : match(cx::next(s), send,
+                                                         detail::set_end(
+                                                             cx::next(p), pend, c,
+                                                             detail::set_end_state::not_or_first),
+                                                         pend, c, equal_to)
                                            : c.alt_enabled && *p == c.alt_open &&
                                                      detail::is_alt(cx::next(p), pend, c,
                                                                     detail::is_alt_state::next, 1)
                                                  ? throw std::runtime_error(
                                                        "Sorry, alternatives not implemented")
-                                                 : s != send && equal_to(*s, *p) &&
-                                                       match(cx::next(s), send, cx::next(p), pend,
-                                                             c, equal_to);
+                                                 : s == send || !equal_to(*s, *p)
+                                                       ? make_match_result(false, s, p)
+                                                       : match(cx::next(s), send, cx::next(p), pend,
+                                                               c, equal_to);
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
