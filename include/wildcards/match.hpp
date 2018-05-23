@@ -12,7 +12,7 @@
 
 #include "config.hpp"             // cfg_HAS_CONSTEXPR14, cfg_HAS_FULL_FEATURED_CONSTEXPR14
 #include "cx/functional.hpp"      // cx::equal_to
-#include "cx/iterator.hpp"        // cx::cbegin, cx::cend, cx::next
+#include "cx/iterator.hpp"        // cx::cbegin, cx::cend, cx::next, cx::prev
 #include "wildcards/cards.hpp"    // wildcards::cards
 #include "wildcards/utility.hpp"  // wildcards::container_item_t, wildcards::iterated_item_t
 
@@ -489,63 +489,69 @@ constexpr bool is_alt(
 {
 #if cfg_HAS_CONSTEXPR14
 
-  if (!c.alt_enabled || p == pend)
+  if (!c.alt_enabled)
   {
     return false;
   }
 
-  switch (state)
+  while (p != pend)
   {
-    case is_alt_state::open:
-      if (*p == c.alt_open)
-      {
-        return is_alt(cx::next(p), pend, c, is_alt_state::next, depth + 1);
-      }
-
-      return false;
-
-    case is_alt_state::next:
-      if (*p == c.escape)
-      {
-        return is_alt(cx::next(p), pend, c, is_alt_state::escape, depth);
-      }
-
-      if (c.set_enabled && *p == c.set_open &&
-          is_set(cx::next(p), pend, c, is_set_state::not_or_first))
-      {
-        return is_alt(set_end(cx::next(p), pend, c, set_end_state::not_or_first), pend, c, state,
-                      depth);
-      }
-
-      if (*p == c.alt_open)
-      {
-        return is_alt(cx::next(p), pend, c, state, depth + 1);
-      }
-
-      if (*p == c.alt_close)
-      {
-        if (depth - 1 == 0)
+    switch (state)
+    {
+      case is_alt_state::open:
+        if (*p != c.alt_open)
         {
-          return true;
+          return false;
         }
 
-        return is_alt(cx::next(p), pend, c, state, depth - 1);
-      }
+        state = is_alt_state::next;
+        ++depth;
+        break;
 
-      return is_alt(cx::next(p), pend, c, state, depth);
+      case is_alt_state::next:
+        if (*p == c.escape)
+        {
+          state = is_alt_state::escape;
+        }
+        else if (c.set_enabled && *p == c.set_open &&
+                 is_set(cx::next(p), pend, c, is_set_state::not_or_first))
+        {
+          p = cx::prev(set_end(cx::next(p), pend, c, set_end_state::not_or_first));
+        }
+        else if (*p == c.alt_open)
+        {
+          ++depth;
+        }
+        else if (*p == c.alt_close)
+        {
+          --depth;
 
-    case is_alt_state::escape:
-      return is_alt(cx::next(p), pend, c, is_alt_state::next, depth);
+          if (depth == 0)
+          {
+            return true;
+          }
+        }
 
-    default:
+        break;
+
+      case is_alt_state::escape:
+        state = is_alt_state::next;
+        break;
+
+      default:
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR14
-      throw std::logic_error(
-          "The program execution should never end up here throwing this exception");
+        throw std::logic_error(
+            "The program execution should never end up here throwing this exception");
 #else
-      return throw_logic_error(
-          p, "The program execution should never end up here throwing this exception");
+        return throw_logic_error(
+            p, "The program execution should never end up here throwing this exception");
 #endif
+    }
+
+    p = cx::next(p);
   }
+
+  return false;
 
 #else  // !cfg_HAS_CONSTEXPR14
 
@@ -600,71 +606,72 @@ constexpr PatternIterator alt_end(
 #endif
   }
 
-  if (p == pend)
+  while (p != pend)
   {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
-    throw std::invalid_argument("The given pattern is not a valid alternative");
-#else
-    return throw_invalid_argument(p, "The given pattern is not a valid alternative");
-#endif
-  }
-
-  switch (state)
-  {
-    case alt_end_state::open:
-      if (*p == c.alt_open)
-      {
-        return alt_end(cx::next(p), pend, c, alt_end_state::next, depth + 1);
-      }
-
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
-      throw std::invalid_argument("The given pattern is not a valid alternative");
-#else
-      return throw_invalid_argument(p, "The given pattern is not a valid alternative");
-#endif
-
-    case alt_end_state::next:
-      if (*p == c.escape)
-      {
-        return alt_end(cx::next(p), pend, c, alt_end_state::escape, depth);
-      }
-
-      if (c.set_enabled && *p == c.set_open &&
-          is_set(cx::next(p), pend, c, is_set_state::not_or_first))
-      {
-        return alt_end(set_end(cx::next(p), pend, c, set_end_state::not_or_first), pend, c, state,
-                       depth);
-      }
-
-      if (*p == c.alt_open)
-      {
-        return alt_end(cx::next(p), pend, c, state, depth + 1);
-      }
-
-      if (*p == c.alt_close)
-      {
-        if (depth - 1 == 0)
+    switch (state)
+    {
+      case alt_end_state::open:
+        if (*p != c.alt_open)
         {
-          return cx::next(p);
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
+          throw std::invalid_argument("The given pattern is not a valid alternative");
+#else
+          return throw_invalid_argument(p, "The given pattern is not a valid alternative");
+#endif
         }
 
-        return alt_end(cx::next(p), pend, c, state, depth - 1);
-      }
+        state = alt_end_state::next;
+        ++depth;
+        break;
 
-      return alt_end(cx::next(p), pend, c, state, depth);
+      case alt_end_state::next:
+        if (*p == c.escape)
+        {
+          state = alt_end_state::escape;
+        }
+        else if (c.set_enabled && *p == c.set_open &&
+                 is_set(cx::next(p), pend, c, is_set_state::not_or_first))
+        {
+          p = cx::prev(set_end(cx::next(p), pend, c, set_end_state::not_or_first));
+        }
+        else if (*p == c.alt_open)
+        {
+          ++depth;
+        }
+        else if (*p == c.alt_close)
+        {
+          --depth;
 
-    case alt_end_state::escape:
-      return alt_end(cx::next(p), pend, c, alt_end_state::next, depth);
+          if (depth == 0)
+          {
+            return cx::next(p);
+          }
+        }
 
-    default:
+        break;
+
+      case alt_end_state::escape:
+        state = alt_end_state::next;
+        break;
+
+      default:
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR14
-      throw std::logic_error(
-          "The program execution should never end up here throwing this exception");
+        throw std::logic_error(
+            "The program execution should never end up here throwing this exception");
 #else
-      return throw_logic_error(
-          p, "The program execution should never end up here throwing this exception");
+        return throw_logic_error(
+            p, "The program execution should never end up here throwing this exception");
 #endif
+    }
+
+    p = cx::next(p);
   }
+
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
+  throw std::invalid_argument("The given pattern is not a valid alternative");
+#else
+  return throw_invalid_argument(p, "The given pattern is not a valid alternative");
+#endif
 
 #else  // !cfg_HAS_CONSTEXPR14
 
