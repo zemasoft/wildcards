@@ -677,8 +677,6 @@ constexpr PatternIterator alt_end(
 #endif  // cfg_HAS_CONSTEXPR14
 }
 
-}  // namespace detail
-
 template <typename SequenceIterator, typename PatternIterator,
           typename EqualTo = cx::equal_to<void>>
 constexpr match_result<SequenceIterator, PatternIterator> match(
@@ -814,13 +812,15 @@ constexpr match_result<SequenceIterator, PatternIterator> match(
 #endif  // cfg_HAS_CONSTEXPR14
 }
 
+}  // namespace detail
+
 template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>>
 constexpr bool match(Sequence&& sequence, Pattern&& pattern,
                      const cards<container_item_t<Pattern>>& c = cards<container_item_t<Pattern>>(),
                      const EqualTo& equal_to = EqualTo())
 {
-  return match(cx::cbegin(sequence), cx::cend(std::forward<Sequence>(sequence)),
-               cx::cbegin(pattern), cx::cend(std::forward<Pattern>(pattern)), c, equal_to);
+  return detail::match(cx::cbegin(sequence), cx::cend(std::forward<Sequence>(sequence)),
+                       cx::cbegin(pattern), cx::cend(std::forward<Pattern>(pattern)), c, equal_to);
 }
 
 template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>,
