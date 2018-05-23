@@ -778,30 +778,27 @@ constexpr match_result<SequenceIterator, PatternIterator> match(
     return match(s, send, cx::next(p), pend, c, equal_to, true);
   }
 
-  if (c.set_enabled && *p == c.set_open &&
-      detail::is_set(cx::next(p), pend, c, detail::is_set_state::not_or_first))
+  if (c.set_enabled && *p == c.set_open && is_set(cx::next(p), pend, c, is_set_state::not_or_first))
   {
-    auto result = match_set(s, send, cx::next(p), pend, c, equal_to,
-                            detail::match_set_state::not_or_first_in);
+    auto result =
+        match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::not_or_first_in);
 
     if (!result)
     {
       return result;
     }
 
-    return match(cx::next(s), send,
-                 detail::set_end(cx::next(p), pend, c, detail::set_end_state::not_or_first), pend,
-                 c, equal_to);
+    return match(cx::next(s), send, set_end(cx::next(p), pend, c, set_end_state::not_or_first),
+                 pend, c, equal_to);
   }
 
-  if (c.alt_enabled && *p == c.alt_open &&
-      detail::is_alt(cx::next(p), pend, c, detail::is_alt_state::next, 1))
+  if (c.alt_enabled && *p == c.alt_open && is_alt(cx::next(p), pend, c, is_alt_state::next, 1))
   {
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
     throw std::runtime_error("Sorry, alternatives not implemented");
 #else
-    return detail::throw_runtime_error(make_match_result(false, s, p),
-                                       "Sorry, alternatives not implemented");
+    return throw_runtime_error(make_match_result(false, s, p),
+                               "Sorry, alternatives not implemented");
 #endif
   }
 
@@ -832,21 +829,20 @@ constexpr match_result<SequenceIterator, PatternIterator> match(
                                : *p == c.escape
                                      ? match(s, send, cx::next(p), pend, c, equal_to, true)
                                      : c.set_enabled && *p == c.set_open &&
-                                               detail::is_set(cx::next(p), pend, c,
-                                                              detail::is_set_state::not_or_first)
+                                               is_set(cx::next(p), pend, c,
+                                                      is_set_state::not_or_first)
                                            ? !match_set(s, send, cx::next(p), pend, c, equal_to,
-                                                        detail::match_set_state::not_or_first_in)
-                                                 ? match_set(
-                                                       s, send, cx::next(p), pend, c, equal_to,
-                                                       detail::match_set_state::not_or_first_in)
+                                                        match_set_state::not_or_first_in)
+                                                 ? match_set(s, send, cx::next(p), pend, c,
+                                                             equal_to,
+                                                             match_set_state::not_or_first_in)
                                                  : match(cx::next(s), send,
-                                                         detail::set_end(
-                                                             cx::next(p), pend, c,
-                                                             detail::set_end_state::not_or_first),
+                                                         set_end(cx::next(p), pend, c,
+                                                                 set_end_state::not_or_first),
                                                          pend, c, equal_to)
                                            : c.alt_enabled && *p == c.alt_open &&
-                                                     detail::is_alt(cx::next(p), pend, c,
-                                                                    detail::is_alt_state::next, 1)
+                                                     is_alt(cx::next(p), pend, c,
+                                                            is_alt_state::next, 1)
                                                  ? throw std::runtime_error(
                                                        "Sorry, alternatives not implemented")
                                                  : s == send || !equal_to(*s, *p)
