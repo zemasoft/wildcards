@@ -17,9 +17,9 @@
 #endif
 
 #if cfg_HAS_CONSTEXPR14 && !(defined(__GNUC__) && !defined(__clang__))
-#define cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH 1
+#define cfg_HAS_FULL_FEATURED_CONSTEXPR14 1
 #else
-#define cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH 0
+#define cfg_HAS_FULL_FEATURED_CONSTEXPR14 0
 #endif
 
 #endif  // CONFIG_HPP

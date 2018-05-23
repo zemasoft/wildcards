@@ -10,7 +10,7 @@
 #include <type_traits>  // std::enable_if, std::is_same
 #include <utility>      // std::forward, std::move
 
-#include "config.hpp"             // cfg_HAS_CONSTEXPR14, cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#include "config.hpp"             // cfg_HAS_CONSTEXPR14, cfg_HAS_FULL_FEATURED_CONSTEXPR14
 #include "cx/functional.hpp"      // cx::equal_to
 #include "cx/iterator.hpp"        // cx::cbegin, cx::cend, cx::next
 #include "wildcards/cards.hpp"    // wildcards::cards
@@ -43,7 +43,7 @@ constexpr match_result<SequenceIterator, PatternIterator> make_match_result(bool
 namespace detail
 {
 
-#if !cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if !cfg_HAS_FULL_FEATURED_CONSTEXPR14
 
 constexpr bool throw_invalid_argument(const char* what_arg)
 {
@@ -134,7 +134,7 @@ constexpr bool is_set(
         break;
 
       default:
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
         throw std::logic_error(
             "The program execution should never end up here throwing this exception");
 #else
@@ -189,7 +189,7 @@ constexpr PatternIterator set_end(
   {
     if (!c.set_enabled)
     {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
       throw std::invalid_argument("The use of sets is disabled");
 #else
       return throw_invalid_argument(p, "The use of sets is disabled");
@@ -198,7 +198,7 @@ constexpr PatternIterator set_end(
 
     if (p == pend)
     {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
       throw std::invalid_argument("The given pattern is not a valid set");
 #else
       return throw_invalid_argument(p, "The given pattern is not a valid set");
@@ -210,7 +210,7 @@ constexpr PatternIterator set_end(
       case set_end_state::open:
         if (*p != c.set_open)
         {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
           throw std::invalid_argument("The given pattern is not a valid set");
 #else
           return throw_invalid_argument(p, "The given pattern is not a valid set");
@@ -245,7 +245,7 @@ constexpr PatternIterator set_end(
         break;
 
       default:
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
         throw std::logic_error(
             "The program execution should never end up here throwing this exception");
 #else
@@ -257,7 +257,7 @@ constexpr PatternIterator set_end(
     p = cx::next(p);
   }
 
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
   throw std::logic_error("The program execution should never end up here throwing this exception");
 #else
   return throw_logic_error(
@@ -316,7 +316,7 @@ constexpr match_result<SequenceIterator, PatternIterator> match_set(
   {
     if (!c.set_enabled)
     {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
       throw std::invalid_argument("The use of sets is disabled");
 #else
       return throw_invalid_argument(make_match_result(false, s, p), "The use of sets is disabled");
@@ -325,7 +325,7 @@ constexpr match_result<SequenceIterator, PatternIterator> match_set(
 
     if (p == pend)
     {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
       throw std::invalid_argument("The given pattern is not a valid set");
 #else
       return throw_invalid_argument(make_match_result(false, s, p),
@@ -338,7 +338,7 @@ constexpr match_result<SequenceIterator, PatternIterator> match_set(
       case match_set_state::open:
         if (*p != c.set_open)
         {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
           throw std::invalid_argument("The given pattern is not a valid set");
 #else
           return throw_invalid_argument(make_match_result(false, s, p),
@@ -407,7 +407,7 @@ constexpr match_result<SequenceIterator, PatternIterator> match_set(
         break;
 
       default:
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
         throw std::logic_error(
             "The program execution should never end up here throwing this exception");
 #else
@@ -420,7 +420,7 @@ constexpr match_result<SequenceIterator, PatternIterator> match_set(
     p = cx::next(p);
   }
 
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
   throw std::logic_error("The program execution should never end up here throwing this exception");
 #else
   return throw_logic_error(
@@ -554,7 +554,7 @@ constexpr bool is_alt(
       return is_alt(cx::next(p), pend, c, is_alt_state::next, depth);
 
     default:
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
       throw std::logic_error(
           "The program execution should never end up here throwing this exception");
 #else
@@ -609,7 +609,7 @@ constexpr PatternIterator alt_end(
 
   if (!c.alt_enabled)
   {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
     throw std::invalid_argument("The use of alternatives is disabled");
 #else
     return throw_invalid_argument(p, "The use of alternatives is disabled");
@@ -618,7 +618,7 @@ constexpr PatternIterator alt_end(
 
   if (p == pend)
   {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
     throw std::invalid_argument("The given pattern is not a valid alternative");
 #else
     return throw_invalid_argument(p, "The given pattern is not a valid alternative");
@@ -633,7 +633,7 @@ constexpr PatternIterator alt_end(
         return alt_end(cx::next(p), pend, c, alt_end_state::next, depth + 1);
       }
 
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
       throw std::invalid_argument("The given pattern is not a valid alternative");
 #else
       return throw_invalid_argument(p, "The given pattern is not a valid alternative");
@@ -673,7 +673,7 @@ constexpr PatternIterator alt_end(
       return alt_end(cx::next(p), pend, c, alt_end_state::next, depth);
 
     default:
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
       throw std::logic_error(
           "The program execution should never end up here throwing this exception");
 #else
@@ -794,7 +794,7 @@ constexpr match_result<SequenceIterator, PatternIterator> match(
 
   if (c.alt_enabled && *p == c.alt_open && is_alt(cx::next(p), pend, c, is_alt_state::next, 1))
   {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
     throw std::runtime_error("Sorry, alternatives not implemented");
 #else
     return throw_runtime_error(make_match_result(false, s, p),
