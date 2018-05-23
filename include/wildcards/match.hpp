@@ -96,49 +96,57 @@ constexpr bool is_set(
 {
 #if cfg_HAS_CONSTEXPR14
 
-  if (!c.set_enabled || p == pend)
+  while (c.set_enabled && p != pend)
   {
-    return false;
-  }
+    switch (state)
+    {
+      case is_set_state::open:
+        if (*p != c.set_open)
+        {
+          return false;
+        }
 
-  switch (state)
-  {
-    case is_set_state::open:
-      if (*p == c.set_open)
-      {
-        return is_set(cx::next(p), pend, c, is_set_state::not_or_first);
-      }
+        state = is_set_state::not_or_first;
+        break;
 
-      return false;
+      case is_set_state::not_or_first:
+        if (*p == c.set_not)
+        {
+          state = is_set_state::first;
+        }
+        else
+        {
+          state = is_set_state::next;
+        }
 
-    case is_set_state::not_or_first:
-      if (*p == c.set_not)
-      {
-        return is_set(cx::next(p), pend, c, is_set_state::first);
-      }
+        break;
 
-      return is_set(cx::next(p), pend, c, is_set_state::next);
+      case is_set_state::first:
+        state = is_set_state::next;
+        break;
 
-    case is_set_state::first:
-      return is_set(cx::next(p), pend, c, is_set_state::next);
+      case is_set_state::next:
+        if (*p == c.set_close)
+        {
+          return true;
+        }
 
-    case is_set_state::next:
-      if (*p == c.set_close)
-      {
-        return true;
-      }
+        break;
 
-      return is_set(cx::next(p), pend, c, is_set_state::next);
-
-    default:
+      default:
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
-      throw std::logic_error(
-          "The program execution should never end up here throwing this exception");
+        throw std::logic_error(
+            "The program execution should never end up here throwing this exception");
 #else
-      return throw_logic_error(
-          "The program execution should never end up here throwing this exception");
+        return throw_logic_error(
+            "The program execution should never end up here throwing this exception");
 #endif
+    }
+
+    p = cx::next(p);
   }
+
+  return false;
 
 #else  // !cfg_HAS_CONSTEXPR14
 
@@ -177,66 +185,84 @@ constexpr PatternIterator set_end(
 {
 #if cfg_HAS_CONSTEXPR14
 
-  if (!c.set_enabled)
+  while (true)
   {
+    if (!c.set_enabled)
+    {
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
-    throw std::invalid_argument("The use of sets is disabled");
+      throw std::invalid_argument("The use of sets is disabled");
 #else
-    return throw_invalid_argument(p, "The use of sets is disabled");
+      return throw_invalid_argument(p, "The use of sets is disabled");
 #endif
-  }
+    }
 
-  if (p == pend)
-  {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
-    throw std::invalid_argument("The given pattern is not a valid set");
-#else
-    return throw_invalid_argument(p, "The given pattern is not a valid set");
-#endif
-  }
-
-  switch (state)
-  {
-    case set_end_state::open:
-      if (*p == c.set_open)
-      {
-        return set_end(cx::next(p), pend, c, set_end_state::not_or_first);
-      }
-
+    if (p == pend)
+    {
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
       throw std::invalid_argument("The given pattern is not a valid set");
 #else
       return throw_invalid_argument(p, "The given pattern is not a valid set");
 #endif
+    }
 
-    case set_end_state::not_or_first:
-      if (*p == c.set_not)
-      {
-        return set_end(cx::next(p), pend, c, set_end_state::first);
-      }
-
-      return set_end(cx::next(p), pend, c, set_end_state::next);
-
-    case set_end_state::first:
-      return set_end(cx::next(p), pend, c, set_end_state::next);
-
-    case set_end_state::next:
-      if (*p == c.set_close)
-      {
-        return cx::next(p);
-      }
-
-      return set_end(cx::next(p), pend, c, set_end_state::next);
-
-    default:
+    switch (state)
+    {
+      case set_end_state::open:
+        if (*p != c.set_open)
+        {
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
-      throw std::logic_error(
-          "The program execution should never end up here throwing this exception");
+          throw std::invalid_argument("The given pattern is not a valid set");
 #else
-      return throw_logic_error(
-          p, "The program execution should never end up here throwing this exception");
+          return throw_invalid_argument(p, "The given pattern is not a valid set");
 #endif
+        }
+
+        state = set_end_state::not_or_first;
+        break;
+
+      case set_end_state::not_or_first:
+        if (*p == c.set_not)
+        {
+          state = set_end_state::first;
+        }
+        else
+        {
+          state = set_end_state::next;
+        }
+
+        break;
+
+      case set_end_state::first:
+        state = set_end_state::next;
+        break;
+
+      case set_end_state::next:
+        if (*p == c.set_close)
+        {
+          return cx::next(p);
+        }
+
+        break;
+
+      default:
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+        throw std::logic_error(
+            "The program execution should never end up here throwing this exception");
+#else
+        return throw_logic_error(
+            p, "The program execution should never end up here throwing this exception");
+#endif
+    }
+
+    p = cx::next(p);
   }
+
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+  throw std::logic_error("The program execution should never end up here throwing this exception");
+#else
+  return throw_logic_error(
+      p, "The program execution should never end up here throwing this exception");
+#endif
 
 #else  // !cfg_HAS_CONSTEXPR14
 
@@ -286,102 +312,121 @@ constexpr match_result<SequenceIterator, PatternIterator> match_set(
 {
 #if cfg_HAS_CONSTEXPR14
 
-  if (!c.set_enabled)
+  while (true)
   {
+    if (!c.set_enabled)
+    {
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
-    throw std::invalid_argument("The use of sets is disabled");
+      throw std::invalid_argument("The use of sets is disabled");
 #else
-    return throw_invalid_argument(make_match_result(false, s, p), "The use of sets is disabled");
+      return throw_invalid_argument(make_match_result(false, s, p), "The use of sets is disabled");
 #endif
-  }
+    }
 
-  if (p == pend)
-  {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
-    throw std::invalid_argument("The given pattern is not a valid set");
-#else
-    return throw_invalid_argument(make_match_result(false, s, p),
-                                  "The given pattern is not a valid set");
-#endif
-  }
-
-  switch (state)
-  {
-    case match_set_state::open:
-      if (*p == c.set_open)
-      {
-        return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::not_or_first_in);
-      }
-
+    if (p == pend)
+    {
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
       throw std::invalid_argument("The given pattern is not a valid set");
 #else
       return throw_invalid_argument(make_match_result(false, s, p),
                                     "The given pattern is not a valid set");
 #endif
+    }
 
-    case match_set_state::not_or_first_in:
-      if (*p == c.set_not)
-      {
-        return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::first_out);
-      }
-
-      if (s == send)
-      {
-        return make_match_result(false, s, p);
-      }
-
-      if (equal_to(*s, *p))
-      {
-        return make_match_result(true, s, p);
-      }
-
-      return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::next_in);
-
-    case match_set_state::first_out:
-      if (s == send || equal_to(*s, *p))
-      {
-        return make_match_result(false, s, p);
-      }
-
-      return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::next_out);
-
-    case match_set_state::next_in:
-      if (*p == c.set_close || s == send)
-      {
-        return make_match_result(false, s, p);
-      }
-
-      if (equal_to(*s, *p))
-      {
-        return make_match_result(true, s, p);
-      }
-
-      return match_set(s, send, cx::next(p), pend, c, equal_to, state);
-
-    case match_set_state::next_out:
-      if (*p == c.set_close)
-      {
-        return make_match_result(true, s, p);
-      }
-
-      if (s == send || equal_to(*s, *p))
-      {
-        return make_match_result(false, s, p);
-      }
-
-      return match_set(s, send, cx::next(p), pend, c, equal_to, state);
-
-    default:
+    switch (state)
+    {
+      case match_set_state::open:
+        if (*p != c.set_open)
+        {
 #if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
-      throw std::logic_error(
-          "The program execution should never end up here throwing this exception");
+          throw std::invalid_argument("The given pattern is not a valid set");
 #else
-      return throw_logic_error(
-          make_match_result(false, s, p),
-          "The program execution should never end up here throwing this exception");
+          return throw_invalid_argument(make_match_result(false, s, p),
+                                        "The given pattern is not a valid set");
 #endif
+        }
+
+        state = match_set_state::not_or_first_in;
+        break;
+
+      case match_set_state::not_or_first_in:
+        if (*p == c.set_not)
+        {
+          state = match_set_state::first_out;
+        }
+        else
+        {
+          if (s == send)
+          {
+            return make_match_result(false, s, p);
+          }
+
+          if (equal_to(*s, *p))
+          {
+            return make_match_result(true, s, p);
+          }
+
+          state = match_set_state::next_in;
+        }
+
+        break;
+
+      case match_set_state::first_out:
+        if (s == send || equal_to(*s, *p))
+        {
+          return make_match_result(false, s, p);
+        }
+
+        state = match_set_state::next_out;
+        break;
+
+      case match_set_state::next_in:
+        if (*p == c.set_close || s == send)
+        {
+          return make_match_result(false, s, p);
+        }
+
+        if (equal_to(*s, *p))
+        {
+          return make_match_result(true, s, p);
+        }
+
+        break;
+
+      case match_set_state::next_out:
+        if (*p == c.set_close)
+        {
+          return make_match_result(true, s, p);
+        }
+
+        if (s == send || equal_to(*s, *p))
+        {
+          return make_match_result(false, s, p);
+        }
+
+        break;
+
+      default:
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+        throw std::logic_error(
+            "The program execution should never end up here throwing this exception");
+#else
+        return throw_logic_error(
+            make_match_result(false, s, p),
+            "The program execution should never end up here throwing this exception");
+#endif
+    }
+
+    p = cx::next(p);
   }
+
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+  throw std::logic_error("The program execution should never end up here throwing this exception");
+#else
+  return throw_logic_error(
+      make_match_result(false, s, p),
+      "The program execution should never end up here throwing this exception");
+#endif
 
 #else  // !cfg_HAS_CONSTEXPR14
 
