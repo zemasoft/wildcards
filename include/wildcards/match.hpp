@@ -568,7 +568,7 @@ constexpr bool is_alt(
                                 : *p == c.alt_open
                                       ? is_alt(cx::next(p), pend, c, state, depth + 1)
                                       : *p == c.alt_close
-                                            ? depth - 1 == 0 ||
+                                            ? depth == 1 ||
                                                   is_alt(cx::next(p), pend, c, state, depth - 1)
                                             : is_alt(cx::next(p), pend, c, state, depth)
                     :
@@ -696,10 +696,9 @@ constexpr PatternIterator alt_end(
                                            : *p == c.alt_open
                                                  ? alt_end(cx::next(p), pend, c, state, depth + 1)
                                                  : *p == c.alt_close
-                                                       ? depth - 1 == 0
-                                                             ? cx::next(p)
-                                                             : alt_end(cx::next(p), pend, c, state,
-                                                                       depth - 1)
+                                                       ? depth == 1 ? cx::next(p)
+                                                                    : alt_end(cx::next(p), pend, c,
+                                                                              state, depth - 1)
                                                        : alt_end(cx::next(p), pend, c, state, depth)
                                :
 
@@ -709,6 +708,126 @@ constexpr PatternIterator alt_end(
                                          "The program execution should never end up here throwing "
                                          "this "
                                          "exception");
+
+#endif  // cfg_HAS_CONSTEXPR14
+}
+
+enum class alt_sub_end_state
+{
+  next,
+  escape
+};
+
+template <typename PatternIterator>
+constexpr PatternIterator alt_sub_end(
+    PatternIterator p, PatternIterator pend,
+    const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
+    alt_sub_end_state state = alt_sub_end_state::next, int depth = 1)
+{
+#if cfg_HAS_CONSTEXPR14
+
+  if (!c.alt_enabled)
+  {
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
+    throw std::invalid_argument("The use of alternatives is disabled");
+#else
+    return throw_invalid_argument(p, "The use of alternatives is disabled");
+#endif
+  }
+
+  while (p != pend)
+  {
+    switch (state)
+    {
+      case alt_sub_end_state::next:
+        if (*p == c.escape)
+        {
+          state = alt_sub_end_state::escape;
+        }
+        else if (c.set_enabled && *p == c.set_open &&
+                 is_set(cx::next(p), pend, c, is_set_state::not_or_first))
+        {
+          p = cx::prev(set_end(cx::next(p), pend, c, set_end_state::not_or_first));
+        }
+        else if (*p == c.alt_open)
+        {
+          ++depth;
+        }
+        else if (*p == c.alt_close)
+        {
+          --depth;
+
+          if (depth == 0)
+          {
+            return p;
+          }
+        }
+        else if (*p == c.alt_or)
+        {
+          if (depth == 1)
+          {
+            return p;
+          }
+        }
+
+        break;
+
+      case alt_sub_end_state::escape:
+        state = alt_sub_end_state::next;
+        break;
+
+      default:
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
+        throw std::logic_error(
+            "The program execution should never end up here throwing this exception");
+#else
+        return throw_logic_error(
+            p, "The program execution should never end up here throwing this exception");
+#endif
+    }
+
+    p = cx::next(p);
+  }
+
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
+  throw std::invalid_argument("The given pattern is not a valid alternative");
+#else
+  return throw_invalid_argument(p, "The given pattern is not a valid alternative");
+#endif
+
+#else  // !cfg_HAS_CONSTEXPR14
+
+  return !c.alt_enabled
+             ? throw std::invalid_argument("The use of alternatives is disabled")
+             : p == pend
+                   ? throw std::invalid_argument("The given pattern is not a valid alternative")
+                   : state == alt_sub_end_state::next
+                         ? *p == c.escape
+                               ? alt_sub_end(cx::next(p), pend, c, alt_sub_end_state::escape, depth)
+                               : c.set_enabled && *p == c.set_open &&
+                                         is_set(cx::next(p), pend, c, is_set_state::not_or_first)
+                                     ? alt_sub_end(set_end(cx::next(p), pend, c,
+                                                           set_end_state::not_or_first),
+                                                   pend, c, state, depth)
+                                     : *p == c.alt_open
+                                           ? alt_sub_end(cx::next(p), pend, c, state, depth + 1)
+                                           : *p == c.alt_close
+                                                 ? depth == 1 ? p : alt_sub_end(cx::next(p), pend,
+                                                                                c, state, depth - 1)
+                                                 : *p == c.alt_or
+                                                       ? depth == 1 ? p
+                                                                    : alt_sub_end(cx::next(p), pend,
+                                                                                  c, state, depth)
+                                                       : alt_sub_end(cx::next(p), pend, c, state,
+                                                                     depth)
+                         :
+
+                         state == alt_sub_end_state::escape
+                             ? alt_sub_end(cx::next(p), pend, c, alt_sub_end_state::next, depth)
+                             : throw std::logic_error(
+                                   "The program execution should never end up here throwing "
+                                   "this "
+                                   "exception");
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
