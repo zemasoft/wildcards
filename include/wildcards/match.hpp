@@ -837,13 +837,13 @@ template <typename SequenceIterator, typename PatternIterator,
 constexpr match_result<SequenceIterator, PatternIterator> match(
     SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
     const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
-    const EqualTo& equal_to = EqualTo(), bool escape = false)
+    const EqualTo& equal_to = EqualTo(), bool partial = false, bool escape = false)
 {
 #if cfg_HAS_CONSTEXPR14
 
   if (p == pend)
   {
-    return make_match_result(s == send, s, p);
+    return make_match_result(partial || s == send, s, p);
   }
 
   if (escape)
@@ -853,12 +853,12 @@ constexpr match_result<SequenceIterator, PatternIterator> match(
       return make_match_result(false, s, p);
     }
 
-    return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+    return match(cx::next(s), send, cx::next(p), pend, c, equal_to, partial);
   }
 
   if (*p == c.anything)
   {
-    auto result = match(s, send, cx::next(p), pend, c, equal_to);
+    auto result = match(s, send, cx::next(p), pend, c, equal_to, partial);
 
     if (result)
     {
@@ -870,7 +870,7 @@ constexpr match_result<SequenceIterator, PatternIterator> match(
       return make_match_result(false, s, p);
     }
 
-    return match(cx::next(s), send, p, pend, c, equal_to);
+    return match(cx::next(s), send, p, pend, c, equal_to, partial);
   }
 
   if (*p == c.single)
@@ -880,12 +880,12 @@ constexpr match_result<SequenceIterator, PatternIterator> match(
       return make_match_result(false, s, p);
     }
 
-    return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+    return match(cx::next(s), send, cx::next(p), pend, c, equal_to, partial);
   }
 
   if (*p == c.escape)
   {
-    return match(s, send, cx::next(p), pend, c, equal_to, true);
+    return match(s, send, cx::next(p), pend, c, equal_to, partial, true);
   }
 
   if (c.set_enabled && *p == c.set_open && is_set(cx::next(p), pend, c, is_set_state::not_or_first))
@@ -899,7 +899,7 @@ constexpr match_result<SequenceIterator, PatternIterator> match(
     }
 
     return match(cx::next(s), send, set_end(cx::next(p), pend, c, set_end_state::not_or_first),
-                 pend, c, equal_to);
+                 pend, c, equal_to, partial);
   }
 
   if (c.alt_enabled && *p == c.alt_open && is_alt(cx::next(p), pend, c, is_alt_state::next, 1))
@@ -917,27 +917,27 @@ constexpr match_result<SequenceIterator, PatternIterator> match(
     return make_match_result(false, s, p);
   }
 
-  return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+  return match(cx::next(s), send, cx::next(p), pend, c, equal_to, partial);
 
 #else  // !cfg_HAS_CONSTEXPR14
 
   return p == pend
-             ? make_match_result(s == send, s, p)
+             ? make_match_result(partial || s == send, s, p)
              : escape
                    ? s == send || !equal_to(*s, *p)
                          ? make_match_result(false, s, p)
-                         : match(cx::next(s), send, cx::next(p), pend, c, equal_to)
+                         : match(cx::next(s), send, cx::next(p), pend, c, equal_to, partial)
                    : *p == c.anything
-                         ? match(s, send, cx::next(p), pend, c, equal_to)
-                               ? match(s, send, cx::next(p), pend, c, equal_to)
+                         ? match(s, send, cx::next(p), pend, c, equal_to, partial)
+                               ? match(s, send, cx::next(p), pend, c, equal_to, partial)
                                : s == send ? make_match_result(false, s, p)
-                                           : match(cx::next(s), send, p, pend, c, equal_to)
+                                           : match(cx::next(s), send, p, pend, c, equal_to, partial)
                          : *p == c.single
-                               ? s == send
-                                     ? make_match_result(false, s, p)
-                                     : match(cx::next(s), send, cx::next(p), pend, c, equal_to)
+                               ? s == send ? make_match_result(false, s, p)
+                                           : match(cx::next(s), send, cx::next(p), pend, c,
+                                                   equal_to, partial)
                                : *p == c.escape
-                                     ? match(s, send, cx::next(p), pend, c, equal_to, true)
+                                     ? match(s, send, cx::next(p), pend, c, equal_to, partial, true)
                                      : c.set_enabled && *p == c.set_open &&
                                                is_set(cx::next(p), pend, c,
                                                       is_set_state::not_or_first)
@@ -949,7 +949,7 @@ constexpr match_result<SequenceIterator, PatternIterator> match(
                                                  : match(cx::next(s), send,
                                                          set_end(cx::next(p), pend, c,
                                                                  set_end_state::not_or_first),
-                                                         pend, c, equal_to)
+                                                         pend, c, equal_to, partial)
                                            : c.alt_enabled && *p == c.alt_open &&
                                                      is_alt(cx::next(p), pend, c,
                                                             is_alt_state::next, 1)
@@ -958,7 +958,7 @@ constexpr match_result<SequenceIterator, PatternIterator> match(
                                                  : s == send || !equal_to(*s, *p)
                                                        ? make_match_result(false, s, p)
                                                        : match(cx::next(s), send, cx::next(p), pend,
-                                                               c, equal_to);
+                                                               c, equal_to, partial);
 
 #endif  // cfg_HAS_CONSTEXPR14
 }
