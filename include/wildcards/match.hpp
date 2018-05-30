@@ -865,8 +865,7 @@ constexpr match_result<SequenceIterator, PatternIterator> match_alt(
 #endif  // cfg_HAS_CONSTEXPR14
 }
 
-template <typename SequenceIterator, typename PatternIterator,
-          typename EqualTo = cx::equal_to<void>>
+template <typename SequenceIterator, typename PatternIterator, typename EqualTo>
 constexpr match_result<SequenceIterator, PatternIterator> match(
     SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
     const cards<iterated_item_t<PatternIterator>>& c, const EqualTo& equal_to, bool partial,
