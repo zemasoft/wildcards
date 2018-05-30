@@ -14,7 +14,8 @@
 #include "cx/functional.hpp"      // cx::equal_to
 #include "cx/iterator.hpp"        // cx::cbegin, cx::cend, cx::next, cx::prev
 #include "wildcards/cards.hpp"    // wildcards::cards
-#include "wildcards/utility.hpp"  // wildcards::container_item_t, wildcards::iterated_item_t
+#include "wildcards/utility.hpp"  // wildcards::const_iterator_t, wildcards::container_item_t,
+                                  // wildcards::iterated_item_t
 
 namespace wildcards
 {
@@ -996,9 +997,10 @@ constexpr match_result<SequenceIterator, PatternIterator> match(
 }  // namespace detail
 
 template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>>
-constexpr bool match(Sequence&& sequence, Pattern&& pattern,
-                     const cards<container_item_t<Pattern>>& c = cards<container_item_t<Pattern>>(),
-                     const EqualTo& equal_to = EqualTo())
+constexpr match_result<const_iterator_t<Sequence>, const_iterator_t<Pattern>> match(
+    Sequence&& sequence, Pattern&& pattern,
+    const cards<container_item_t<Pattern>>& c = cards<container_item_t<Pattern>>(),
+    const EqualTo& equal_to = EqualTo())
 {
   return detail::match(cx::cbegin(sequence), cx::cend(std::forward<Sequence>(sequence)),
                        cx::cbegin(pattern), cx::cend(std::forward<Pattern>(pattern)), c, equal_to);
@@ -1006,7 +1008,8 @@ constexpr bool match(Sequence&& sequence, Pattern&& pattern,
 
 template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>,
           typename = typename std::enable_if<!std::is_same<EqualTo, cards_type>::value>::type>
-constexpr bool match(Sequence&& sequence, Pattern&& pattern, const EqualTo& equal_to)
+constexpr match_result<const_iterator_t<Sequence>, const_iterator_t<Pattern>> match(
+    Sequence&& sequence, Pattern&& pattern, const EqualTo& equal_to)
 {
   return match(std::forward<Sequence>(sequence), std::forward<Pattern>(pattern),
                cards<container_item_t<Pattern>>(), equal_to);
