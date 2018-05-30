@@ -862,6 +862,16 @@ constexpr match_result<SequenceIterator, PatternIterator> match_alt(
 
 #else  // !cfg_HAS_CONSTEXPR14
 
+  return match(s, send, p1, p1end, c, equal_to, true) &&
+                 match(match(s, send, p1, p1end, c, equal_to, true).s, send, p2, p2end, c, equal_to,
+                       partial)
+             ? match(match(s, send, p1, p1end, c, equal_to, true).s, send, p2, p2end, c, equal_to,
+                     partial)
+             : cx::next(p1end) == p2
+                   ? make_match_result(false, s, p1end)
+                   : match_alt(s, send, cx::next(p1end), alt_sub_end(cx::next(p1end), p2, c), p2,
+                               p2end, c, equal_to, partial);
+
 #endif  // cfg_HAS_CONSTEXPR14
 }
 
@@ -983,8 +993,15 @@ constexpr match_result<SequenceIterator, PatternIterator> match(
                                            : c.alt_enabled && *p == c.alt_open &&
                                                      is_alt(cx::next(p), pend, c,
                                                             is_alt_state::next, 1)
-                                                 ? throw std::runtime_error(
-                                                       "Sorry, alternatives not implemented")
+                                                 ? match_alt(
+                                                       s, send, cx::next(p),
+                                                       alt_sub_end(cx::next(p),
+                                                                   alt_end(cx::next(p), pend, c,
+                                                                           alt_end_state::next, 1),
+                                                                   c),
+                                                       alt_end(cx::next(p), pend, c,
+                                                               alt_end_state::next, 1),
+                                                       pend, c, equal_to, partial)
                                                  : s == send || !equal_to(*s, *p)
                                                        ? make_match_result(false, s, p)
                                                        : match(cx::next(s), send, cx::next(p), pend,
