@@ -12,15 +12,18 @@ Introduction
 Wildcards is a simple C++ header-only library which implements matching using
 wildcards. It supports both runtime and compile time execution.
 
-| Pattern  | Meaning                             |
-| -------- | ----------------------------------- |
-| `*`      | Matches everything.                 |
-| `?`      | Matches any single character.       |
-| `\`      | Escape character.                   |
-| `[abc]`  | Matches any character in a set.     |
-| `[!abc]` | Matches any character not in a set. |
+| Pattern   | Meaning                                         |
+| --------- | ----------------------------------------------- |
+| `*`       | Matches everything.                             |
+| `?`       | Matches any single character.                   |
+| `\`       | Escape character.                               |
+| `[abc]`   | Matches any character in a set.                 |
+| `[!abc]`  | Matches any character not in a set.             |
+| `(ab\|c)` | Matches one of the sequences in an alternative. |
 
 Set cannot be empty. Any special character loses its special meaning in a set.
+
+More than two or just one sequence can be given in an alternative.
 
 Requirements
 ============
