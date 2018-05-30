@@ -7,21 +7,18 @@
 
 int main()
 {
-  constexpr char pattern[] = "H?llo,* World[.!?]";
+  constexpr char pattern[] = "(CMakeLists.txt|*.([hc](pp|)))";
 
-  static_assert(wildcards::match("Hello, World!", pattern), "");
-  static_assert(wildcards::match("Hallo, World!", pattern), "");
-  static_assert(wildcards::match("Hello, big World!", pattern), "");
-  static_assert(wildcards::match("Hello, World.", pattern), "");
-  static_assert(wildcards::match("Hello, World?", pattern), "");
+  static_assert(wildcards::match("header.h", pattern), "");
+  static_assert(wildcards::match("header.hpp", pattern), "");
+  static_assert(wildcards::match("source.c", pattern), "");
+  static_assert(wildcards::match("source.cpp", pattern), "");
+  static_assert(wildcards::match("CMakeLists.txt", pattern), "");
 
-  static_assert(!wildcards::match("Hllo World!", pattern), "");
-  static_assert(!wildcards::match("Hello World!", pattern), "");
-  static_assert(!wildcards::match("Hello,World!", pattern), "");
-  static_assert(!wildcards::match("Hello, world!", pattern), "");
-  static_assert(!wildcards::match("Hello, World", pattern), "");
-  static_assert(!wildcards::match("Hello, World;", pattern), "");
-  static_assert(!wildcards::match("Hello, World!!", pattern), "");
+  static_assert(!wildcards::match("header.H", pattern), "");
+  static_assert(!wildcards::match("source.cc", pattern), "");
+  static_assert(!wildcards::match("object.o", pattern), "");
+  static_assert(!wildcards::match("CMakeLists.txt.bak", pattern), "");
 
   return 0;
 }
