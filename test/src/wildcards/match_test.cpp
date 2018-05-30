@@ -930,4 +930,20 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match("a!a", "a[!]a"), "");
     static_assert(match("a[!]a", "a[!]a"), "");
   }
+
+  SECTION("")
+  {
+
+    static_assert(match("aXb", "a(X|Y)b"), "");
+    static_assert(match("aYb", "a(X|Y)b"), "");
+    static_assert(!match("aZb", "a(X|Y)b"), "");
+    static_assert(match("aXb", "(a(X|Y)b|c)"), "");
+    static_assert(!match("a", "a|b"), "");
+    static_assert(match("a|b", "a|b"), "");
+    static_assert(match("(aa", "(a(a|b)"), "");
+    static_assert(!match("a(a", "(a(a|b)"), "");
+    static_assert(match("a(a", "(a[(]a|b)"), "");
+    static_assert(match("aa", "a()a"), "");
+    static_assert(match("", "(abc|)"), "");
+  }
 }
