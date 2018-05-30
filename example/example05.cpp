@@ -54,9 +54,9 @@ int main(int argc, char** argv)
   auto path = cx::make_string_view(argv[1], std::strlen(argv[1]));
   auto pattern = cx::make_string_view(argv[2], std::strlen(argv[2]));
 
-  for (auto& p : fs::directory_iterator(path.data()))
+  for (auto& p : fs::recursive_directory_iterator(path.data()))
   {
-    if (wildcards::match(p.path().string(), pattern))
+    if (wildcards::match(p.path().filename().string(), pattern))
     {
       std::cout << p.path().string() << std::endl;
     }
