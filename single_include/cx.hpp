@@ -1,5 +1,5 @@
 // THIS FILE HAS BEEN GENERATED AUTOMATICALLY. DO NOT EDIT DIRECTLY.
-// Generated: 2018-05-21 13:22:37.151231618
+// Generated: 2018-05-30 13:30:06.195150205
 // Copyright Tomas Zeman 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -7,7 +7,7 @@
 #ifndef CX_HPP
 #define CX_HPP 
 #define CX_VERSION_MAJOR 1
-#define CX_VERSION_MINOR 2
+#define CX_VERSION_MINOR 3
 #define CX_VERSION_PATCH 0
 #ifndef CX_ALGORITHM_HPP
 #define CX_ALGORITHM_HPP 
@@ -336,10 +336,10 @@
 #else
 #define cfg_constexpr14 
 #endif
-#if cfg_HAS_CONSTEXPR14 && !(defined(__GNUC__) && __GNUC__ < 6 && !defined(__clang__))
-#define cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH 1
+#if cfg_HAS_CONSTEXPR14 && !(defined(__GNUC__) && !defined(__clang__))
+#define cfg_HAS_FULL_FEATURED_CONSTEXPR14 1
 #else
-#define cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH 0
+#define cfg_HAS_FULL_FEATURED_CONSTEXPR14 0
 #endif
 #endif
 namespace cx

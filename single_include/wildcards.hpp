@@ -1,5 +1,5 @@
 // THIS FILE HAS BEEN GENERATED AUTOMATICALLY. DO NOT EDIT DIRECTLY.
-// Generated: 2018-05-21 13:22:38.275240524
+// Generated: 2018-05-30 13:30:06.306256904
 // Copyright Tomas Zeman 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -7,7 +7,7 @@
 #ifndef WILDCARDS_HPP
 #define WILDCARDS_HPP 
 #define WILDCARDS_VERSION_MAJOR 1
-#define WILDCARDS_VERSION_MINOR 2
+#define WILDCARDS_VERSION_MINOR 3
 #define WILDCARDS_VERSION_PATCH 0
 #ifndef WILDCARDS_CARDS_HPP
 #define WILDCARDS_CARDS_HPP 
@@ -567,10 +567,10 @@ std::forward<T>(ao), std::forward<T>(ac), std::forward<T>(ar)};
 #else
 #define cfg_constexpr14 
 #endif
-#if cfg_HAS_CONSTEXPR14 && !(defined(__GNUC__) && __GNUC__ < 6 && !defined(__clang__))
-#define cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH 1
+#if cfg_HAS_CONSTEXPR14 && !(defined(__GNUC__) && !defined(__clang__))
+#define cfg_HAS_FULL_FEATURED_CONSTEXPR14 1
 #else
-#define cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH 0
+#define cfg_HAS_FULL_FEATURED_CONSTEXPR14 0
 #endif
 #endif
 #ifndef CX_FUNCTIONAL_HPP
@@ -715,6 +715,22 @@ return cx::end(c);
 #include <utility>
 namespace wildcards
 {
+template <typename C>
+struct const_iterator
+{
+using type = typename std::remove_cv<
+typename std::remove_reference<decltype(cx::cbegin(std::declval<C>()))>::type>::type;
+};
+template <typename C>
+using const_iterator_t = typename const_iterator<C>::type;
+template <typename C>
+struct iterator
+{
+using type = typename std::remove_cv<
+typename std::remove_reference<decltype(cx::begin(std::declval<C>()))>::type>::type;
+};
+template <typename C>
+using iterator_t = typename iterator<C>::type;
 template <typename It>
 struct iterated_item
 {
@@ -735,9 +751,27 @@ using container_item_t = typename container_item<C>::type;
 #endif
 namespace wildcards
 {
+template <typename SequenceIterator, typename PatternIterator>
+struct match_result
+{
+bool res;
+SequenceIterator s;
+PatternIterator p;
+constexpr operator bool() const
+{
+return res;
+}
+};
+template <typename SequenceIterator, typename PatternIterator>
+constexpr match_result<SequenceIterator, PatternIterator> make_match_result(bool res,
+SequenceIterator s,
+PatternIterator p)
+{
+return {std::move(res), std::move(s), std::move(p)};
+}
 namespace detail
 {
-#if !cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if !cfg_HAS_FULL_FEATURED_CONSTEXPR14
 constexpr bool throw_invalid_argument(const char* what_arg)
 {
 return what_arg == nullptr ? false : throw std::invalid_argument(what_arg);
@@ -756,10 +790,6 @@ constexpr T throw_logic_error(T t, const char* what_arg)
 {
 return what_arg == nullptr ? t : throw std::logic_error(what_arg);
 }
-constexpr bool throw_runtime_error(const char* what_arg)
-{
-return what_arg == nullptr ? false : throw std::runtime_error(what_arg);
-}
 #endif
 enum class is_set_state
 {
@@ -775,34 +805,42 @@ const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<Pattern
 is_set_state state = is_set_state::open)
 {
 #if cfg_HAS_CONSTEXPR14
-if (!c.set_enabled || p == pend)
+if (!c.set_enabled)
 {
 return false;
 }
+while (p != pend)
+{
 switch (state)
 {
 case is_set_state::open:
-if (*p == c.set_open)
+if (*p != c.set_open)
 {
-return is_set(cx::next(p), pend, c, is_set_state::not_or_first);
-}
 return false;
+}
+state = is_set_state::not_or_first;
+break;
 case is_set_state::not_or_first:
 if (*p == c.set_not)
 {
-return is_set(cx::next(p), pend, c, is_set_state::first);
+state = is_set_state::first;
 }
-return is_set(cx::next(p), pend, c, is_set_state::next);
+else
+{
+state = is_set_state::next;
+}
+break;
 case is_set_state::first:
-return is_set(cx::next(p), pend, c, is_set_state::next);
+state = is_set_state::next;
+break;
 case is_set_state::next:
 if (*p == c.set_close)
 {
 return true;
 }
-return is_set(cx::next(p), pend, c, is_set_state::next);
+break;
 default:
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
 throw std::logic_error(
 "The program execution should never end up here throwing this exception");
 #else
@@ -810,6 +848,9 @@ return throw_logic_error(
 "The program execution should never end up here throwing this exception");
 #endif
 }
+p = cx::next(p);
+}
+return false;
 #else
 return c.set_enabled && p != pend &&
 (state == is_set_state::open
@@ -843,48 +884,48 @@ set_end_state state = set_end_state::open)
 #if cfg_HAS_CONSTEXPR14
 if (!c.set_enabled)
 {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
 throw std::invalid_argument("The use of sets is disabled");
 #else
 return throw_invalid_argument(p, "The use of sets is disabled");
 #endif
 }
-if (p == pend)
+while (p != pend)
 {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
-throw std::invalid_argument("The given pattern is not a valid set");
-#else
-return throw_invalid_argument(p, "The given pattern is not a valid set");
-#endif
-}
 switch (state)
 {
 case set_end_state::open:
-if (*p == c.set_open)
+if (*p != c.set_open)
 {
-return set_end(cx::next(p), pend, c, set_end_state::not_or_first);
-}
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
 throw std::invalid_argument("The given pattern is not a valid set");
 #else
 return throw_invalid_argument(p, "The given pattern is not a valid set");
 #endif
+}
+state = set_end_state::not_or_first;
+break;
 case set_end_state::not_or_first:
 if (*p == c.set_not)
 {
-return set_end(cx::next(p), pend, c, set_end_state::first);
+state = set_end_state::first;
 }
-return set_end(cx::next(p), pend, c, set_end_state::next);
+else
+{
+state = set_end_state::next;
+}
+break;
 case set_end_state::first:
-return set_end(cx::next(p), pend, c, set_end_state::next);
+state = set_end_state::next;
+break;
 case set_end_state::next:
 if (*p == c.set_close)
 {
 return cx::next(p);
 }
-return set_end(cx::next(p), pend, c, set_end_state::next);
+break;
 default:
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
 throw std::logic_error(
 "The program execution should never end up here throwing this exception");
 #else
@@ -892,6 +933,13 @@ return throw_logic_error(
 p, "The program execution should never end up here throwing this exception");
 #endif
 }
+p = cx::next(p);
+}
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
+throw std::invalid_argument("The given pattern is not a valid set");
+#else
+return throw_invalid_argument(p, "The given pattern is not a valid set");
+#endif
 #else
 return !c.set_enabled
 ? throw std::invalid_argument("The use of sets is disabled")
@@ -927,7 +975,7 @@ next_out
 };
 template <typename SequenceIterator, typename PatternIterator,
 typename EqualTo = cx::equal_to<void>>
-constexpr bool match_set(
+constexpr match_result<SequenceIterator, PatternIterator> match_set(
 SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
 const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
 const EqualTo& equal_to = EqualTo(), match_set_state state = match_set_state::open)
@@ -935,81 +983,91 @@ const EqualTo& equal_to = EqualTo(), match_set_state state = match_set_state::op
 #if cfg_HAS_CONSTEXPR14
 if (!c.set_enabled)
 {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
 throw std::invalid_argument("The use of sets is disabled");
 #else
-return throw_invalid_argument("The use of sets is disabled");
+return throw_invalid_argument(make_match_result(false, s, p), "The use of sets is disabled");
 #endif
 }
-if (p == pend)
+while (p != pend)
 {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
-throw std::invalid_argument("The given pattern is not a valid set");
-#else
-return throw_invalid_argument("The given pattern is not a valid set");
-#endif
-}
 switch (state)
 {
 case match_set_state::open:
-if (*p == c.set_open)
+if (*p != c.set_open)
 {
-return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::not_or_first_in);
-}
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
 throw std::invalid_argument("The given pattern is not a valid set");
 #else
-return throw_invalid_argument("The given pattern is not a valid set");
+return throw_invalid_argument(make_match_result(false, s, p),
+"The given pattern is not a valid set");
 #endif
+}
+state = match_set_state::not_or_first_in;
+break;
 case match_set_state::not_or_first_in:
 if (*p == c.set_not)
 {
-return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::first_out);
+state = match_set_state::first_out;
 }
+else
+{
 if (s == send)
 {
-return false;
+return make_match_result(false, s, p);
 }
 if (equal_to(*s, *p))
 {
-return true;
+return make_match_result(true, s, p);
 }
-return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::next_in);
+state = match_set_state::next_in;
+}
+break;
 case match_set_state::first_out:
 if (s == send || equal_to(*s, *p))
 {
-return false;
+return make_match_result(false, s, p);
 }
-return match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::next_out);
+state = match_set_state::next_out;
+break;
 case match_set_state::next_in:
 if (*p == c.set_close || s == send)
 {
-return false;
+return make_match_result(false, s, p);
 }
 if (equal_to(*s, *p))
 {
-return true;
+return make_match_result(true, s, p);
 }
-return match_set(s, send, cx::next(p), pend, c, equal_to, state);
+break;
 case match_set_state::next_out:
 if (*p == c.set_close)
 {
-return true;
+return make_match_result(true, s, p);
 }
 if (s == send || equal_to(*s, *p))
 {
-return false;
+return make_match_result(false, s, p);
 }
-return match_set(s, send, cx::next(p), pend, c, equal_to, state);
+break;
 default:
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
 throw std::logic_error(
 "The program execution should never end up here throwing this exception");
 #else
 return throw_logic_error(
+make_match_result(false, s, p),
 "The program execution should never end up here throwing this exception");
 #endif
 }
+p = cx::next(p);
+}
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
+throw std::invalid_argument("The given pattern is not a valid set");
+#else
+return throw_invalid_argument(make_match_result(false, s, p),
+"The given pattern is not a valid set");
+#endif
 #else
 return !c.set_enabled
 ? throw std::invalid_argument("The use of sets is disabled")
@@ -1027,25 +1085,32 @@ state == match_set_state::not_or_first_in
 ? match_set(s, send, cx::next(p), pend, c, equal_to,
 match_set_state::first_out)
 :
-s != send && (equal_to(*s, *p) ||
-match_set(s, send, cx::next(p), pend, c, equal_to,
-match_set_state::next_in))
+s == send ? make_match_result(false, s, p)
+: equal_to(*s, *p)
+? make_match_result(true, s, p)
+: match_set(s, send, cx::next(p), pend, c,
+equal_to, match_set_state::next_in)
 :
 state == match_set_state::first_out
-? s != send && !equal_to(*s, *p) &&
-match_set(s, send, cx::next(p), pend, c, equal_to,
+? s == send || equal_to(*s, *p)
+? make_match_result(false, s, p)
+: match_set(s, send, cx::next(p), pend, c, equal_to,
 match_set_state::next_out)
 :
 state == match_set_state::next_in
-? *p != c.set_close && s != send &&
-(equal_to(*s, *p) || match_set(s, send, cx::next(p),
-pend, c, equal_to, state))
+? *p == c.set_close || s == send
+? make_match_result(false, s, p)
+: equal_to(*s, *p) ? make_match_result(true, s, p)
+: match_set(s, send, cx::next(p),
+pend, c, equal_to, state)
 :
 state == match_set_state::next_out
-? *p == c.set_close ||
-(s != send && !equal_to(*s, *p) &&
-match_set(s, send, cx::next(p), pend, c, equal_to,
-state))
+? *p == c.set_close
+? make_match_result(true, s, p)
+: s == send || equal_to(*s, *p)
+? make_match_result(false, s, p)
+: match_set(s, send, cx::next(p), pend, c,
+equal_to, state)
 : throw std::logic_error(
 "The program execution should never end up "
 "here "
@@ -1065,46 +1130,50 @@ const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<Pattern
 is_alt_state state = is_alt_state::open, int depth = 0)
 {
 #if cfg_HAS_CONSTEXPR14
-if (!c.alt_enabled || p == pend)
+if (!c.alt_enabled)
 {
 return false;
 }
+while (p != pend)
+{
 switch (state)
 {
 case is_alt_state::open:
-if (*p == c.alt_open)
+if (*p != c.alt_open)
 {
-return is_alt(cx::next(p), pend, c, is_alt_state::next, depth + 1);
-}
 return false;
+}
+state = is_alt_state::next;
+++depth;
+break;
 case is_alt_state::next:
 if (*p == c.escape)
 {
-return is_alt(cx::next(p), pend, c, is_alt_state::escape, depth);
+state = is_alt_state::escape;
 }
-if (c.set_enabled && *p == c.set_open &&
+else if (c.set_enabled && *p == c.set_open &&
 is_set(cx::next(p), pend, c, is_set_state::not_or_first))
 {
-return is_alt(set_end(cx::next(p), pend, c, set_end_state::not_or_first), pend, c, state,
-depth);
+p = cx::prev(set_end(cx::next(p), pend, c, set_end_state::not_or_first));
 }
-if (*p == c.alt_open)
+else if (*p == c.alt_open)
 {
-return is_alt(cx::next(p), pend, c, state, depth + 1);
+++depth;
 }
-if (*p == c.alt_close)
+else if (*p == c.alt_close)
 {
-if (depth - 1 == 0)
+--depth;
+if (depth == 0)
 {
 return true;
 }
-return is_alt(cx::next(p), pend, c, state, depth - 1);
 }
-return is_alt(cx::next(p), pend, c, state, depth);
+break;
 case is_alt_state::escape:
-return is_alt(cx::next(p), pend, c, is_alt_state::next, depth);
+state = is_alt_state::next;
+break;
 default:
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
 throw std::logic_error(
 "The program execution should never end up here throwing this exception");
 #else
@@ -1112,6 +1181,9 @@ return throw_logic_error(
 p, "The program execution should never end up here throwing this exception");
 #endif
 }
+p = cx::next(p);
+}
+return false;
 #else
 return c.alt_enabled && p != pend &&
 (state == is_alt_state::open
@@ -1126,7 +1198,7 @@ pend, c, state, depth)
 : *p == c.alt_open
 ? is_alt(cx::next(p), pend, c, state, depth + 1)
 : *p == c.alt_close
-? depth - 1 == 0 ||
+? depth == 1 ||
 is_alt(cx::next(p), pend, c, state, depth - 1)
 : is_alt(cx::next(p), pend, c, state, depth)
 :
@@ -1137,108 +1209,396 @@ state == is_alt_state::escape
 "exception"));
 #endif
 }
+enum class alt_end_state
+{
+open,
+next,
+escape
+};
+template <typename PatternIterator>
+constexpr PatternIterator alt_end(
+PatternIterator p, PatternIterator pend,
+const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
+alt_end_state state = alt_end_state::open, int depth = 0)
+{
+#if cfg_HAS_CONSTEXPR14
+if (!c.alt_enabled)
+{
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
+throw std::invalid_argument("The use of alternatives is disabled");
+#else
+return throw_invalid_argument(p, "The use of alternatives is disabled");
+#endif
+}
+while (p != pend)
+{
+switch (state)
+{
+case alt_end_state::open:
+if (*p != c.alt_open)
+{
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
+throw std::invalid_argument("The given pattern is not a valid alternative");
+#else
+return throw_invalid_argument(p, "The given pattern is not a valid alternative");
+#endif
+}
+state = alt_end_state::next;
+++depth;
+break;
+case alt_end_state::next:
+if (*p == c.escape)
+{
+state = alt_end_state::escape;
+}
+else if (c.set_enabled && *p == c.set_open &&
+is_set(cx::next(p), pend, c, is_set_state::not_or_first))
+{
+p = cx::prev(set_end(cx::next(p), pend, c, set_end_state::not_or_first));
+}
+else if (*p == c.alt_open)
+{
+++depth;
+}
+else if (*p == c.alt_close)
+{
+--depth;
+if (depth == 0)
+{
+return cx::next(p);
+}
+}
+break;
+case alt_end_state::escape:
+state = alt_end_state::next;
+break;
+default:
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
+throw std::logic_error(
+"The program execution should never end up here throwing this exception");
+#else
+return throw_logic_error(
+p, "The program execution should never end up here throwing this exception");
+#endif
+}
+p = cx::next(p);
+}
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
+throw std::invalid_argument("The given pattern is not a valid alternative");
+#else
+return throw_invalid_argument(p, "The given pattern is not a valid alternative");
+#endif
+#else
+return !c.alt_enabled
+? throw std::invalid_argument("The use of alternatives is disabled")
+: p == pend
+? throw std::invalid_argument("The given pattern is not a valid alternative")
+: state == alt_end_state::open
+? *p == c.alt_open
+? alt_end(cx::next(p), pend, c, alt_end_state::next, depth + 1)
+: throw std::invalid_argument(
+"The given pattern is not a valid alternative")
+: state == alt_end_state::next
+? *p == c.escape
+? alt_end(cx::next(p), pend, c, alt_end_state::escape, depth)
+: c.set_enabled && *p == c.set_open &&
+is_set(cx::next(p), pend, c,
+is_set_state::not_or_first)
+? alt_end(set_end(cx::next(p), pend, c,
+set_end_state::not_or_first),
+pend, c, state, depth)
+: *p == c.alt_open
+? alt_end(cx::next(p), pend, c, state, depth + 1)
+: *p == c.alt_close
+? depth == 1 ? cx::next(p)
+: alt_end(cx::next(p), pend, c,
+state, depth - 1)
+: alt_end(cx::next(p), pend, c, state, depth)
+:
+state == alt_end_state::escape
+? alt_end(cx::next(p), pend, c, alt_end_state::next, depth)
+: throw std::logic_error(
+"The program execution should never end up here throwing "
+"this "
+"exception");
+#endif
+}
+enum class alt_sub_end_state
+{
+next,
+escape
+};
+template <typename PatternIterator>
+constexpr PatternIterator alt_sub_end(
+PatternIterator p, PatternIterator pend,
+const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
+alt_sub_end_state state = alt_sub_end_state::next, int depth = 1)
+{
+#if cfg_HAS_CONSTEXPR14
+if (!c.alt_enabled)
+{
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
+throw std::invalid_argument("The use of alternatives is disabled");
+#else
+return throw_invalid_argument(p, "The use of alternatives is disabled");
+#endif
+}
+while (p != pend)
+{
+switch (state)
+{
+case alt_sub_end_state::next:
+if (*p == c.escape)
+{
+state = alt_sub_end_state::escape;
+}
+else if (c.set_enabled && *p == c.set_open &&
+is_set(cx::next(p), pend, c, is_set_state::not_or_first))
+{
+p = cx::prev(set_end(cx::next(p), pend, c, set_end_state::not_or_first));
+}
+else if (*p == c.alt_open)
+{
+++depth;
+}
+else if (*p == c.alt_close)
+{
+--depth;
+if (depth == 0)
+{
+return p;
+}
+}
+else if (*p == c.alt_or)
+{
+if (depth == 1)
+{
+return p;
+}
+}
+break;
+case alt_sub_end_state::escape:
+state = alt_sub_end_state::next;
+break;
+default:
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
+throw std::logic_error(
+"The program execution should never end up here throwing this exception");
+#else
+return throw_logic_error(
+p, "The program execution should never end up here throwing this exception");
+#endif
+}
+p = cx::next(p);
+}
+#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
+throw std::invalid_argument("The given pattern is not a valid alternative");
+#else
+return throw_invalid_argument(p, "The given pattern is not a valid alternative");
+#endif
+#else
+return !c.alt_enabled
+? throw std::invalid_argument("The use of alternatives is disabled")
+: p == pend
+? throw std::invalid_argument("The given pattern is not a valid alternative")
+: state == alt_sub_end_state::next
+? *p == c.escape
+? alt_sub_end(cx::next(p), pend, c, alt_sub_end_state::escape, depth)
+: c.set_enabled && *p == c.set_open &&
+is_set(cx::next(p), pend, c, is_set_state::not_or_first)
+? alt_sub_end(set_end(cx::next(p), pend, c,
+set_end_state::not_or_first),
+pend, c, state, depth)
+: *p == c.alt_open
+? alt_sub_end(cx::next(p), pend, c, state, depth + 1)
+: *p == c.alt_close
+? depth == 1 ? p : alt_sub_end(cx::next(p), pend,
+c, state, depth - 1)
+: *p == c.alt_or
+? depth == 1 ? p
+: alt_sub_end(cx::next(p), pend,
+c, state, depth)
+: alt_sub_end(cx::next(p), pend, c, state,
+depth)
+:
+state == alt_sub_end_state::escape
+? alt_sub_end(cx::next(p), pend, c, alt_sub_end_state::next, depth)
+: throw std::logic_error(
+"The program execution should never end up here throwing "
+"this "
+"exception");
+#endif
 }
 template <typename SequenceIterator, typename PatternIterator,
 typename EqualTo = cx::equal_to<void>>
-constexpr bool match(
+constexpr match_result<SequenceIterator, PatternIterator> match(
 SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
 const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
-const EqualTo& equal_to = EqualTo(), bool escape = false)
+const EqualTo& equal_to = EqualTo(), bool partial = false, bool escape = false);
+template <typename SequenceIterator, typename PatternIterator,
+typename EqualTo = cx::equal_to<void>>
+constexpr match_result<SequenceIterator, PatternIterator> match_alt(
+SequenceIterator s, SequenceIterator send, PatternIterator p1, PatternIterator p1end,
+PatternIterator p2, PatternIterator p2end,
+const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
+const EqualTo& equal_to = EqualTo(), bool partial = false)
+{
+#if cfg_HAS_CONSTEXPR14
+auto result1 = match(s, send, p1, p1end, c, equal_to, true);
+if (result1)
+{
+auto result2 = match(result1.s, send, p2, p2end, c, equal_to, partial);
+if (result2)
+{
+return result2;
+}
+}
+p1 = cx::next(p1end);
+if (p1 == p2)
+{
+return make_match_result(false, s, p1end);
+}
+return match_alt(s, send, p1, alt_sub_end(p1, p2, c), p2, p2end, c, equal_to, partial);
+#else
+return match(s, send, p1, p1end, c, equal_to, true) &&
+match(match(s, send, p1, p1end, c, equal_to, true).s, send, p2, p2end, c, equal_to,
+partial)
+? match(match(s, send, p1, p1end, c, equal_to, true).s, send, p2, p2end, c, equal_to,
+partial)
+: cx::next(p1end) == p2
+? make_match_result(false, s, p1end)
+: match_alt(s, send, cx::next(p1end), alt_sub_end(cx::next(p1end), p2, c), p2,
+p2end, c, equal_to, partial);
+#endif
+}
+template <typename SequenceIterator, typename PatternIterator, typename EqualTo>
+constexpr match_result<SequenceIterator, PatternIterator> match(
+SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
+const cards<iterated_item_t<PatternIterator>>& c, const EqualTo& equal_to, bool partial,
+bool escape)
 {
 #if cfg_HAS_CONSTEXPR14
 if (p == pend)
 {
-return s == send;
+return make_match_result(partial || s == send, s, p);
 }
 if (escape)
 {
-if (s != send && equal_to(*s, *p))
+if (s == send || !equal_to(*s, *p))
 {
-return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+return make_match_result(false, s, p);
 }
-return false;
+return match(cx::next(s), send, cx::next(p), pend, c, equal_to, partial);
 }
 if (*p == c.anything)
 {
-return match(s, send, cx::next(p), pend, c, equal_to) ||
-(s != send && match(cx::next(s), send, p, pend, c, equal_to));
+auto result = match(s, send, cx::next(p), pend, c, equal_to, partial);
+if (result)
+{
+return result;
+}
+if (s == send)
+{
+return make_match_result(false, s, p);
+}
+return match(cx::next(s), send, p, pend, c, equal_to, partial);
 }
 if (*p == c.single)
 {
-return s != send && match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+if (s == send)
+{
+return make_match_result(false, s, p);
+}
+return match(cx::next(s), send, cx::next(p), pend, c, equal_to, partial);
 }
 if (*p == c.escape)
 {
-return match(s, send, cx::next(p), pend, c, equal_to, true);
+return match(s, send, cx::next(p), pend, c, equal_to, partial, true);
 }
-if (c.set_enabled && *p == c.set_open &&
-detail::is_set(cx::next(p), pend, c, detail::is_set_state::not_or_first))
+if (c.set_enabled && *p == c.set_open && is_set(cx::next(p), pend, c, is_set_state::not_or_first))
 {
-return match_set(s, send, cx::next(p), pend, c, equal_to,
-detail::match_set_state::not_or_first_in) &&
-match(cx::next(s), send,
-detail::set_end(cx::next(p), pend, c, detail::set_end_state::not_or_first), pend,
-c, equal_to);
-}
-if (c.alt_enabled && *p == c.alt_open &&
-detail::is_alt(cx::next(p), pend, c, detail::is_alt_state::next, 1))
+auto result =
+match_set(s, send, cx::next(p), pend, c, equal_to, match_set_state::not_or_first_in);
+if (!result)
 {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR_SWITCH
-throw std::runtime_error("Sorry, alternatives not implemented");
-#else
-return detail::throw_runtime_error("Sorry, alternatives not implemented");
-#endif
+return result;
 }
-if (s != send && equal_to(*s, *p))
+return match(cx::next(s), send, set_end(cx::next(p), pend, c, set_end_state::not_or_first),
+pend, c, equal_to, partial);
+}
+if (c.alt_enabled && *p == c.alt_open && is_alt(cx::next(p), pend, c, is_alt_state::next, 1))
 {
-return match(cx::next(s), send, cx::next(p), pend, c, equal_to);
+auto p_alt_end = alt_end(cx::next(p), pend, c, alt_end_state::next, 1);
+return match_alt(s, send, cx::next(p), alt_sub_end(cx::next(p), p_alt_end, c), p_alt_end, pend,
+c, equal_to, partial);
 }
-return false;
+if (s == send || !equal_to(*s, *p))
+{
+return make_match_result(false, s, p);
+}
+return match(cx::next(s), send, cx::next(p), pend, c, equal_to, partial);
 #else
 return p == pend
-? s == send
+? make_match_result(partial || s == send, s, p)
 : escape
-? s != send && equal_to(*s, *p) &&
-match(cx::next(s), send, cx::next(p), pend, c, equal_to)
+? s == send || !equal_to(*s, *p)
+? make_match_result(false, s, p)
+: match(cx::next(s), send, cx::next(p), pend, c, equal_to, partial)
 : *p == c.anything
-? match(s, send, cx::next(p), pend, c, equal_to) ||
-(s != send && match(cx::next(s), send, p, pend, c, equal_to))
+? match(s, send, cx::next(p), pend, c, equal_to, partial)
+? match(s, send, cx::next(p), pend, c, equal_to, partial)
+: s == send ? make_match_result(false, s, p)
+: match(cx::next(s), send, p, pend, c, equal_to, partial)
 : *p == c.single
-? s != send &&
-match(cx::next(s), send, cx::next(p), pend, c, equal_to)
+? s == send ? make_match_result(false, s, p)
+: match(cx::next(s), send, cx::next(p), pend, c,
+equal_to, partial)
 : *p == c.escape
-? match(s, send, cx::next(p), pend, c, equal_to, true)
+? match(s, send, cx::next(p), pend, c, equal_to, partial, true)
 : c.set_enabled && *p == c.set_open &&
-detail::is_set(cx::next(p), pend, c,
-detail::is_set_state::not_or_first)
-? match_set(s, send, cx::next(p), pend, c, equal_to,
-detail::match_set_state::not_or_first_in) &&
-match(cx::next(s), send,
-detail::set_end(
-cx::next(p), pend, c,
-detail::set_end_state::not_or_first),
-pend, c, equal_to)
+is_set(cx::next(p), pend, c,
+is_set_state::not_or_first)
+? !match_set(s, send, cx::next(p), pend, c, equal_to,
+match_set_state::not_or_first_in)
+? match_set(s, send, cx::next(p), pend, c,
+equal_to,
+match_set_state::not_or_first_in)
+: match(cx::next(s), send,
+set_end(cx::next(p), pend, c,
+set_end_state::not_or_first),
+pend, c, equal_to, partial)
 : c.alt_enabled && *p == c.alt_open &&
-detail::is_alt(cx::next(p), pend, c,
-detail::is_alt_state::next, 1)
-? throw std::runtime_error(
-"Sorry, alternatives not implemented")
-: s != send && equal_to(*s, *p) &&
-match(cx::next(s), send, cx::next(p), pend,
-c, equal_to);
+is_alt(cx::next(p), pend, c,
+is_alt_state::next, 1)
+? match_alt(
+s, send, cx::next(p),
+alt_sub_end(cx::next(p),
+alt_end(cx::next(p), pend, c,
+alt_end_state::next, 1),
+c),
+alt_end(cx::next(p), pend, c,
+alt_end_state::next, 1),
+pend, c, equal_to, partial)
+: s == send || !equal_to(*s, *p)
+? make_match_result(false, s, p)
+: match(cx::next(s), send, cx::next(p), pend,
+c, equal_to, partial);
 #endif
 }
+}
 template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>>
-constexpr bool match(Sequence&& sequence, Pattern&& pattern,
+constexpr match_result<const_iterator_t<Sequence>, const_iterator_t<Pattern>> match(
+Sequence&& sequence, Pattern&& pattern,
 const cards<container_item_t<Pattern>>& c = cards<container_item_t<Pattern>>(),
 const EqualTo& equal_to = EqualTo())
 {
-return match(cx::cbegin(sequence), cx::cend(std::forward<Sequence>(sequence)),
+return detail::match(cx::cbegin(sequence), cx::cend(std::forward<Sequence>(sequence)),
 cx::cbegin(pattern), cx::cend(std::forward<Pattern>(pattern)), c, equal_to);
 }
 template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>,
 typename = typename std::enable_if<!std::is_same<EqualTo, cards_type>::value>::type>
-constexpr bool match(Sequence&& sequence, Pattern&& pattern, const EqualTo& equal_to)
+constexpr match_result<const_iterator_t<Sequence>, const_iterator_t<Pattern>> match(
+Sequence&& sequence, Pattern&& pattern, const EqualTo& equal_to)
 {
 return match(std::forward<Sequence>(sequence), std::forward<Pattern>(pattern),
 cards<container_item_t<Pattern>>(), equal_to);
