@@ -21,9 +21,8 @@ wildcards. It supports both runtime and compile time execution.
 | `[!abc]`  | Matches any character not in a set.             |
 | `(ab\|c)` | Matches one of the sequences in an alternative. |
 
-Set cannot be empty. Any special character loses its special meaning in a set.
-
-More than two or just one sequence can be given in an alternative.
+* Set cannot be empty. Any special character loses its special meaning in a set.
+* Alternative can contain more than two or just one sequence.
 
 Requirements
 ============
@@ -62,3 +61,15 @@ int main()
   return 0;
 }
 ```
+
+See more examples [here](example) and try them online.
+
+Technical Notes
+===============
+
+Wildcards uses a recursive approach. Hence you can simply run out of stack
+(during runtime execution) or you can exceed the maximum number of template
+recursion depth (during compile-time execution). If so, try to make the input
+sequence shorter or the pattern less complex. You can also try to build using
+a C++14 compiler since the C++14 implementation is more effective and consumes
+less resources.
