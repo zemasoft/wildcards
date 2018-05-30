@@ -67,17 +67,6 @@ constexpr T throw_logic_error(T t, const char* what_arg)
   return what_arg == nullptr ? t : throw std::logic_error(what_arg);
 }
 
-constexpr bool throw_runtime_error(const char* what_arg)
-{
-  return what_arg == nullptr ? false : throw std::runtime_error(what_arg);
-}
-
-template <typename T>
-constexpr T throw_runtime_error(T t, const char* what_arg)
-{
-  return what_arg == nullptr ? t : throw std::runtime_error(what_arg);
-}
-
 #endif
 
 enum class is_set_state
@@ -837,7 +826,50 @@ template <typename SequenceIterator, typename PatternIterator,
 constexpr match_result<SequenceIterator, PatternIterator> match(
     SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
     const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
-    const EqualTo& equal_to = EqualTo(), bool partial = false, bool escape = false)
+    const EqualTo& equal_to = EqualTo(), bool partial = false, bool escape = false);
+
+template <typename SequenceIterator, typename PatternIterator,
+          typename EqualTo = cx::equal_to<void>>
+constexpr match_result<SequenceIterator, PatternIterator> match_alt(
+    SequenceIterator s, SequenceIterator send, PatternIterator p1, PatternIterator p1end,
+    PatternIterator p2, PatternIterator p2end,
+    const cards<iterated_item_t<PatternIterator>>& c = cards<iterated_item_t<PatternIterator>>(),
+    const EqualTo& equal_to = EqualTo(), bool partial = false)
+{
+#if cfg_HAS_CONSTEXPR14
+
+  auto result1 = match(s, send, p1, p1end, c, equal_to, true);
+
+  if (result1)
+  {
+    auto result2 = match(result1.s, send, p2, p2end, c, equal_to, partial);
+
+    if (result2)
+    {
+      return result2;
+    }
+  }
+
+  p1 = cx::next(p1end);
+
+  if (p1 == p2)
+  {
+    return make_match_result(false, s, p1end);
+  }
+
+  return match_alt(s, send, p1, alt_sub_end(p1, p2, c), p2, p2end, c, equal_to, partial);
+
+#else  // !cfg_HAS_CONSTEXPR14
+
+#endif  // cfg_HAS_CONSTEXPR14
+}
+
+template <typename SequenceIterator, typename PatternIterator,
+          typename EqualTo = cx::equal_to<void>>
+constexpr match_result<SequenceIterator, PatternIterator> match(
+    SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
+    const cards<iterated_item_t<PatternIterator>>& c, const EqualTo& equal_to, bool partial,
+    bool escape)
 {
 #if cfg_HAS_CONSTEXPR14
 
@@ -904,12 +936,10 @@ constexpr match_result<SequenceIterator, PatternIterator> match(
 
   if (c.alt_enabled && *p == c.alt_open && is_alt(cx::next(p), pend, c, is_alt_state::next, 1))
   {
-#if cfg_HAS_FULL_FEATURED_CONSTEXPR14
-    throw std::runtime_error("Sorry, alternatives not implemented");
-#else
-    return throw_runtime_error(make_match_result(false, s, p),
-                               "Sorry, alternatives not implemented");
-#endif
+    auto p_alt_end = alt_end(cx::next(p), pend, c, alt_end_state::next, 1);
+
+    return match_alt(s, send, cx::next(p), alt_sub_end(cx::next(p), p_alt_end, c), p_alt_end, pend,
+                     c, equal_to, partial);
   }
 
   if (s == send || !equal_to(*s, *p))
