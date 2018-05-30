@@ -57,7 +57,7 @@ Examples
 
 int main()
 {
-  static_assert(wildcards::match("Hello, World!", "H*d?"), "");
+  static_assert(wildcards::match("source.c", "*.([hc](pp|))"), "");
 
   return 0;
 }
