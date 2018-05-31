@@ -9,25 +9,28 @@
 Introduction
 ============
 
-Wildcards is a simple C++ header-only library which implements matching using
-wildcards. It supports both runtime and compile time execution.
+*Wildcards* is a simple C++ header-only template library which implements
+a general purpose algorithm for matching using wildcards. It supports both
+runtime and compile time execution.
 
-| Pattern   | Meaning                                         |
-| --------- | ----------------------------------------------- |
-| `*`       | Matches everything.                             |
-| `?`       | Matches any single character.                   |
-| `\`       | Escape character.                               |
-| `[abc]`   | Matches any character in a set.                 |
-| `[!abc]`  | Matches any character not in a set.             |
-| `(ab\|c)` | Matches one of the sequences in an alternative. |
+| Pattern   | Meaning                                        |
+| --------- | ---------------------------------------------- |
+| `*`       | Matches everything.                            |
+| `?`       | Matches any single character.                  |
+| `\`       | Escape character.                              |
+| `[abc]`   | Matches any character in *Set*.                |
+| `[!abc]`  | Matches any character not in *Set*.            |
+| `(ab\|c)` | Matches one of the sequences in *Alternative*. |
 
-* Set cannot be empty. Any special character loses its special meaning in a set.
-* Alternative can contain more than two or just one sequence.
+* *Set* cannot be empty. Any special character loses its special meaning in it.
+* *Alternative* can contain more than two or just one sequence.
+* The use of *Sets* and *Alternatives* can be switched off.
+* Special characters can be redefined.
 
 Requirements
 ============
 
-Wildcards requires a C++11 compiler to build. It has no external dependencies
+*Wildcards* requires a C++11 compiler to build. It has no external dependencies
 and has been tested with gcc 5.5, gcc 6.4, gcc 7.3, clang 4.0 (with libcxx),
 clang 5.0 (with libcxx), Xcode 9.0, Visual Studio 14 2015
 and Visual Studio 15 2017.
@@ -36,13 +39,13 @@ Usage
 =====
 
 1. Single-header approach
-   * Copy `wildcards.hpp` from the Wildcards single_include directory to your
-     project's header search path.
+   * Copy `wildcards.hpp` from the [single_include](single_include) directory
+     to your project's header search path.
    * Add `#include <wildcards.hpp>` to your source file.
    * Use `wildcards::match()`.
 
 2. Multi-header approach
-   * Add the Wildcards include directory to your project's header search path.
+   * Add the [include](include) directory to your project's header search path.
    * Add `#include <wildcards.hpp>` to your source file.
    * Use `wildcards::match()`.
 
@@ -56,20 +59,22 @@ Examples
 
 int main()
 {
-  static_assert(wildcards::match("source.c", "*.([hc](pp|))"), "");
+  using wildcards::match;
+  
+  static_assert(match("source.c", "*.([hc](pp|))"), "invalid file name");
 
   return 0;
 }
 ```
 
-See more examples [here](example) and try them online.
+See more examples [here](example) and try them online!
 
 Technical Notes
 ===============
 
-Wildcards uses a recursive approach. Hence you can simply run out of stack
+* Wildcards uses a recursive approach. Hence you can simply run out of stack
 (during runtime execution) or you can exceed the maximum number of template
-recursion depth (during compile-time execution). If so, try to make the input
+recursion depth (during compile time execution). If so, try to make the input
 sequence shorter or the pattern less complex. You can also try to build using
 a C++14 compiler since the C++14 implementation is more effective and consumes
 less resources.
