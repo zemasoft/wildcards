@@ -145,6 +145,8 @@ TEST_CASE("wildcards::detail::set_end() is compliant", "[wildcards::detail::set_
     constexpr char pattern10[] = "[[a]";
     constexpr char pattern11[] = "[[abc]";
 
+    // NOTE: The '- 1' is just because of the null character.
+
     static_assert(set_end(cx::begin(pattern1), cx::end(pattern1)) == cx::end(pattern1) - 1, "");
     static_assert(set_end(cx::begin(pattern2), cx::end(pattern2)) == cx::end(pattern2) - 1, "");
 
@@ -175,6 +177,8 @@ TEST_CASE("wildcards::detail::set_end() is compliant", "[wildcards::detail::set_
     constexpr char pattern9[] = "[![]";
     constexpr char pattern10[] = "[![a]";
     constexpr char pattern11[] = "[![abc]";
+
+    // NOTE: The '- 1' is just because of the null character.
 
     static_assert(set_end(cx::begin(pattern1), cx::end(pattern1)) == cx::end(pattern1) - 1, "");
     static_assert(set_end(cx::begin(pattern2), cx::end(pattern2)) == cx::end(pattern2) - 1, "");
@@ -225,6 +229,8 @@ TEST_CASE("wildcards::detail::set_end() is compliant", "[wildcards::detail::set_
   SECTION("skipping sets using standard and/or extented cards")
   {
     const char pattern[] = "[a]";
+
+    // NOTE: The '- 1' is just because of the null character.
 
     REQUIRE_THROWS(
         set_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::standard}));
@@ -326,6 +332,8 @@ TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::ma
     constexpr char seq2[] = "a";
     constexpr char seq3[] = "b";
 
+    // We really need to exclude the null character here using '- 1'.
+    // It is not necessary to do so for the other tests.
     static_assert(
         !match_set(cx::begin(seq1), cx::end(seq1) - 1, cx::begin(pattern), cx::end(pattern)), "");
     static_assert(!match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
@@ -344,6 +352,8 @@ TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::ma
     constexpr char seq4[] = "c";
     constexpr char seq5[] = "d";
 
+    // We really need to exclude the null character here using '- 1'.
+    // It is not necessary to do so for the other tests.
     static_assert(
         !match_set(cx::begin(seq1), cx::end(seq1) - 1, cx::begin(pattern), cx::end(pattern)), "");
     static_assert(!match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
@@ -364,6 +374,8 @@ TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::ma
     constexpr char seq2[] = "]";
     constexpr char seq3[] = "a";
 
+    // We really need to exclude the null character here using '- 1'.
+    // It is not necessary to do so for the other tests.
     static_assert(
         !match_set(cx::begin(seq1), cx::end(seq1) - 1, cx::begin(pattern), cx::end(pattern)), "");
     static_assert(!match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
@@ -383,6 +395,8 @@ TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::ma
     constexpr char seq5[] = "c";
     constexpr char seq6[] = "d";
 
+    // We really need to exclude the null character here using '- 1'.
+    // It is not necessary to do so for the other tests.
     static_assert(
         !match_set(cx::begin(seq1), cx::end(seq1) - 1, cx::begin(pattern), cx::end(pattern)), "");
     static_assert(!match_set(cx::begin(seq2), cx::end(seq2), cx::begin(pattern), cx::end(pattern)),
@@ -481,7 +495,7 @@ TEST_CASE("wildcards::detail::is_alt() is compliant", "[wildcards::detail::is_al
     constexpr char pattern7[] = "(\\()";
     constexpr char pattern8[] = "([(])";
 
-    constexpr char pattern9[] = R"((a\*\(b+c\)/([!abc]|sin\([abc]\))))";
+    constexpr char pattern9[] = R"((a\*\(b+c\)/(sin\([abc]\)|[!abc])))";
 
     static_assert(is_alt(cx::begin(pattern1), cx::end(pattern1)), "");
     static_assert(is_alt(cx::begin(pattern2), cx::end(pattern2)), "");
@@ -552,7 +566,9 @@ TEST_CASE("wildcards::detail::alt_end() is compliant", "[wildcards::detail::alt_
     constexpr char pattern7[] = "(\\()";
     constexpr char pattern8[] = "([(])";
 
-    constexpr char pattern9[] = R"((a\*\(b+c\)/([!abc]|sin\([abc]\))))";
+    constexpr char pattern9[] = R"((a\*\(b+c\)/(sin\([abc]\)|[!abc])))";
+
+    // NOTE: The '- 1' is just because of the null character.
 
     static_assert(alt_end(cx::begin(pattern1), cx::end(pattern1)) == cx::end(pattern1) - 1, "");
     static_assert(alt_end(cx::begin(pattern2), cx::end(pattern2)) == cx::end(pattern2) - 1, "");
@@ -598,6 +614,8 @@ TEST_CASE("wildcards::detail::alt_end() is compliant", "[wildcards::detail::alt_
   {
     char pattern[] = "(a)";
 
+    // NOTE: The '- 1' is just because of the null character.
+
     REQUIRE_THROWS(
         alt_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::standard}));
     REQUIRE(alt_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::extended}) ==
@@ -627,31 +645,49 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     constexpr char pattern2[] = R"(A\)";
     constexpr char pattern3[] = R"(\A)";
     constexpr char pattern4[] = "[A]";
+    constexpr char pattern5[] = "(A)";
+    constexpr char pattern6[] = R"((\A))";
+    constexpr char pattern7[] = R"(([A]))";
 
     static_assert(match("A", pattern1), "");
     static_assert(match("A", pattern2), "");
     static_assert(match("A", pattern3), "");
     static_assert(match("A", pattern4), "");
+    static_assert(match("A", pattern5), "");
+    static_assert(match("A", pattern6), "");
+    static_assert(match("A", pattern7), "");
 
     static_assert(!match("", pattern1), "");
     static_assert(!match("", pattern2), "");
     static_assert(!match("", pattern3), "");
     static_assert(!match("", pattern4), "");
+    static_assert(!match("", pattern5), "");
+    static_assert(!match("", pattern6), "");
+    static_assert(!match("", pattern7), "");
 
     static_assert(!match("a", pattern1), "");
     static_assert(!match("a", pattern2), "");
     static_assert(!match("a", pattern3), "");
     static_assert(!match("a", pattern4), "");
+    static_assert(!match("a", pattern5), "");
+    static_assert(!match("a", pattern6), "");
+    static_assert(!match("a", pattern7), "");
 
     static_assert(!match("AA", pattern1), "");
     static_assert(!match("AA", pattern2), "");
     static_assert(!match("AA", pattern3), "");
     static_assert(!match("AA", pattern4), "");
+    static_assert(!match("AA", pattern5), "");
+    static_assert(!match("AA", pattern6), "");
+    static_assert(!match("AA", pattern7), "");
 
     static_assert(!match("Something", pattern1), "");
     static_assert(!match("Something", pattern2), "");
     static_assert(!match("Something", pattern3), "");
     static_assert(!match("Something", pattern4), "");
+    static_assert(!match("Something", pattern5), "");
+    static_assert(!match("Something", pattern6), "");
+    static_assert(!match("Something", pattern7), "");
   }
 
   SECTION(R"(matching "Hello!")")
@@ -660,36 +696,57 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     constexpr char pattern2[] = R"(Hello!\)";
     constexpr char pattern3[] = R"(\H\e\l\l\o\!)";
     constexpr char pattern4[] = "[H][e][l][l][o]!";
+    constexpr char pattern5[] = "(Hello!)";
+    constexpr char pattern6[] = R"((\H\e\l\l\o\!))";
+    constexpr char pattern7[] = R"(([H][e][l][l][o]!))";
 
     static_assert(match("Hello!", pattern1), "");
     static_assert(match("Hello!", pattern2), "");
     static_assert(match("Hello!", pattern3), "");
     static_assert(match("Hello!", pattern4), "");
+    static_assert(match("Hello!", pattern5), "");
+    static_assert(match("Hello!", pattern6), "");
+    static_assert(match("Hello!", pattern7), "");
 
     static_assert(!match("", pattern1), "");
     static_assert(!match("", pattern2), "");
     static_assert(!match("", pattern3), "");
     static_assert(!match("", pattern4), "");
+    static_assert(!match("", pattern5), "");
+    static_assert(!match("", pattern6), "");
+    static_assert(!match("", pattern7), "");
 
     static_assert(!match("Hallo!", pattern1), "");
     static_assert(!match("Hallo!", pattern2), "");
     static_assert(!match("Hallo!", pattern3), "");
     static_assert(!match("Hallo!", pattern4), "");
+    static_assert(!match("Hallo!", pattern5), "");
+    static_assert(!match("Hallo!", pattern6), "");
+    static_assert(!match("Hallo!", pattern7), "");
 
     static_assert(!match("HHello!", pattern1), "");
     static_assert(!match("HHello!", pattern2), "");
     static_assert(!match("HHello!", pattern3), "");
     static_assert(!match("HHello!", pattern4), "");
+    static_assert(!match("HHello!", pattern5), "");
+    static_assert(!match("HHello!", pattern6), "");
+    static_assert(!match("HHello!", pattern7), "");
 
     static_assert(!match("Hello!!", pattern1), "");
     static_assert(!match("Hello!!", pattern2), "");
     static_assert(!match("Hello!!", pattern3), "");
     static_assert(!match("Hello!!", pattern4), "");
+    static_assert(!match("Hello!!", pattern5), "");
+    static_assert(!match("Hello!!", pattern6), "");
+    static_assert(!match("Hello!!", pattern7), "");
 
     static_assert(!match("Hello!Hello!", pattern1), "");
     static_assert(!match("Hello!Hello!", pattern2), "");
     static_assert(!match("Hello!Hello!", pattern3), "");
     static_assert(!match("Hello!Hello!", pattern4), "");
+    static_assert(!match("Hello!Hello!", pattern5), "");
+    static_assert(!match("Hello!Hello!", pattern6), "");
+    static_assert(!match("Hello!Hello!", pattern7), "");
   }
 
   SECTION(R"(matching "*")")
@@ -698,21 +755,37 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     constexpr char pattern2[] = R"(*\)";
     constexpr char pattern3[] = R"(\*)";
     constexpr char pattern4[] = "[*]";
+    constexpr char pattern5[] = "(*)";
+    constexpr char pattern6[] = R"((\*))";
+    constexpr char pattern7[] = "([*])";
 
     static_assert(match("", pattern1), "");
     static_assert(match("", pattern2), "");
     static_assert(!match("", pattern3), "");
     static_assert(!match("", pattern4), "");
+    static_assert(match("", pattern5), "");
+    static_assert(!match("", pattern6), "");
+    static_assert(!match("", pattern7), "");
 
     static_assert(match("*", pattern1), "");
     static_assert(match("*", pattern2), "");
     static_assert(match("*", pattern3), "");
     static_assert(match("*", pattern4), "");
+    // FIXME: Would work without the null character.
+    // But in general, it is not a good idea to use (*).
+    // static_assert(match("*", pattern5), "");
+    static_assert(match("*", pattern6), "");
+    static_assert(match("*", pattern7), "");
 
     static_assert(match("Anything", pattern1), "");
     static_assert(match("Anything", pattern2), "");
     static_assert(!match("Anything", pattern3), "");
     static_assert(!match("Anything", pattern4), "");
+    // FIXME: Would work without the null character.
+    // But in general, it is not a good idea to use (*).
+    // static_assert(match("Anything", pattern5), "");
+    static_assert(!match("Anything", pattern6), "");
+    static_assert(!match("Anything", pattern7), "");
   }
 
   SECTION(R"(matching "?")")
@@ -721,31 +794,49 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     constexpr char pattern2[] = R"(?\)";
     constexpr char pattern3[] = R"(\?)";
     constexpr char pattern4[] = "[?]";
+    constexpr char pattern5[] = "(?)";
+    constexpr char pattern6[] = R"((\?))";
+    constexpr char pattern7[] = R"([?])";
 
     static_assert(match("A", pattern1), "");
     static_assert(match("A", pattern2), "");
     static_assert(!match("A", pattern3), "");
     static_assert(!match("A", pattern4), "");
+    static_assert(match("A", pattern5), "");
+    static_assert(!match("A", pattern6), "");
+    static_assert(!match("A", pattern7), "");
 
     static_assert(match("a", pattern1), "");
     static_assert(match("a", pattern2), "");
     static_assert(!match("a", pattern3), "");
     static_assert(!match("a", pattern4), "");
+    static_assert(match("a", pattern5), "");
+    static_assert(!match("a", pattern6), "");
+    static_assert(!match("a", pattern7), "");
 
     static_assert(match("?", pattern1), "");
     static_assert(match("?", pattern2), "");
     static_assert(match("?", pattern3), "");
     static_assert(match("?", pattern4), "");
+    static_assert(match("?", pattern5), "");
+    static_assert(match("?", pattern6), "");
+    static_assert(match("?", pattern7), "");
 
     static_assert(!match("", pattern1), "");
     static_assert(!match("", pattern2), "");
     static_assert(!match("", pattern3), "");
     static_assert(!match("", pattern4), "");
+    static_assert(!match("", pattern5), "");
+    static_assert(!match("", pattern6), "");
+    static_assert(!match("", pattern7), "");
 
     static_assert(!match("Something", pattern1), "");
     static_assert(!match("Something", pattern2), "");
     static_assert(!match("Something", pattern3), "");
     static_assert(!match("Something", pattern4), "");
+    static_assert(!match("Something", pattern5), "");
+    static_assert(!match("Something", pattern6), "");
+    static_assert(!match("Something", pattern7), "");
   }
 
   SECTION(R"(matching "H?llo,*W*!")")
