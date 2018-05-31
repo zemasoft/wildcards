@@ -414,10 +414,10 @@ TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::ma
   SECTION("matching non-sets")
   {
     const char pattern1[] = "";
-    const char pattern2[] = "ax";  // FIXME: should be "a"
-    const char pattern3[] = "!x";  // FIXME: should be "!"
+    const char pattern2[] = "a";
+    const char pattern3[] = "!";
 
-    const char pattern4[] = "[x";  // FIXME: should be "["
+    const char pattern4[] = "[";
     const char pattern5[] = "[a";
     const char pattern6[] = "[]";
     const char pattern7[] = "[]a";
