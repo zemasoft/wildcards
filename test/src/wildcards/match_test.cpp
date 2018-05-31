@@ -772,7 +772,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match("*", pattern3), "");
     static_assert(match("*", pattern4), "");
     // FIXME: Would work without the null character.
-    // But in general, it is not a good idea to use (*).
+    // But in general, it is not a good idea to use '(*)'.
     // static_assert(match("*", pattern5), "");
     static_assert(match("*", pattern6), "");
     static_assert(match("*", pattern7), "");
@@ -782,7 +782,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(!match("Anything", pattern3), "");
     static_assert(!match("Anything", pattern4), "");
     // FIXME: Would work without the null character.
-    // But in general, it is not a good idea to use (*).
+    // But in general, it is not a good idea to use '(*)'.
     // static_assert(match("Anything", pattern5), "");
     static_assert(!match("Anything", pattern6), "");
     static_assert(!match("Anything", pattern7), "");
