@@ -25,7 +25,8 @@ runtime and compile time execution.
 * *Set* cannot be empty. Any special character loses its special meaning in it.
 * *Alternative* can contain more than two or just one sequence.
 * The use of *Sets* and *Alternatives* can be switched off.
-* Special characters can be redefined.
+* Special characters are predefined for `char`, `char16_t`, `char32_t`
+  and `wchar_t`, but can be redefined.
 
 Requirements
 ============
@@ -72,7 +73,7 @@ See more examples [here](example) and try them online!
 Technical Notes
 ===============
 
-* Wildcards uses a recursive approach. Hence you can simply run out of stack
+* *Wildcards* uses a recursive approach. Hence you can simply run out of stack
 (during runtime execution) or you can exceed the maximum number of template
 recursion depth (during compile time execution). If so, try to make the input
 sequence shorter or the pattern less complex. You can also try to build using
