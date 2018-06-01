@@ -116,10 +116,8 @@ TEST_CASE("wildcards::detail::is_set() is compliant", "[wildcards::detail::is_se
   {
     constexpr char pattern[] = "[a]";
 
-    static_assert(!is_set(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::standard}),
-                  "");
-    static_assert(is_set(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::extended}),
-                  "");
+    static_assert(!is_set(cx::begin(pattern), cx::end(pattern), cards_type::standard), "");
+    static_assert(is_set(cx::begin(pattern), cx::end(pattern), cards_type::extended), "");
   }
 }
 
@@ -232,9 +230,8 @@ TEST_CASE("wildcards::detail::set_end() is compliant", "[wildcards::detail::set_
 
     // NOTE: The '- 1' is just because of the null character.
 
-    REQUIRE_THROWS(
-        set_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::standard}));
-    REQUIRE(set_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::extended}) ==
+    REQUIRE_THROWS(set_end(cx::begin(pattern), cx::end(pattern), cards_type::standard));
+    REQUIRE(set_end(cx::begin(pattern), cx::end(pattern), cards_type::extended) ==
             cx::end(pattern) - 1);
   }
 }
@@ -471,9 +468,9 @@ TEST_CASE("wildcards::detail::match_set() is compliant", "[wildcards::detail::ma
     const char seq[] = "a";
 
     REQUIRE_THROWS(!match_set(cx::begin(seq), cx::end(seq), cx::begin(pattern), cx::end(pattern),
-                              cards<char>{cards_type::standard}));
+                              cards_type::standard));
     REQUIRE(match_set(cx::begin(seq), cx::end(seq), cx::begin(pattern), cx::end(pattern),
-                      cards<char>{cards_type::extended}));
+                      cards_type::extended));
   }
 }
 
@@ -541,10 +538,8 @@ TEST_CASE("wildcards::detail::is_alt() is compliant", "[wildcards::detail::is_al
   {
     constexpr char pattern[] = "(a)";
 
-    static_assert(!is_alt(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::standard}),
-                  "");
-    static_assert(is_alt(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::extended}),
-                  "");
+    static_assert(!is_alt(cx::begin(pattern), cx::end(pattern), cards_type::standard), "");
+    static_assert(is_alt(cx::begin(pattern), cx::end(pattern), cards_type::extended), "");
   }
 }
 
@@ -616,9 +611,8 @@ TEST_CASE("wildcards::detail::alt_end() is compliant", "[wildcards::detail::alt_
 
     // NOTE: The '- 1' is just because of the null character.
 
-    REQUIRE_THROWS(
-        alt_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::standard}));
-    REQUIRE(alt_end(cx::begin(pattern), cx::end(pattern), cards<char>{cards_type::extended}) ==
+    REQUIRE_THROWS(alt_end(cx::begin(pattern), cx::end(pattern), cards_type::standard));
+    REQUIRE(alt_end(cx::begin(pattern), cx::end(pattern), cards_type::extended) ==
             cx::end(pattern) - 1);
   }
 }
