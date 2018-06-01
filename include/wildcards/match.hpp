@@ -21,6 +21,22 @@ namespace wildcards
 {
 
 template <typename SequenceIterator, typename PatternIterator>
+struct full_match_result
+{
+  bool res;
+  SequenceIterator s, send, s1;
+  PatternIterator p, pend, p1;
+
+  constexpr operator bool() const
+  {
+    return res;
+  }
+};
+
+namespace detail
+{
+
+template <typename SequenceIterator, typename PatternIterator>
 struct match_result
 {
   bool res;
@@ -41,8 +57,14 @@ constexpr match_result<SequenceIterator, PatternIterator> make_match_result(bool
   return {std::move(res), std::move(s), std::move(p)};
 }
 
-namespace detail
+template <typename SequenceIterator, typename PatternIterator>
+constexpr full_match_result<SequenceIterator, PatternIterator> make_full_match_result(
+    SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
+    match_result<SequenceIterator, PatternIterator> mr)
 {
+  return {std::move(mr.res), std::move(s),    std::move(send), std::move(mr.s),
+          std::move(p),      std::move(pend), std::move(mr.p)};
+}
 
 #if !cfg_HAS_FULL_FEATURED_CONSTEXPR14
 
@@ -1013,18 +1035,20 @@ constexpr match_result<SequenceIterator, PatternIterator> match(
 }  // namespace detail
 
 template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>>
-constexpr match_result<const_iterator_t<Sequence>, const_iterator_t<Pattern>> match(
+constexpr full_match_result<const_iterator_t<Sequence>, const_iterator_t<Pattern>> match(
     Sequence&& sequence, Pattern&& pattern,
     const cards<container_item_t<Pattern>>& c = cards<container_item_t<Pattern>>(),
     const EqualTo& equal_to = EqualTo())
 {
-  return detail::match(cx::cbegin(sequence), cx::cend(std::forward<Sequence>(sequence)),
-                       cx::cbegin(pattern), cx::cend(std::forward<Pattern>(pattern)), c, equal_to);
+  return detail::make_full_match_result(
+      cx::cbegin(sequence), cx::cend(sequence), cx::cbegin(pattern), cx::cend(pattern),
+      detail::match(cx::cbegin(sequence), cx::cend(std::forward<Sequence>(sequence)),
+                    cx::cbegin(pattern), cx::cend(std::forward<Pattern>(pattern)), c, equal_to));
 }
 
 template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>,
           typename = typename std::enable_if<!std::is_same<EqualTo, cards_type>::value>::type>
-constexpr match_result<const_iterator_t<Sequence>, const_iterator_t<Pattern>> match(
+constexpr full_match_result<const_iterator_t<Sequence>, const_iterator_t<Pattern>> match(
     Sequence&& sequence, Pattern&& pattern, const EqualTo& equal_to)
 {
   return match(std::forward<Sequence>(sequence), std::forward<Pattern>(pattern),
