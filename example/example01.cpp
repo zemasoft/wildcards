@@ -7,7 +7,7 @@
 
 int main()
 {
-  constexpr char pattern[] = "(CMakeLists.txt|*.([hc](pp|)))";
+  constexpr char pattern[] = "(CMakeLists.txt|*.[hc](pp|))";
 
   static_assert(wildcards::match("header.h", pattern), "");
   static_assert(wildcards::match("header.hpp", pattern), "");

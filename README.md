@@ -62,7 +62,7 @@ int main()
 {
   using wildcards::match;
   
-  static_assert(match("source.c", "*.([hc](pp|))"), "invalid file name");
+  static_assert(match("source.c", "*.[hc](pp|)"), "invalid file name");
 
   return 0;
 }
