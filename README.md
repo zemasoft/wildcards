@@ -74,8 +74,8 @@ Technical Notes
 ===============
 
 * *Wildcards* uses a recursive approach. Hence you can simply run out of stack
-(during runtime execution) or you can exceed the maximum number of template
-recursion depth (during compile time execution). If so, try to make the input
+(during runtime execution) or you can exceed the maximum depth of constexpr
+evaluation (during compile time execution). If so, try to make the input
 sequence shorter or the pattern less complex. You can also try to build using
 a C++14 compiler since the C++14 implementation is more effective and consumes
 less resources.
