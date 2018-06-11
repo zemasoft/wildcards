@@ -11,6 +11,8 @@ option(WILDCARDS_ENABLE_WERROR "Enable all warnings as errors" ON)
 option(WILDCARDS_USE_CXX_17 "Build using C++17" OFF)
 option(WILDCARDS_USE_CXX_14 "Build using C++14" OFF)
 
+option(CLANGFORMAT "Setup clangformat target" OFF)
+
 if(WILDCARDS_BUILD_TESTS)
   include(CTest)
 
