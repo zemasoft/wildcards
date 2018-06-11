@@ -50,8 +50,8 @@ Usage
    * Add `#include <wildcards.hpp>` to your source file.
    * Use `wildcards::match()`.
 
-Examples
-========
+Example
+=======
 
 ```C++
 // main.cpp
