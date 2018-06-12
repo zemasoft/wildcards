@@ -40,8 +40,9 @@ Usage
 =====
 
 1. Single-header approach
-   * Copy `wildcards.hpp` from [`single_include`](single_include) directory
-     to your project's header search path.
+   * Copy [`wildcards.hpp`](single_include/wildcards.hpp) from
+     [`single_include`](single_include) directory to your project's header
+     search path.
    * Add `#include <wildcards.hpp>` to your source file.
    * Use `wildcards::match()`.
 
@@ -60,17 +61,14 @@ Example
 
 int main()
 {
-  using wildcards::match;
-  
-  static_assert(match("source.c", "*.[hc](pp|)"), "invalid file name");
+  static_assert(wildcards::match("source.c", "*.[hc](pp|)"), "wrong file name");
 
   return 0;
 }
 ```
 
 This example does nothing very useful. It only demonstrates a simple usage
-of the library and also the iteresting fact that it can also be used at compile
-time.
+of the library and the iteresting fact that it can also be used at compile time.
 
 Please see more useful and complex examples [here](example) and try them online!
 
