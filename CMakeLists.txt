@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 
-project(WildCards VERSION 1.3.0 LANGUAGES CXX)
+project(Wildcards VERSION 1.3.0 LANGUAGES CXX)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -12,6 +12,11 @@ option(WILDCARDS_USE_CXX_17 "Build using C++17" OFF)
 option(WILDCARDS_USE_CXX_14 "Build using C++14" OFF)
 
 option(CLANGFORMAT "Setup clangformat target" OFF)
+
+configure_file(
+  ${PROJECT_SOURCE_DIR}/include/wildcards.hpp.in
+  ${PROJECT_SOURCE_DIR}/include/wildcards.hpp
+)
 
 if(WILDCARDS_BUILD_TESTS)
   include(CTest)
