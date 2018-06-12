@@ -40,13 +40,13 @@ Usage
 =====
 
 1. Single-header approach
-   * Copy `wildcards.hpp` from the [single_include](single_include) directory
+   * Copy `wildcards.hpp` from [`single_include`](single_include) directory
      to your project's header search path.
    * Add `#include <wildcards.hpp>` to your source file.
    * Use `wildcards::match()`.
 
 2. Multi-header approach
-   * Add the [include](include) directory to your project's header search path.
+   * Add [`include`](include) directory to your project's header search path.
    * Add `#include <wildcards.hpp>` to your source file.
    * Use `wildcards::match()`.
 
@@ -68,7 +68,11 @@ int main()
 }
 ```
 
-See more examples [here](example) and try them online!
+This example does nothing very useful. It only demonstrates a simple usage
+of the library and also the iteresting fact that it can also be used at compile
+time.
+
+Please see more useful and complex examples [here](example) and try them online!
 
 Technical Notes
 ===============
@@ -77,5 +81,5 @@ Technical Notes
 (during runtime execution) or you can exceed the maximum depth of constexpr
 evaluation (during compile time execution). If so, try to make the input
 sequence shorter or the pattern less complex. You can also try to build using
-a C++14 compiler since the C++14 implementation is more effective and consumes
-less resources.
+a C++14 compiler since the C++14 implementation of the library is more effective
+and consumes less resources.
