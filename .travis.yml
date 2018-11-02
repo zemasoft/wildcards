@@ -155,9 +155,9 @@ install:
     fi
 
 before_script:
-  - |
-    cd ${TRAVIS_BUILD_DIR}
-    cmake . -Bbuild -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_CXX_STANDARD=${CXX_STANDARD}
+  - cd ${TRAVIS_BUILD_DIR}
+  - cmake . -Bbuild -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_CXX_STANDARD=${CXX_STANDARD}
+  - cmake --build build -- -j$JOBS
 
 script:
   - cd build
