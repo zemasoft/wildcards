@@ -4,17 +4,14 @@ macro(add_example target file_name)
   add_executable(${target} ${file_name})
   target_include_directories(${target} PRIVATE ../include)
 
-  if(WILDCARDS_USE_CXX_17)
+  if(WILDCARDS_CXX_STANDARD EQUAL 17)
     message(STATUS "Enabling C++17 for ${target}")
-    set_target_properties(${target} PROPERTIES CXX_STANDARD 17)
-  elseif(WILDCARDS_USE_CXX_14)
+  elseif(WILDCARDS_CXX_STANDARD EQUAL 14)
     message(STATUS "Enabling C++14 for ${target}")
-    set_target_properties(${target} PROPERTIES CXX_STANDARD 14)
-  else()
-    set_target_properties(${target} PROPERTIES CXX_STANDARD 11)
   endif()
 
-  set_target_properties(${target} PROPERTIES CXX_STANDARD_REQUIRED ON
+  set_target_properties(${target} PROPERTIES CXX_STANDARD ${WILDCARDS_CXX_STANDARD}
+                                             CXX_STANDARD_REQUIRED ON
                                              CXX_EXTENSIONS OFF)
 
   if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|AppleClang|Clang")

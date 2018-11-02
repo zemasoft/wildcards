@@ -18,12 +18,12 @@ matrix:
     ##############
 
     # XCode 9
-    - env: COMPILER=clang++ BUILD_TYPE=Debug
+    - env: COMPILER=clang++ BUILD_TYPE=Debug CXX_STANDARD=11
       os: osx
       osx_image: xcode9
       compiler: clang
 
-    - env: COMPILER=clang++ BUILD_TYPE=Release
+    - env: COMPILER=clang++ BUILD_TYPE=Release CXX_STANDARD=11
       os: osx
       osx_image: xcode9
       compiler: clang
@@ -33,7 +33,7 @@ matrix:
     ################
 
     # Clang 4.0
-    - env: COMPILER=clang++-4.0 BUILD_TYPE=Debug
+    - env: COMPILER=clang++-4.0 BUILD_TYPE=Debug CXX_STANDARD=11
       addons: &clang40
         apt:
           packages:
@@ -41,11 +41,11 @@ matrix:
           sources:
             - llvm-toolchain-trusty-4.0
 
-    - env: COMPILER=clang++-4.0 BUILD_TYPE=Release
+    - env: COMPILER=clang++-4.0 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *clang40
 
     # Clang 5.0
-    - env: COMPILER=clang++-5.0 BUILD_TYPE=Debug
+    - env: COMPILER=clang++-5.0 BUILD_TYPE=Debug CXX_STANDARD=11
       addons: &clang50
         apt:
           packages:
@@ -53,11 +53,11 @@ matrix:
           sources:
             - llvm-toolchain-trusty-5.0
 
-    - env: COMPILER=clang++-5.0 BUILD_TYPE=Release
+    - env: COMPILER=clang++-5.0 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *clang50
 
     # Clang 6.0
-    - env: COMPILER=clang++-6.0 BUILD_TYPE=Debug
+    - env: COMPILER=clang++-6.0 BUILD_TYPE=Debug CXX_STANDARD=11
       addons: &clang60
         apt:
           packages:
@@ -66,7 +66,7 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-6.0
 
-    - env: COMPILER=clang++-6.0 BUILD_TYPE=Release
+    - env: COMPILER=clang++-6.0 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *clang60
 
     ##############
@@ -74,7 +74,7 @@ matrix:
     ##############
 
     # GCC 5
-    - env: COMPILER=g++-5 BUILD_TYPE=Debug
+    - env: COMPILER=g++-5 BUILD_TYPE=Debug CXX_STANDARD=11
       addons: &gcc5
         apt:
           packages:
@@ -82,40 +82,40 @@ matrix:
           sources: &sources
             - ubuntu-toolchain-r-test
 
-    - env: COMPILER=g++-5 BUILD_TYPE=Release
+    - env: COMPILER=g++-5 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *gcc5
 
     # GCC 6
-    - env: COMPILER=g++-6 BUILD_TYPE=Debug
+    - env: COMPILER=g++-6 BUILD_TYPE=Debug CXX_STANDARD=11
       addons: &gcc6
         apt:
           packages:
             - g++-6
           sources: *sources
 
-    - env: COMPILER=g++-6 BUILD_TYPE=Release
+    - env: COMPILER=g++-6 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *gcc6
 
     # GCC 7
-    - env: COMPILER=g++-7 BUILD_TYPE=Debug
+    - env: COMPILER=g++-7 BUILD_TYPE=Debug CXX_STANDARD=11
       addons: &gcc7
         apt:
           packages:
             - g++-7
           sources: *sources
 
-    - env: COMPILER=g++-7 BUILD_TYPE=Release
+    - env: COMPILER=g++-7 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *gcc7
 
     # GCC 8
-    - env: COMPILER=g++-8 BUILD_TYPE=Debug
+    - env: COMPILER=g++-8 BUILD_TYPE=Debug CXX_STANDARD=11
       addons: &gcc8
         apt:
           packages:
             - g++-8
           sources: *sources
 
-    - env: COMPILER=g++-8 BUILD_TYPE=Release
+    - env: COMPILER=g++-8 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *gcc8
 
 install:
@@ -157,19 +157,8 @@ install:
 before_script:
   - |
     cd ${TRAVIS_BUILD_DIR}
-    cmake . -Bbuild11 -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWILDCARDS_BUILD_EXAMPLES=ON
-    cmake --build build11 -- -j${JOBS}
-    cmake . -Bbuild14 -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_USE_CXX_14=ON
-    cmake --build build14 -- -j${JOBS}
-    cmake . -Bbuild17 -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_USE_CXX_17=ON
-    cmake --build build17 -- -j${JOBS}
+    cmake . -Bbuild -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_CXX_STANDARD=${CXX_STANDARD}
 
 script:
-  - cd build11
-  - ctest --output-on-failure -j${JOBS}
-  - cd -
-  - cd build14
-  - ctest --output-on-failure -j${JOBS}
-  - cd -
-  - cd build17
+  - cd build
   - ctest --output-on-failure -j${JOBS}

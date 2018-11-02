@@ -8,10 +8,9 @@ option(WILDCARDS_BUILD_TESTS "Build unit tests" ON)
 option(WILDCARDS_BUILD_EXAMPLES "Build examples" OFF)
 option(WILDCARDS_ENABLE_WERROR "Enable all warnings as errors" ON)
 
-option(WILDCARDS_USE_CXX_17 "Build using C++17" OFF)
-option(WILDCARDS_USE_CXX_14 "Build using C++14" OFF)
+set(WILDCARDS_CXX_STANDARD 11 CACHE STRING "Build using C++ standard")
 
-option(CLANGFORMAT "Setup clangformat target" OFF)
+option(WILDCARDS_CLANGFORMAT "Setup clangformat target" OFF)
 
 configure_file(
   ${PROJECT_SOURCE_DIR}/include/wildcards.hpp.in
@@ -28,7 +27,7 @@ if(WILDCARDS_BUILD_EXAMPLES)
   add_subdirectory(example)
 endif()
 
-if(CLANGFORMAT)
+if(WILDCARDS_CLANGFORMAT)
   include(ClangFormat)
 
   set(clangformat_srcs include/config.hpp

@@ -5,7 +5,14 @@ image:
   - Visual Studio 2015
   - Visual Studio 2017
 
+environment:
+  matrix:
+    - CXX_STANDARD: 11
+    - CXX_STANDARD: 14
+    - CXX_STANDARD: 17
+
 platform:
+  - x32
   - x64
 
 configuration:
@@ -32,21 +39,11 @@ install:
 
 before_build:
   - cd %APPVEYOR_BUILD_FOLDER%
-  - cmake . -Bbuild11 -G "%GENERATOR%" -DWILDCARDS_BUILD_EXAMPLES=ON
-  - cmake . -Bbuild14 -G "%GENERATOR%" -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_USE_CXX_14=ON
-  - cmake . -Bbuild17 -G "%GENERATOR%" -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_USE_CXX_17=ON
+  - cmake . -Bbuild -G "%GENERATOR%" -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_CXX_STANDARD=%CXX_STANDARD%
 
 build_script:
-  - cmake --build build11 --config %CONFIGURATION% -- /m /v:minimal
-  - cmake --build build14 --config %CONFIGURATION% -- /m /v:minimal
-  - cmake --build build17 --config %CONFIGURATION% -- /m /v:minimal
+  - cmake --build build --config %CONFIGURATION% -- /m /v:minimal
 
 test_script:
-  - cd build11
-  - ctest --output-on-failure --build-config %CONFIGURATION%
-  - cd ..
-  - cd build14
-  - ctest --output-on-failure --build-config %CONFIGURATION%
-  - cd ..
-  - cd build17
+  - cd build
   - ctest --output-on-failure --build-config %CONFIGURATION%
