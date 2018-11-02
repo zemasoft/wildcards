@@ -23,7 +23,27 @@ matrix:
       osx_image: xcode9
       compiler: clang
 
+    - env: COMPILER=clang++ BUILD_TYPE=Debug CXX_STANDARD=14
+      os: osx
+      osx_image: xcode9
+      compiler: clang
+
+    - env: COMPILER=clang++ BUILD_TYPE=Debug CXX_STANDARD=17
+      os: osx
+      osx_image: xcode9
+      compiler: clang
+
     - env: COMPILER=clang++ BUILD_TYPE=Release CXX_STANDARD=11
+      os: osx
+      osx_image: xcode9
+      compiler: clang
+
+    - env: COMPILER=clang++ BUILD_TYPE=Release CXX_STANDARD=14
+      os: osx
+      osx_image: xcode9
+      compiler: clang
+
+    - env: COMPILER=clang++ BUILD_TYPE=Release CXX_STANDARD=17
       os: osx
       osx_image: xcode9
       compiler: clang
@@ -41,7 +61,19 @@ matrix:
           sources:
             - llvm-toolchain-trusty-4.0
 
+    - env: COMPILER=clang++-4.0 BUILD_TYPE=Debug CXX_STANDARD=14
+      addons: *clang40
+
+    - env: COMPILER=clang++-4.0 BUILD_TYPE=Debug CXX_STANDARD=17
+      addons: *clang40
+
     - env: COMPILER=clang++-4.0 BUILD_TYPE=Release CXX_STANDARD=11
+      addons: *clang40
+
+    - env: COMPILER=clang++-4.0 BUILD_TYPE=Release CXX_STANDARD=14
+      addons: *clang40
+
+    - env: COMPILER=clang++-4.0 BUILD_TYPE=Release CXX_STANDARD=17
       addons: *clang40
 
     # Clang 5.0
@@ -53,7 +85,19 @@ matrix:
           sources:
             - llvm-toolchain-trusty-5.0
 
+    - env: COMPILER=clang++-5.0 BUILD_TYPE=Debug CXX_STANDARD=14
+      addons: *clang50
+
+    - env: COMPILER=clang++-5.0 BUILD_TYPE=Debug CXX_STANDARD=17
+      addons: *clang50
+
     - env: COMPILER=clang++-5.0 BUILD_TYPE=Release CXX_STANDARD=11
+      addons: *clang50
+
+    - env: COMPILER=clang++-5.0 BUILD_TYPE=Release CXX_STANDARD=14
+      addons: *clang50
+
+    - env: COMPILER=clang++-5.0 BUILD_TYPE=Release CXX_STANDARD=17
       addons: *clang50
 
     # Clang 6.0
@@ -66,7 +110,19 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-6.0
 
+    - env: COMPILER=clang++-6.0 BUILD_TYPE=Debug CXX_STANDARD=14
+      addons: *clang60
+
+    - env: COMPILER=clang++-6.0 BUILD_TYPE=Debug CXX_STANDARD=17
+      addons: *clang60
+
     - env: COMPILER=clang++-6.0 BUILD_TYPE=Release CXX_STANDARD=11
+      addons: *clang60
+
+    - env: COMPILER=clang++-6.0 BUILD_TYPE=Release CXX_STANDARD=14
+      addons: *clang60
+
+    - env: COMPILER=clang++-6.0 BUILD_TYPE=Release CXX_STANDARD=17
       addons: *clang60
 
     ##############
@@ -82,7 +138,19 @@ matrix:
           sources: &sources
             - ubuntu-toolchain-r-test
 
+    - env: COMPILER=g++-5 BUILD_TYPE=Debug CXX_STANDARD=14
+      addons: *gcc5
+
+    - env: COMPILER=g++-5 BUILD_TYPE=Debug CXX_STANDARD=17
+      addons: *gcc5
+
     - env: COMPILER=g++-5 BUILD_TYPE=Release CXX_STANDARD=11
+      addons: *gcc5
+
+    - env: COMPILER=g++-5 BUILD_TYPE=Release CXX_STANDARD=14
+      addons: *gcc5
+
+    - env: COMPILER=g++-5 BUILD_TYPE=Release CXX_STANDARD=17
       addons: *gcc5
 
     # GCC 6
@@ -93,7 +161,19 @@ matrix:
             - g++-6
           sources: *sources
 
+    - env: COMPILER=g++-6 BUILD_TYPE=Debug CXX_STANDARD=14
+      addons: *gcc6
+
+    - env: COMPILER=g++-6 BUILD_TYPE=Debug CXX_STANDARD=17
+      addons: *gcc6
+
     - env: COMPILER=g++-6 BUILD_TYPE=Release CXX_STANDARD=11
+      addons: *gcc6
+
+    - env: COMPILER=g++-6 BUILD_TYPE=Release CXX_STANDARD=14
+      addons: *gcc6
+
+    - env: COMPILER=g++-6 BUILD_TYPE=Release CXX_STANDARD=17
       addons: *gcc6
 
     # GCC 7
@@ -104,7 +184,19 @@ matrix:
             - g++-7
           sources: *sources
 
+    - env: COMPILER=g++-7 BUILD_TYPE=Debug CXX_STANDARD=14
+      addons: *gcc7
+
+    - env: COMPILER=g++-7 BUILD_TYPE=Debug CXX_STANDARD=17
+      addons: *gcc7
+
     - env: COMPILER=g++-7 BUILD_TYPE=Release CXX_STANDARD=11
+      addons: *gcc7
+
+    - env: COMPILER=g++-7 BUILD_TYPE=Release CXX_STANDARD=14
+      addons: *gcc7
+
+    - env: COMPILER=g++-7 BUILD_TYPE=Release CXX_STANDARD=17
       addons: *gcc7
 
     # GCC 8
@@ -115,7 +207,19 @@ matrix:
             - g++-8
           sources: *sources
 
+    - env: COMPILER=g++-8 BUILD_TYPE=Debug CXX_STANDARD=14
+      addons: *gcc8
+
+    - env: COMPILER=g++-8 BUILD_TYPE=Debug CXX_STANDARD=17
+      addons: *gcc8
+
     - env: COMPILER=g++-8 BUILD_TYPE=Release CXX_STANDARD=11
+      addons: *gcc8
+
+    - env: COMPILER=g++-8 BUILD_TYPE=Release CXX_STANDARD=14
+      addons: *gcc8
+
+    - env: COMPILER=g++-8 BUILD_TYPE=Release CXX_STANDARD=17
       addons: *gcc8
 
 install:
