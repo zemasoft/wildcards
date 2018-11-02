@@ -59,6 +59,7 @@ matrix:
           packages:
             - clang-4.0
           sources:
+            - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-4.0
 
     - env: COMPILER=clang++-4.0 BUILD_TYPE=Debug CXX_STANDARD=14
@@ -83,6 +84,7 @@ matrix:
           packages:
             - clang-5.0
           sources:
+            - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-5.0
 
     - env: COMPILER=clang++-5.0 BUILD_TYPE=Debug CXX_STANDARD=14
