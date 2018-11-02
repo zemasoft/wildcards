@@ -1,19 +1,16 @@
-clone_depth: 50
-
-platform:
-  - x86
-  - x64
+init:
+  - git config --global core.autocrlf true
 
 image:
   - Visual Studio 2015
   - Visual Studio 2017
 
+platform:
+  - x64
+
 configuration:
   - Debug
   - Release
-
-environment:
-  DEPS_DIR: '%APPVEYOR_BUILD_FOLDER%\deps'
 
 install:
   - cmake --version
@@ -32,12 +29,6 @@ install:
         $env:GENERATOR="$env:GENERATOR Win64"
       }
   - echo %GENERATOR%
-
-  ############################################################################
-  # Install all external dependencies to %DEPS_DIR%
-  ############################################################################
-  - if not exist %DEPS_DIR% mkdir %DEPS_DIR%
-  - cd %DEPS_DIR%
 
 before_build:
   - cd %APPVEYOR_BUILD_FOLDER%
