@@ -244,7 +244,7 @@ install:
   #############################################
   - |
     LLVM_INSTALL=${DEPS_DIR}/llvm/install
-    if [[ "${TRAVIS_OS_NAME}" == "linux" && "${CXX%%+*}" == "clang" && -n "$(ls -A ${LLVM_INSTALL})" ]]; then
+    if [[ "${TRAVIS_OS_NAME}" == "linux" && "${CXX%%+*}" == "clang" && -z "$(ls -A ${LLVM_INSTALL})" ]]; then
       if   [[ "${CXX}" == "clang++-3.8" ]]; then LLVM_VERSION=3.8.1;
       elif [[ "${CXX}" == "clang++-3.9" ]]; then LLVM_VERSION=3.9.1;
       elif [[ "${CXX}" == "clang++-4.0" ]]; then LLVM_VERSION=4.0.1;
@@ -261,7 +261,7 @@ install:
       (cd llvm/build/projects/libcxx && make install -j${JOBS})
       (cd llvm/build/projects/libcxxabi && make install -j${JOBS})
       export CXXFLAGS="-isystem ${LLVM_INSTALL}/include/c++/v1"
-      export LDFLAGS="-L ${LLVM_INSTALL}/lib -l c++ -l c++abi"
+      export LDFLAGS="-L ${LLVM_INSTALL}/lib -lc++ -lc++abi"
       export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LLVM_INSTALL}/lib
     fi
 
