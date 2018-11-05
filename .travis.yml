@@ -265,7 +265,10 @@ install:
     fi
 
 before_script:
-  - find ${LLVM_INSTALL} -name "llvm-config*"
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" && "${CXX%%+*}" == "clang" ]]; then
+      find ${LLVM_INSTALL} -name "llvm-config*"
+    fi
   - cd ${TRAVIS_BUILD_DIR}
   - cmake . -Bbuild -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_CXX_STANDARD=${CXX_STANDARD}
   - cmake --build build -- -j$JOBS
