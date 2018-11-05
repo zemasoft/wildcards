@@ -237,6 +237,7 @@ install:
   #############################################
   # [linux] Install the right version of libc++
   #############################################
+
   - |
     if [[ "${TRAVIS_OS_NAME}" == "linux" && "${CXX%%+*}" == "clang" ]]; then
       LLVM_INSTALL=${DEPS_DIR}/llvm/install
@@ -261,10 +262,10 @@ install:
       export CXXFLAGS="-isystem ${LLVM_INSTALL}/include/c++/v1"
       export LDFLAGS="-L ${LLVM_INSTALL}/lib -lc++ -lc++abi"
       export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LLVM_INSTALL}/lib
-      find ${LLVM_INSTALL} -name "llvm-config*"
     fi
 
 before_script:
+  - find ${LLVM_INSTALL} -name "llvm-config*"
   - cd ${TRAVIS_BUILD_DIR}
   - cmake . -Bbuild -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_CXX_STANDARD=${CXX_STANDARD}
   - cmake --build build -- -j$JOBS
