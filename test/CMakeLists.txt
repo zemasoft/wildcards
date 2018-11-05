@@ -18,13 +18,44 @@ set_target_properties(selftest PROPERTIES CXX_STANDARD ${WILDCARDS_CXX_STANDARD}
                                           CXX_STANDARD_REQUIRED ON
                                           CXX_EXTENSIONS OFF)
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "^GNU|^AppleClang|^Clang")
+if(CMAKE_CXX_COMPILER_ID MATCHES "^GNU")
   target_compile_options(selftest PRIVATE -Wall
                                           -Wextra
                                           -Wpedantic
+                                          -Wcast-align
                                           -Wconversion
+                                          -Wdouble-promotion
+                                          -Wformat=2
+                                          -Wlogical-op
+                                          -Wnon-virtual-dtor
+                                          -Wold-style-cast
+                                          -Woverloaded-virtual
+                                          -Wshadow
                                           -Wsign-conversion
-                                          -Wsign-promo -Wdouble-promotion)
+                                          -Wsign-promo
+                                          -Wunused
+                                          -Wuseless-cast)
+
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 6.0)
+    target_compile_options(selftest PRIVATE -Wduplicated-cond
+                                            -Wmisleading-indentation
+                                            -Wnull-dereference)
+  endif()
+
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 7.0)
+    target_compile_options(selftest PRIVATE -Wduplicated-branches
+                                            -Wduplicated-cond)
+  endif()
+
+  if(WILDCARDS_ENABLE_WERROR)
+    target_compile_options(selftest PRIVATE -Werror)
+  endif()
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "^AppleClang|^Clang")
+  target_compile_options(selftest PRIVATE -Weverything
+                                          -Wno-c++98-compat
+                                          -Wno-missing-prototypes
+                                          -Wno-reserved-id-macro
+                                          -Wno-padded)
 
   if(WILDCARDS_ENABLE_WERROR)
     target_compile_options(selftest PRIVATE -Werror)

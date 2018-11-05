@@ -21,7 +21,7 @@ struct pair
 
   constexpr pair() = default;
 
-  constexpr pair(First first, Second second) : first{std::move(first)}, second{std::move(second)}
+  constexpr pair(First frst, Second scnd) : first{std::move(frst)}, second{std::move(scnd)}
   {
   }
 

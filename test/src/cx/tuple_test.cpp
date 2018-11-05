@@ -62,9 +62,9 @@ TEST_CASE("cx::tuple<int, char> is compliant", "[cx::tuple]")
 
 TEST_CASE("cx::tuple<int, char, double> is compliant", "[cx::tuple]")
 {
-  constexpr auto t1 = cx::tuple<int, char, double>{};
-  constexpr auto t2 = cx::tuple<int, char, double>{10, 'a', 5.5};
-  constexpr auto t3 = cx::make_tuple(10, 'a', 5.5);
+  constexpr auto t1 = cx::tuple<int, char, unsigned>{};
+  constexpr auto t2 = cx::tuple<int, char, unsigned>{10, 'a', 5u};
+  constexpr auto t3 = cx::make_tuple(10, 'a', 5u);
 
   static_assert(std::is_same<decltype(t1), decltype(t2)>::value, "");
   static_assert(std::is_same<decltype(t1), decltype(t3)>::value, "");
@@ -75,13 +75,13 @@ TEST_CASE("cx::tuple<int, char, double> is compliant", "[cx::tuple]")
 
   static_assert(cx::get<0>(t2) == 10, "");
   static_assert(cx::get<1>(t2) == 'a', "");
-  static_assert(cx::get<2>(t2) == 5.5, "");
+  static_assert(cx::get<2>(t2) == 5u, "");
 
-  static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(20, 'a', 5.5), "");
-  static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(10, 'b', 5.5), "");
-  static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(10, 'a', 5.6), "");
-  static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(20, 'b', 5.5), "");
-  static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(20, 'a', 5.6), "");
-  static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(10, 'b', 5.6), "");
-  static_assert(cx::make_tuple(10, 'a', 5.5) != cx::make_tuple(20, 'b', 5.6), "");
+  static_assert(cx::make_tuple(10, 'a', 5u) != cx::make_tuple(20, 'a', 5u), "");
+  static_assert(cx::make_tuple(10, 'a', 5u) != cx::make_tuple(10, 'b', 5u), "");
+  static_assert(cx::make_tuple(10, 'a', 5u) != cx::make_tuple(10, 'a', 6u), "");
+  static_assert(cx::make_tuple(10, 'a', 5u) != cx::make_tuple(20, 'b', 5u), "");
+  static_assert(cx::make_tuple(10, 'a', 5u) != cx::make_tuple(20, 'a', 6u), "");
+  static_assert(cx::make_tuple(10, 'a', 5u) != cx::make_tuple(10, 'b', 6u), "");
+  static_assert(cx::make_tuple(10, 'a', 5u) != cx::make_tuple(20, 'b', 6u), "");
 }
