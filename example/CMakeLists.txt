@@ -53,6 +53,10 @@ macro(add_example target file_name)
                                              -Wno-reserved-id-macro
                                              -Wno-padded)
 
+    if(WILDCARDS_CXX_STANDARD GREATER_EQUAL 14)
+      target_compile_options(${target} PRIVATE -Wno-covered-switch-default)
+    endif()
+
     if(WILDCARDS_ENABLE_WERROR)
       target_compile_options(${target} PRIVATE -Werror)
     endif()

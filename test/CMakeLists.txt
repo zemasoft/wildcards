@@ -57,6 +57,10 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "^AppleClang|^Clang")
                                           -Wno-reserved-id-macro
                                           -Wno-padded)
 
+  if(WILDCARDS_CXX_STANDARD GREATER_EQUAL 14)
+    target_compile_options(selftest PRIVATE -Wno-covered-switch-default)
+  endif()
+
   if(WILDCARDS_ENABLE_WERROR)
     target_compile_options(selftest PRIVATE -Werror)
   endif()
