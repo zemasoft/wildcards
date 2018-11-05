@@ -18,7 +18,7 @@ set_target_properties(selftest PROPERTIES CXX_STANDARD ${WILDCARDS_CXX_STANDARD}
                                           CXX_STANDARD_REQUIRED ON
                                           CXX_EXTENSIONS OFF)
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|AppleClang|Clang")
+if(CMAKE_CXX_COMPILER_ID MATCHES "^GNU|^AppleClang|^Clang")
   target_compile_options(selftest PRIVATE -Wall
                                           -Wextra
                                           -Wpedantic
@@ -29,10 +29,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|AppleClang|Clang")
   if(WILDCARDS_ENABLE_WERROR)
     target_compile_options(selftest PRIVATE -Werror)
   endif()
-
-  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  endif()
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "^MSVC")
   target_compile_options(selftest PRIVATE /W4)
 
   if(WILDCARDS_ENABLE_WERROR)

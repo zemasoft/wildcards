@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 
-project(Wildcards VERSION 1.3.0 LANGUAGES CXX)
+project(Wildcards LANGUAGES CXX VERSION 1.3.0)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 

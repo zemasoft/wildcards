@@ -14,7 +14,7 @@ macro(add_example target file_name)
                                              CXX_STANDARD_REQUIRED ON
                                              CXX_EXTENSIONS OFF)
 
-  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|AppleClang|Clang")
+  if(CMAKE_CXX_COMPILER_ID MATCHES "^GNU|^AppleClang|^Clang")
     target_compile_options(${target} PRIVATE -Wall
                                              -Wextra
                                              -Wpedantic
@@ -25,10 +25,7 @@ macro(add_example target file_name)
     if(WILDCARDS_ENABLE_WERROR)
       target_compile_options(${target} PRIVATE -Werror)
     endif()
-
-    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    endif()
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "^MSVC")
     target_compile_options(${target} PRIVATE /W4)
 
     if(WILDCARDS_ENABLE_WERROR)
@@ -41,14 +38,12 @@ add_example(example01 example01.cpp)
 add_example(example02 example02.cpp)
 add_example(example03 example03.cpp)
 add_example(example04 example04.cpp)
-if(WILDCARDS_CXX_STANDARD EQUAL 17 AND NOT CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
+if(WILDCARDS_CXX_STANDARD EQUAL 17 AND NOT CMAKE_CXX_COMPILER_ID MATCHES "^AppleClang")
   add_example(example05 example05.cpp)
-  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  if(CMAKE_CXX_COMPILER_ID MATCHES "^GNU")
     target_link_libraries(example05 stdc++fs)
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "^Clang")
     target_link_libraries(example05 c++experimental)
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    # TODO?
   endif()
 endif()
 add_example(example06 example06.cpp)
