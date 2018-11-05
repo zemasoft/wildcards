@@ -107,6 +107,7 @@ matrix:
           packages:
             - clang-6.0
           sources:
+            - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-6.0
 
     - env: COMPILER=clang++-6.0 BUILD_TYPE=Debug CXX_STANDARD=14
