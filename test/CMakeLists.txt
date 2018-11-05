@@ -42,9 +42,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "^GNU")
                                             -Wnull-dereference)
   endif()
 
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 7.0)
-    target_compile_options(selftest PRIVATE -Wduplicated-branches
-                                            -Wduplicated-cond)
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 8.0)
+    target_compile_options(selftest PRIVATE -Wduplicated-branches)
   endif()
 
   if(WILDCARDS_ENABLE_WERROR)

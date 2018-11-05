@@ -38,9 +38,8 @@ macro(add_example target file_name)
                                                -Wnull-dereference)
     endif()
 
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 7.0)
-      target_compile_options(${target} PRIVATE -Wduplicated-branches
-                                               -Wduplicated-cond)
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 8.0)
+      target_compile_options(${target} PRIVATE -Wduplicated-branches)
     endif()
 
     if(WILDCARDS_ENABLE_WERROR)
