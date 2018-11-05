@@ -261,7 +261,7 @@ install:
       export CXXFLAGS="-isystem ${LLVM_INSTALL}/include/c++/v1"
       export LDFLAGS="-L ${LLVM_INSTALL}/lib -lc++ -lc++abi"
       export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LLVM_INSTALL}/lib
-      find ${LLVM_INSTALL}/bin -name "llvm-config-*"
+      find ${LLVM_INSTALL} -name "llvm-config*"
     fi
 
 before_script:
