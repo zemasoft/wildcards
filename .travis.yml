@@ -238,27 +238,30 @@ install:
   # [linux] Install the right version of libc++
   #############################################
   - |
-    LLVM_INSTALL=${DEPS_DIR}/llvm/install
-    if [[ "${TRAVIS_OS_NAME}" == "linux" && "${CXX%%+*}" == "clang" && -z "$(ls -A ${LLVM_INSTALL})" ]]; then
-      if   [[ "${CXX}" == "clang++-3.8" ]]; then LLVM_VERSION=3.8.1;
-      elif [[ "${CXX}" == "clang++-3.9" ]]; then LLVM_VERSION=3.9.1;
-      elif [[ "${CXX}" == "clang++-4.0" ]]; then LLVM_VERSION=4.0.1;
-      elif [[ "${CXX}" == "clang++-5.0" ]]; then LLVM_VERSION=5.0.2;
-      elif [[ "${CXX}" == "clang++-6.0" ]]; then LLVM_VERSION=6.0.1;
+    if [[ "${TRAVIS_OS_NAME}" == "linux" && "${CXX%%+*}" == "clang" ]]; then
+      LLVM_INSTALL=${DEPS_DIR}/llvm/install
+      if [[ -z "$(ls -A ${LLVM_INSTALL})" ]]; then
+        if   [[ "${CXX}" == "clang++-3.8" ]]; then LLVM_VERSION=3.8.1;
+        elif [[ "${CXX}" == "clang++-3.9" ]]; then LLVM_VERSION=3.9.1;
+        elif [[ "${CXX}" == "clang++-4.0" ]]; then LLVM_VERSION=4.0.1;
+        elif [[ "${CXX}" == "clang++-5.0" ]]; then LLVM_VERSION=5.0.2;
+        elif [[ "${CXX}" == "clang++-6.0" ]]; then LLVM_VERSION=6.0.1;
+        fi
+        LLVM_URL=http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.xz
+        LIBCXX_URL=http://llvm.org/releases/${LLVM_VERSION}/libcxx-${LLVM_VERSION}.src.tar.xz
+        LIBCXXABI_URL=http://llvm.org/releases/${LLVM_VERSION}/libcxxabi-${LLVM_VERSION}.src.tar.xz
+        mkdir -p llvm llvm/build llvm/projects/libcxx llvm/projects/libcxxabi
+        travis_retry wget -O - ${LLVM_URL} | tar --strip-components=1 -xJ -C llvm
+        travis_retry wget -O - ${LIBCXX_URL} | tar --strip-components=1 -xJ -C llvm/projects/libcxx
+        travis_retry wget -O - ${LIBCXXABI_URL} | tar --strip-components=1 -xJ -C llvm/projects/libcxxabi
+        (cd llvm/build && cmake .. -DCMAKE_INSTALL_PREFIX=${LLVM_INSTALL})
+        (cd llvm/build/projects/libcxx && make install -j${JOBS})
+        (cd llvm/build/projects/libcxxabi && make install -j${JOBS})
       fi
-      LLVM_URL=http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.xz
-      LIBCXX_URL=http://llvm.org/releases/${LLVM_VERSION}/libcxx-${LLVM_VERSION}.src.tar.xz
-      LIBCXXABI_URL=http://llvm.org/releases/${LLVM_VERSION}/libcxxabi-${LLVM_VERSION}.src.tar.xz
-      mkdir -p llvm llvm/build llvm/projects/libcxx llvm/projects/libcxxabi
-      travis_retry wget -O - ${LLVM_URL} | tar --strip-components=1 -xJ -C llvm
-      travis_retry wget -O - ${LIBCXX_URL} | tar --strip-components=1 -xJ -C llvm/projects/libcxx
-      travis_retry wget -O - ${LIBCXXABI_URL} | tar --strip-components=1 -xJ -C llvm/projects/libcxxabi
-      (cd llvm/build && cmake .. -DCMAKE_INSTALL_PREFIX=${LLVM_INSTALL})
-      (cd llvm/build/projects/libcxx && make install -j${JOBS})
-      (cd llvm/build/projects/libcxxabi && make install -j${JOBS})
       export CXXFLAGS="-isystem ${LLVM_INSTALL}/include/c++/v1"
       export LDFLAGS="-L ${LLVM_INSTALL}/lib -lc++ -lc++abi"
       export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LLVM_INSTALL}/lib
+      find ${LLVM_INSTALL}/bin -name "llvm-config-*"
     fi
 
 before_script:
