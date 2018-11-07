@@ -177,6 +177,30 @@ matrix:
     # GCC on Linux
     ##############
 
+    # GCC 4.9
+    - env: COMPILER=g++-4.9 BUILD_TYPE=Debug CXX_STANDARD=11
+      addons: &gcc49
+        apt:
+          packages:
+            - g++-4.9
+          sources: &sources
+            - ubuntu-toolchain-r-test
+
+    - env: COMPILER=g++-4.9 BUILD_TYPE=Debug CXX_STANDARD=14
+      addons: *gcc49
+
+    - env: COMPILER=g++-4.9 BUILD_TYPE=Debug CXX_STANDARD=17
+      addons: *gcc49
+
+    - env: COMPILER=g++-4.9 BUILD_TYPE=Release CXX_STANDARD=11
+      addons: *gcc49
+
+    - env: COMPILER=g++-4.9 BUILD_TYPE=Release CXX_STANDARD=14
+      addons: *gcc49
+
+    - env: COMPILER=g++-4.9 BUILD_TYPE=Release CXX_STANDARD=17
+      addons: *gcc49
+
     # GCC 5
     - env: COMPILER=g++-5 BUILD_TYPE=Debug CXX_STANDARD=11
       addons: &gcc5
