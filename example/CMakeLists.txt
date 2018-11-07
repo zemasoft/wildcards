@@ -56,6 +56,10 @@ macro(add_example target file_name)
       target_compile_options(${target} PRIVATE -Wno-covered-switch-default)
     endif()
 
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS_EQUAL 3.8)
+      target_compile_options(selftest PRIVATE -ftemplate-depth=900)
+    endif()
+
     if(WILDCARDS_ENABLE_WERROR)
       target_compile_options(${target} PRIVATE -Werror)
     endif()
