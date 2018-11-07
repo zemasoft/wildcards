@@ -1,10 +1,4 @@
-[![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)
-[![Standard](https://img.shields.io/badge/C%2B%2B-11%2F14%2F17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
-[![Licence](https://img.shields.io/badge/license-Boost%201.0-blue.svg)](http://www.boost.org/LICENSE_1_0.txt)
-[![Travis status](https://travis-ci.org/zemasoft/wildcards.svg?branch=master)](https://travis-ci.org/zemasoft/wildcards)
-[![Appveyor status](https://ci.appveyor.com/api/projects/status/github/zemasoft/wildcards?svg=true&branch=master)](https://ci.appveyor.com/project/zemasoft/wildcards)
-[![Github Releases](https://img.shields.io/github/release/zemasoft/wildcards.svg)](https://github.com/zemasoft/wildcards/releases)
-[![Try it online](https://img.shields.io/badge/try%20it-online-blue.svg)](https://github.com/zemasoft/wildcards/tree/master/example)
+[![language.badge]][language.url] [![standard.badge]][standard.url] [![license.badge]][license.url] [![travis.badge]][travis.url] [![appveyor.badge]][appveyor.url] [![release.badge]][release.url] [![wandbox.badge]][wandbox.url]
 
 Introduction
 ============
@@ -81,3 +75,24 @@ evaluation (during compile time execution). If so, try to make the input
 sequence shorter or the pattern less complex. You can also try to build using
 a C++14 compiler since the C++14 implementation of the library is more effective
 and consumes less resources.
+
+[language.url]:   https://isocpp.org/
+[language.badge]: https://img.shields.io/badge/language-C++-blue.svg
+
+[standard.url]:   https://en.wikipedia.org/wiki/C%2B%2B#Standardization
+[standard.badge]: https://img.shields.io/badge/C%2B%2B-11%2F14%2F17-blue.svg
+
+[license.url]:     http://www.boost.org/LICENSE_1_0.txt
+[license.badge]:  https://img.shields.io/badge/license-Boost%201.0-blue.svg
+
+[travis.url]:     https://travis-ci.org/zemasoft/wildcards
+[travis.badge]:   https://travis-ci.org/zemasoft/wildcards.svg?branch=master
+
+[appveyor.url]:   https://ci.appveyor.com/project/zemasoft/wildcards
+[appveyor.badge]: https://ci.appveyor.com/api/projects/status/github/zemasoft/wildcards?svg=true&branch=master
+
+[release.url]:    https://github.com/zemasoft/wildcards/releases
+[release.badge]:  https://img.shields.io/github/release/zemasoft/wildcards.svg
+
+[wandbox.url]:    https://github.com/zemasoft/wildcards/tree/master/example
+[wandbox.badge]:  https://img.shields.io/badge/try%20it-online-blue.svg
