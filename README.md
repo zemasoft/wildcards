@@ -2,28 +2,32 @@
 
 # Wildcards
 
-## Introduction
+## Overview
 
 *Wildcards* is a simple C++ header-only template library which implements
 a general purpose algorithm for matching using wildcards. It supports both
 runtime and compile time execution.
 
-| Pattern   | Meaning                                        |
-| --------- | ---------------------------------------------- |
-| `*`       | Matches everything.                            |
-| `?`       | Matches any single character.                  |
-| `\`       | Escape character.                              |
-| `[abc]`   | Matches any character in *Set*.                |
-| `[!abc]`  | Matches any character not in *Set*.            |
-| `(ab\|c)` | Matches one of the sequences in *Alternative*. |
+```C++
+// main.cpp
 
-* *Set* cannot be empty. Any special character loses its special meaning in it.
-* *Alternative* can contain more than two or just one sequence.
-* The use of *Sets* and *Alternatives* can be switched off.
-* Special characters are predefined for `char`, `char16_t`, `char32_t`
-  and `wchar_t`, but can be redefined.
+#include <wildcards.hpp>
 
-## Usage
+int main()
+{
+  using namespace wildcards;
+
+  static_assert(match("source.c", "*.[hc](pp|)"), "wrong file name");
+
+  return 0;
+}
+```
+
+Check what compilers output for a similar case on
+[Compiler Explorer][godbolt.url]. See also more useful and complex
+[examples](example) and try them online!
+
+## Quick Start
 
 1. Single-header approach
    * Copy [`wildcards.hpp`](single_include/wildcards.hpp) from
@@ -36,28 +40,6 @@ runtime and compile time execution.
    * Add [`include`](include) directory to your project's header search path.
    * Add `#include <wildcards.hpp>` to your source file.
    * Use `wildcards::match()`.
-
-## Example
-
-```C++
-// main.cpp
-
-#include <wildcards.hpp>
-
-int main()
-{
-  static_assert(wildcards::match("source.c", "*.[hc](pp|)"), "wrong file name");
-
-  return 0;
-}
-```
-
-This example does nothing very useful. It only demonstrates the simple usage
-of the library and the iteresting fact that it can also be used at compile time.
-See what compilers output for a similar case [here][godbolt.url].
-
-Please see also more useful and complex examples [here](example) and try them
-online!
 
 ## Portability
 
@@ -84,7 +66,26 @@ and [Appveyor CI][appveyor.url].
 
 This project is licensed under the [Boost 1.0][license.url].
 
-## Technical Notes
+## Details
+
+### Syntax
+
+| Pattern   | Meaning                                        |
+| --------- | ---------------------------------------------- |
+| `*`       | Matches everything.                            |
+| `?`       | Matches any single character.                  |
+| `\`       | Escape character.                              |
+| `[abc]`   | Matches any character in *Set*.                |
+| `[!abc]`  | Matches any character not in *Set*.            |
+| `(ab\|c)` | Matches one of the sequences in *Alternative*. |
+
+* *Set* cannot be empty. Any special character loses its special meaning in it.
+* *Alternative* can contain more than two or just one sequence.
+* The use of *Sets* and *Alternatives* can be switched off.
+* Special characters are predefined for `char`, `char16_t`, `char32_t`
+  and `wchar_t`, but can be redefined.
+
+### Technical Notes
 
 * *Wildcards* uses a recursive approach. Hence you can simply run out of stack
 (during runtime execution) or you can exceed the maximum depth of constexpr
