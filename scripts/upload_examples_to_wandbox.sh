@@ -14,6 +14,6 @@ for example in $(find wandbox -maxdepth 1 -type f -name '*.cpp' | sort); do
     EXAMPLE_URL=$(scripts/send_to_wandbox.py single_include "$example" gcc-7.2.0 c++11 -- $'-Wall\n-Wextra' | sed -e 's/.*\(http:\/\/[^ '"'"']*\).*/\1/')
   fi
   echo "$example: $EXAMPLE_URL"
-  awk -v pos=$POS '/Try it online/{ c+=1 } { if (c == pos) { sub("\(https://wandbox.org/permlink/.+\)", "('"$EXAMPLE_URL"')", $0) }; print $0 }' example/README.md > example/README_tmp.md && mv example/README_tmp.md example/README.md
+  awk -v pos=$POS '/## Example/{ c+=1 } { if (c == pos) { sub("\(https://wandbox.org/permlink/.+\)", "('"$EXAMPLE_URL"')", $0) }; print $0 }' example/README.md > example/README_tmp.md && mv example/README_tmp.md example/README.md
   ((POS++))
 done
