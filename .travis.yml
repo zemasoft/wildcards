@@ -53,7 +53,7 @@ matrix:
     ################
 
     # Clang 3.8
-    - env: COMPILER=clang++-3.8 BUILD_TYPE=Debug CXX_STANDARD=11
+    - env: COMPILER=clang++-3.8 BUILD_TYPE=Debug CXX_STANDARD=14
       addons: &clang38
         apt:
           packages:
@@ -61,13 +61,7 @@ matrix:
           sources:
             - llvm-toolchain-trusty-3.8
 
-    - env: COMPILER=clang++-3.8 BUILD_TYPE=Debug CXX_STANDARD=14
-      addons: *clang38
-
     - env: COMPILER=clang++-3.8 BUILD_TYPE=Debug CXX_STANDARD=17
-      addons: *clang38
-
-    - env: COMPILER=clang++-3.8 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *clang38
 
     - env: COMPILER=clang++-3.8 BUILD_TYPE=Release CXX_STANDARD=14
@@ -77,7 +71,7 @@ matrix:
       addons: *clang38
 
     # Clang 3.9
-    - env: COMPILER=clang++-3.9 BUILD_TYPE=Debug CXX_STANDARD=11
+    - env: COMPILER=clang++-3.9 BUILD_TYPE=Debug CXX_STANDARD=14
       addons: &clang39
         apt:
           packages:
@@ -85,13 +79,7 @@ matrix:
           sources:
             - llvm-toolchain-trusty-3.9
 
-    - env: COMPILER=clang++-3.9 BUILD_TYPE=Debug CXX_STANDARD=14
-      addons: *clang39
-
     - env: COMPILER=clang++-3.9 BUILD_TYPE=Debug CXX_STANDARD=17
-      addons: *clang39
-
-    - env: COMPILER=clang++-3.9 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *clang39
 
     - env: COMPILER=clang++-3.9 BUILD_TYPE=Release CXX_STANDARD=14
@@ -176,54 +164,6 @@ matrix:
     ##############
     # GCC on Linux
     ##############
-
-    # GCC 4.8
-    - env: COMPILER=g++-4.8 BUILD_TYPE=Debug CXX_STANDARD=11
-      addons: &gcc48
-        apt:
-          packages:
-            - g++-4.8
-          sources: &sources
-            - ubuntu-toolchain-r-test
-
-    - env: COMPILER=g++-4.8 BUILD_TYPE=Debug CXX_STANDARD=14
-      addons: *gcc48
-
-    - env: COMPILER=g++-4.8 BUILD_TYPE=Debug CXX_STANDARD=17
-      addons: *gcc48
-
-    - env: COMPILER=g++-4.8 BUILD_TYPE=Release CXX_STANDARD=11
-      addons: *gcc48
-
-    - env: COMPILER=g++-4.8 BUILD_TYPE=Release CXX_STANDARD=14
-      addons: *gcc48
-
-    - env: COMPILER=g++-4.8 BUILD_TYPE=Release CXX_STANDARD=17
-      addons: *gcc48
-
-    # GCC 4.9
-    - env: COMPILER=g++-4.9 BUILD_TYPE=Debug CXX_STANDARD=11
-      addons: &gcc49
-        apt:
-          packages:
-            - g++-4.9
-          sources: &sources
-            - ubuntu-toolchain-r-test
-
-    - env: COMPILER=g++-4.9 BUILD_TYPE=Debug CXX_STANDARD=14
-      addons: *gcc49
-
-    - env: COMPILER=g++-4.9 BUILD_TYPE=Debug CXX_STANDARD=17
-      addons: *gcc49
-
-    - env: COMPILER=g++-4.9 BUILD_TYPE=Release CXX_STANDARD=11
-      addons: *gcc49
-
-    - env: COMPILER=g++-4.9 BUILD_TYPE=Release CXX_STANDARD=14
-      addons: *gcc49
-
-    - env: COMPILER=g++-4.9 BUILD_TYPE=Release CXX_STANDARD=17
-      addons: *gcc49
 
     # GCC 5
     - env: COMPILER=g++-5 BUILD_TYPE=Debug CXX_STANDARD=11
