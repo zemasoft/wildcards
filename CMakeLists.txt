@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.9)
 
+if(NOT DEFINED PROJECT_NAME)
+  set(NOT_SUBPROJECT ON)
+endif()
+
 project(Wildcards LANGUAGES CXX VERSION 1.4.0)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
@@ -17,14 +21,16 @@ configure_file(
   ${PROJECT_SOURCE_DIR}/include/wildcards.hpp
 )
 
-if(WILDCARDS_BUILD_TESTS)
-  include(CTest)
+if(NOT_SUBPROJECT)
+  if(WILDCARDS_BUILD_TESTS)
+    include(CTest)
 
-  add_subdirectory(test)
-endif()
+    add_subdirectory(test)
+  endif()
 
-if(WILDCARDS_BUILD_EXAMPLES)
-  add_subdirectory(example)
+  if(WILDCARDS_BUILD_EXAMPLES)
+    add_subdirectory(example)
+  endif()
 endif()
 
 if(WILDCARDS_CLANGFORMAT)
