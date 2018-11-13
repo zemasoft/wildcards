@@ -1,5 +1,5 @@
 // THIS FILE HAS BEEN GENERATED AUTOMATICALLY. DO NOT EDIT DIRECTLY.
-// Generated: 2018-05-30 13:30:06.195150205
+// Generated: 2018-11-13 13:16:24.415491844
 // Copyright Tomas Zeman 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -8,7 +8,7 @@
 #define CX_HPP 
 #define CX_VERSION_MAJOR 1
 #define CX_VERSION_MINOR 3
-#define CX_VERSION_PATCH 0
+#define CX_VERSION_PATCH 1
 #ifndef CX_ALGORITHM_HPP
 #define CX_ALGORITHM_HPP 
 #ifndef CONFIG_HPP
@@ -336,7 +336,7 @@
 #else
 #define cfg_constexpr14 
 #endif
-#if cfg_HAS_CONSTEXPR14 && !(defined(__GNUC__) && !defined(__clang__))
+#if cfg_HAS_CONSTEXPR14 && defined(__clang__)
 #define cfg_HAS_FULL_FEATURED_CONSTEXPR14 1
 #else
 #define cfg_HAS_FULL_FEATURED_CONSTEXPR14 0
@@ -839,7 +839,7 @@ struct pair
 using first_type = First;
 using second_type = Second;
 constexpr pair() = default;
-constexpr pair(First first, Second second) : first{std::move(first)}, second{std::move(second)}
+constexpr pair(First frst, Second scnd) : first{std::move(frst)}, second{std::move(scnd)}
 {
 }
 First first;

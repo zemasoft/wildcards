@@ -8,7 +8,7 @@
 
 #define CX_VERSION_MAJOR 1
 #define CX_VERSION_MINOR 3
-#define CX_VERSION_PATCH 0
+#define CX_VERSION_PATCH 1
 
 #include "cx/algorithm.hpp"
 #include "cx/array.hpp"

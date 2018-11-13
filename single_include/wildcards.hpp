@@ -1,5 +1,5 @@
 // THIS FILE HAS BEEN GENERATED AUTOMATICALLY. DO NOT EDIT DIRECTLY.
-// Generated: 2018-05-30 13:30:06.306256904
+// Generated: 2018-11-13 13:16:24.488943895
 // Copyright Tomas Zeman 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -7,7 +7,7 @@
 #ifndef WILDCARDS_HPP
 #define WILDCARDS_HPP 
 #define WILDCARDS_VERSION_MAJOR 1
-#define WILDCARDS_VERSION_MINOR 3
+#define WILDCARDS_VERSION_MINOR 4
 #define WILDCARDS_VERSION_PATCH 0
 #ifndef WILDCARDS_CARDS_HPP
 #define WILDCARDS_CARDS_HPP 
@@ -567,7 +567,7 @@ std::forward<T>(ao), std::forward<T>(ac), std::forward<T>(ar)};
 #else
 #define cfg_constexpr14 
 #endif
-#if cfg_HAS_CONSTEXPR14 && !(defined(__GNUC__) && !defined(__clang__))
+#if cfg_HAS_CONSTEXPR14 && defined(__clang__)
 #define cfg_HAS_FULL_FEATURED_CONSTEXPR14 1
 #else
 #define cfg_HAS_FULL_FEATURED_CONSTEXPR14 0
@@ -752,6 +752,19 @@ using container_item_t = typename container_item<C>::type;
 namespace wildcards
 {
 template <typename SequenceIterator, typename PatternIterator>
+struct full_match_result
+{
+bool res;
+SequenceIterator s, send, s1;
+PatternIterator p, pend, p1;
+constexpr operator bool() const
+{
+return res;
+}
+};
+namespace detail
+{
+template <typename SequenceIterator, typename PatternIterator>
 struct match_result
 {
 bool res;
@@ -769,8 +782,14 @@ PatternIterator p)
 {
 return {std::move(res), std::move(s), std::move(p)};
 }
-namespace detail
+template <typename SequenceIterator, typename PatternIterator>
+constexpr full_match_result<SequenceIterator, PatternIterator> make_full_match_result(
+SequenceIterator s, SequenceIterator send, PatternIterator p, PatternIterator pend,
+match_result<SequenceIterator, PatternIterator> mr)
 {
+return {std::move(mr.res), std::move(s), std::move(send), std::move(mr.s),
+std::move(p), std::move(pend), std::move(mr.p)};
+}
 #if !cfg_HAS_FULL_FEATURED_CONSTEXPR14
 constexpr bool throw_invalid_argument(const char* what_arg)
 {
@@ -1587,17 +1606,19 @@ c, equal_to, partial);
 }
 }
 template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>>
-constexpr match_result<const_iterator_t<Sequence>, const_iterator_t<Pattern>> match(
+constexpr full_match_result<const_iterator_t<Sequence>, const_iterator_t<Pattern>> match(
 Sequence&& sequence, Pattern&& pattern,
 const cards<container_item_t<Pattern>>& c = cards<container_item_t<Pattern>>(),
 const EqualTo& equal_to = EqualTo())
 {
-return detail::match(cx::cbegin(sequence), cx::cend(std::forward<Sequence>(sequence)),
-cx::cbegin(pattern), cx::cend(std::forward<Pattern>(pattern)), c, equal_to);
+return detail::make_full_match_result(
+cx::cbegin(sequence), cx::cend(sequence), cx::cbegin(pattern), cx::cend(pattern),
+detail::match(cx::cbegin(sequence), cx::cend(std::forward<Sequence>(sequence)),
+cx::cbegin(pattern), cx::cend(std::forward<Pattern>(pattern)), c, equal_to));
 }
 template <typename Sequence, typename Pattern, typename EqualTo = cx::equal_to<void>,
 typename = typename std::enable_if<!std::is_same<EqualTo, cards_type>::value>::type>
-constexpr match_result<const_iterator_t<Sequence>, const_iterator_t<Pattern>> match(
+constexpr full_match_result<const_iterator_t<Sequence>, const_iterator_t<Pattern>> match(
 Sequence&& sequence, Pattern&& pattern, const EqualTo& equal_to)
 {
 return match(std::forward<Sequence>(sequence), std::forward<Pattern>(pattern),
