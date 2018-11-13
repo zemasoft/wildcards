@@ -32,5 +32,5 @@ $ cmake --build build
 ## How to find examples
 
 ```batch
-$ ls build/examples/example*
+$ ls build/example/example*
 ```
