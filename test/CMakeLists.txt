@@ -61,7 +61,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "^AppleClang|^Clang")
   endif()
 
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9)
-    target_compile_options(selftest PRIVATE -ftemplate-depth=900)
+    target_compile_options(selftest PRIVATE -ftemplate-depth=2048)
   endif()
 
   if(WILDCARDS_ENABLE_WERROR)
