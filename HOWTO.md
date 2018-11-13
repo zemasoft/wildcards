@@ -21,3 +21,16 @@ $ cmake --build build
 $ cd build
 $ ctest
 ```
+
+## How to build tests
+
+```batch
+$ cmake . -Bbuild -DCMAKE_BUILD_TYPE=Release -DWILDCARDS_BUILD_EXAMPLES=ON
+$ cmake --build build
+```
+
+## How to find examples
+
+```batch
+$ ls build/examples/example*
+```
