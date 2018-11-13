@@ -52,24 +52,6 @@ matrix:
     # Clang on Linux
     ################
 
-    # Clang 3.8
-    - env: COMPILER=clang++-3.8 BUILD_TYPE=Debug CXX_STANDARD=14
-      addons: &clang38
-        apt:
-          packages:
-            - clang-3.8
-          sources:
-            - llvm-toolchain-trusty-3.8
-
-    - env: COMPILER=clang++-3.8 BUILD_TYPE=Debug CXX_STANDARD=17
-      addons: *clang38
-
-    - env: COMPILER=clang++-3.8 BUILD_TYPE=Release CXX_STANDARD=14
-      addons: *clang38
-
-    - env: COMPILER=clang++-3.8 BUILD_TYPE=Release CXX_STANDARD=17
-      addons: *clang38
-
     # Clang 3.9
     - env: COMPILER=clang++-3.9 BUILD_TYPE=Debug CXX_STANDARD=14
       addons: &clang39
