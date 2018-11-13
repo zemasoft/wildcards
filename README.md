@@ -1,4 +1,4 @@
-[![language.badge]][language.url] [![standard.badge]][standard.url] [![license.badge]][license.url] [![travis.badge]][travis.url] [![appveyor.badge]][appveyor.url] [![release.badge]][release.url] [![wandbox.badge]][wandbox.url]
+[![language.badge]][language.url] [![standard.badge]][standard.url] [![license.badge]][license.url] [![travis.badge]][travis.url] [![appveyor.badge]][appveyor.url] [![release.badge]][release.url] [![godbolt.badge]][godbolt.url] [![wandbox.badge]][wandbox.url]
 
 # Wildcards
 
@@ -52,10 +52,12 @@ int main()
 }
 ```
 
-This example does nothing very useful. It only demonstrates a simple usage
+This example does nothing very useful. It only demonstrates the simple usage
 of the library and the iteresting fact that it can also be used at compile time.
+See what compilers output for a similar case [here][godbolt.url].
 
-Please see more useful and complex examples [here](example) and try them online!
+Please see also more useful and complex examples [here](example) and try them
+online!
 
 ## Portability
 
@@ -109,8 +111,8 @@ and consumes less resources.
 [release.url]:    https://github.com/zemasoft/wildcards/releases
 [release.badge]:  https://img.shields.io/github/release/zemasoft/wildcards.svg
 
-[wandbox.url]:    https://github.com/zemasoft/wildcards/tree/master/example
-[wandbox.badge]:  https://img.shields.io/badge/try%20it-on%20wandbox-blue.svg
-
 [godbolt.url]:    https://godbolt.org/z/rGi5c2
 [godbolt.badge]:  https://img.shields.io/badge/try%20it-on%20godbolt-blue.svg
+
+[wandbox.url]:    https://github.com/zemasoft/wildcards/tree/master/example
+[wandbox.badge]:  https://img.shields.io/badge/try%20it-on%20wandbox-blue.svg
