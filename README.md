@@ -43,7 +43,8 @@ Check what compilers output for a similar case on
 
 ## Portability
 
-*Wildcards* requires a C++11 compiler to build. It has no external dependencies.
+The library requires at least a C++11 compiler to build. It has no external
+dependencies.
 
 The following compilers are continuously tested at [Travis CI][travis.url]
 and [Appveyor CI][appveyor.url].
@@ -61,6 +62,8 @@ and [Appveyor CI][appveyor.url].
 | GCC                 | 8.1     | Ubuntu 14.04 LTS    |
 | Visual Studio       | 14 2015 | Windows Server 2016 |
 | Visual Studio       | 15 2017 | Windows Server 2016 |
+
+NOTE: Clang 3.9 works only for C++14 standard or higher.
 
 ## License
 
@@ -89,10 +92,16 @@ This project is licensed under the [Boost 1.0][license.url].
 
 * *Wildcards* uses a recursive approach. Hence you can simply run out of stack
 (during runtime execution) or you can exceed the maximum depth of constexpr
-evaluation (during compile time execution). If so, try to make the input
+evaluation (during compile time execution). If so, try making the input
 sequence shorter or the pattern less complex. You can also try to build using
-a C++14 compiler since the C++14 implementation of the library is more effective
-and consumes less resources.
+the C++14 standard since the C++14 implementation of the library is more
+effective and consumes less resources.
+* The `cx` library is a byproduct created during the development of *Wildcards*
+which uses some pieces from its functionality internally. More of the `cx` is
+used in tests. You can use this library in exactly the same way as you use
+*Wildcards* (single-header / multi-header approach) but if you are interested
+only in *Wildcards*, you don't need to care/know about the `cx` at all. This
+library might become a separate project in the future.
 
 [language.url]:   https://isocpp.org/
 [language.badge]: https://img.shields.io/badge/language-C++-blue.svg
