@@ -88,6 +88,13 @@ This project is licensed under the [Boost 1.0][license.url].
 
 ### Technical Notes
 
+* *Wildcards* depends on two components which originate from external sources
+  and were made part of the repository:
+  * [`cpp_feature.hpp`](include/cpp_feature.hpp) taken from
+    [here](https://github.com/ned14/quickcpplib/blob/master/include/cpp_feature.h).
+  * [`catch.hpp`](test/include/catch.hpp) taken from
+    [here](https://github.com/catchorg/Catch2/releases/download/v2.4.2/catch.hpp).
+
 * *Wildcards* uses a recursive approach. Hence you can simply run out of stack
   (during runtime execution) or you can exceed the maximum depth of constexpr
   evaluation (during compile time execution). If so, try making the input
@@ -106,13 +113,6 @@ This project is licensed under the [Boost 1.0][license.url].
   as you use *Wildcards* (single-header / multi-header approach) but if you are
   interested only in *Wildcards*, you don't need to care about the `cx` at all.
   This library might become a separate project in the future.
-
-* *Wildcards* depends on two components which originate from external sources
-  and were made part of the repository:
-  1) [`cpp_feature.hpp`](include/cpp_feature.hpp) taken from
-     [here](https://github.com/ned14/quickcpplib/blob/master/include/cpp_feature.h).
-  2) [`catch.hpp`](test/include/catch.hpp) taken from
-     [here](https://github.com/catchorg/Catch2/releases/download/v2.4.2/catch.hpp).
 
 [language.url]:   https://isocpp.org/
 [language.badge]: https://img.shields.io/badge/language-C++-blue.svg
