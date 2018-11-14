@@ -995,7 +995,7 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
 #endif
   }
 
-  SECTION("")
+  SECTION("matching sets")
   {
     static_assert(match("aaa", "a[abc]a"), "");
     static_assert(!match("aaa", "a[bcd]a"), "");
@@ -1016,9 +1016,8 @@ TEST_CASE("wildcards::match() is compliant", "[wildcards::match]")
     static_assert(match("a[!]a", "a[!]a"), "");
   }
 
-  SECTION("")
+  SECTION("matching alternatives")
   {
-
     static_assert(match("aXb", "a(X|Y)b"), "");
     static_assert(match("aYb", "a(X|Y)b"), "");
     static_assert(!match("aZb", "a(X|Y)b"), "");
