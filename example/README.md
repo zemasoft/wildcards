@@ -27,7 +27,7 @@ auto id = valid_id("tst_something_different", "[Tt]est_*");
 
 `std::logic_error("Invalid ID")` is thrown.
 
-Usage:
+**Usage:**
 
 ```batch
 $ ./build/example/example02
@@ -57,7 +57,7 @@ and via `_valid_id` string literal.
 constexpr auto id = "test_something"_valid_id;
 ```
 
-Usage:
+**Usage:**
 
 ```batch
 $ ./build/example/example03
@@ -72,16 +72,16 @@ Invalid ID
 
 Matching of command line arguments.
 
-Syntax:
+**Syntax:**
 
 ```batch
 example04 [-v] sequence pattern
 ```
 
-Optional command line argument `-v` stands for verbose and can be used to
-visualize where exactly the matching failed.
+`-v` stands for verbose and can be used to visualize where exactly the matching
+failed.
 
-Usage:
+**Usage:**
 
 ```batch
 $ ./build/example/example04 "You are so nice!" "[Y|y]ou are ((so |)nice|(too |)ugly)([.\!]|)"
@@ -108,13 +108,13 @@ List files on a given path which match a given pattern.
 This example makes use of `filesystem` library, therefore is not built for all
 configurations.
 
-Syntax:
+**Syntax:**
 
 ```batch
 example05 path pattern
 ```
 
-Usage:
+**Usage:**
 
 ```batch
 $ ./build/example/example05 test "*.[hc]pp"
@@ -135,7 +135,7 @@ A DNA sequence consists of letters `A`, `G`, `T`, `C` and is up to 10 letters
 long (but can also be empty).
 
 This example demonstrates the general purposeness of the library since a DNA
-sequence is internally defined as shown below, not as a string.
+sequence is internally defined as shown below - i.e. not as a string.
 
 ```C++
 enum class nucleobase
@@ -149,13 +149,13 @@ enum class nucleobase
 using dna_sequence_type = std::vector<nucleobase>;
 ```
 
-Syntax:
+**Syntax:**
 
 ```batch
 example06 pattern
 ```
 
-Usage:
+**Usage:**
 
 ```batch
 $ ./build/example/example06 "?AG(TT|CC)*(A|G)"
