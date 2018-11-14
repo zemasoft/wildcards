@@ -49,21 +49,19 @@ dependencies.
 The following compilers are continuously tested at [Travis CI][travis.url]
 and [Appveyor CI][appveyor.url].
 
-| Compiler            | Version | Operating System    |
-|---------------------|---------|---------------------|
-| Xcode               | 9.0     | OS X 10.12          |
-| Clang (with libcxx) | 3.9     | Ubuntu 14.04 LTS    |
-| Clang (with libcxx) | 4.0     | Ubuntu 14.04 LTS    |
-| Clang (with libcxx) | 5.0     | Ubuntu 14.04 LTS    |
-| Clang (with libcxx) | 6.0     | Ubuntu 14.04 LTS    |
-| GCC                 | 5.5     | Ubuntu 14.04 LTS    |
-| GCC                 | 6.4     | Ubuntu 14.04 LTS    |
-| GCC                 | 7.3     | Ubuntu 14.04 LTS    |
-| GCC                 | 8.1     | Ubuntu 14.04 LTS    |
-| Visual Studio       | 14 2015 | Windows Server 2016 |
-| Visual Studio       | 15 2017 | Windows Server 2016 |
-
-NOTE: Clang 3.9 works only for C++14 standard or higher.
+| Compiler            | Version | Operating System    | Notes       |
+|---------------------|---------|---------------------|-------------|
+| Xcode               | 9.0     | OS X 10.12          | C++11/14/17 |
+| Clang (with libcxx) | 3.9     | Ubuntu 14.04 LTS    | C++14/17    |
+| Clang (with libcxx) | 4.0     | Ubuntu 14.04 LTS    | C++11/14/17 |
+| Clang (with libcxx) | 5.0     | Ubuntu 14.04 LTS    | C++11/14/17 |
+| Clang (with libcxx) | 6.0     | Ubuntu 14.04 LTS    | C++11/14/17 |
+| GCC                 | 5.5     | Ubuntu 14.04 LTS    | C++11/14/17 |
+| GCC                 | 6.4     | Ubuntu 14.04 LTS    | C++11/14/17 |
+| GCC                 | 7.3     | Ubuntu 14.04 LTS    | C++11/14/17 |
+| GCC                 | 8.1     | Ubuntu 14.04 LTS    | C++11/14/17 |
+| Visual Studio       | 14 2015 | Windows Server 2016 | C++11/14/17 |
+| Visual Studio       | 15 2017 | Windows Server 2016 | C++11/14/17 |
 
 ## License
 
@@ -91,17 +89,30 @@ This project is licensed under the [Boost 1.0][license.url].
 ### Technical Notes
 
 * *Wildcards* uses a recursive approach. Hence you can simply run out of stack
-(during runtime execution) or you can exceed the maximum depth of constexpr
-evaluation (during compile time execution). If so, try making the input
-sequence shorter or the pattern less complex. You can also try to build using
-the C++14 standard since the C++14 implementation of the library is more
-effective and consumes less resources.
+  (during runtime execution) or you can exceed the maximum depth of constexpr
+  evaluation (during compile time execution). If so, try making the input
+  sequence shorter or the pattern less complex. You can also try to build using
+  the C++14 standard since the C++14 implementation of the library is more
+  effective and consumes less resources.
+
+* Place more specific sequences in *Alternatives* first. This becomes important
+  when *Alternatives* are nested. E.g. `match("source.cpp", "(*.[hc](pp|))")`
+  will work as expected but `match("source.cpp", "(*.[hc](|pp))")` will not.
+  Fixing that would make *Wildcards* unreasonably complex.
+
 * The `cx` library is a byproduct created during the development of *Wildcards*
-which uses some pieces from its functionality internally. More of the `cx` is
-used in tests. You can use this library in exactly the same way as you use
-*Wildcards* (single-header / multi-header approach) but if you are interested
-only in *Wildcards*, you don't need to care/know about the `cx` at all. This
-library might become a separate project in the future.
+  which uses some pieces from its functionality internally. More of the `cx` is
+  used in tests and examples. You can use this library in exactly the same way
+  as you use *Wildcards* (single-header / multi-header approach) but if you are
+  interested only in *Wildcards*, you don't need to care about the `cx` at all.
+  This library might become a separate project in the future.
+
+* *Wildcards* depends on two components which originate from external sources
+  and were made part of the repository:
+  1) [`cpp_feature.hpp`](include/cpp_feature.hpp) taken from
+     [here](https://github.com/ned14/quickcpplib/blob/master/include/cpp_feature.h).
+  2) [`catch.hpp`](test/include/catch.hpp) taken from
+     [here](https://github.com/catchorg/Catch2/releases/download/v2.4.2/catch.hpp).
 
 [language.url]:   https://isocpp.org/
 [language.badge]: https://img.shields.io/badge/language-C++-blue.svg
