@@ -9,23 +9,35 @@ a general purpose algorithm for matching using wildcards. It supports both
 runtime and compile time execution.
 
 ```C++
-// main.cpp
-
 #include <wildcards.hpp>
 
-int main()
+// returns true
+bool test1()
 {
   using namespace wildcards;
 
-  static_assert(match("source.c", "*.[hc](pp|)"), "wrong file name");
+  constexpr auto res = match("source.c", "*.[hc](pp|)");
 
-  return 0;
+  static_assert(res, "must be true");
+
+  return res;
+}
+
+// returns false
+bool test2()
+{
+  using namespace wildcards;
+
+  constexpr auto res = match("source.cc", "*.[hc](pp|)");
+
+  static_assert(!res, "must be false");
+
+  return res;
 }
 ```
 
-Check what compilers output for a similar case on
-[Compiler Explorer][godbolt.url]. See also more useful and complex
-[examples](example) and try them online!
+Check compilers output on [Compiler Explorer][godbolt.url]. See also more useful
+and complex [examples](example) and try them online!
 
 ## Quick Start
 
@@ -120,7 +132,7 @@ This project is licensed under the [Boost 1.0][license.url].
 [standard.url]:   https://en.wikipedia.org/wiki/C%2B%2B#Standardization
 [standard.badge]: https://img.shields.io/badge/C%2B%2B-11%2F14%2F17-blue.svg
 
-[license.url]:     http://www.boost.org/LICENSE_1_0.txt
+[license.url]:    http://www.boost.org/LICENSE_1_0.txt
 [license.badge]:  https://img.shields.io/badge/license-Boost%201.0-blue.svg
 
 [travis.url]:     https://travis-ci.org/zemasoft/wildcards
@@ -132,7 +144,7 @@ This project is licensed under the [Boost 1.0][license.url].
 [release.url]:    https://github.com/zemasoft/wildcards/releases
 [release.badge]:  https://img.shields.io/github/release/zemasoft/wildcards.svg
 
-[godbolt.url]:    https://godbolt.org/z/rGi5c2
+[godbolt.url]:    https://godbolt.org/z/5k2_qU
 [godbolt.badge]:  https://img.shields.io/badge/try%20it-on%20godbolt-blue.svg
 
 [wandbox.url]:    https://github.com/zemasoft/wildcards/tree/master/example

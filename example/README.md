@@ -134,8 +134,8 @@ Matching of generated DNA sequences.
 A DNA sequence consists of letters `A`, `G`, `T`, `C` and is up to 10 letters
 long (but can also be empty).
 
-This example demonstrates the general purposeness of the library since a DNA
-sequence is internally defined as shown below - i.e. not as a string.
+This example demonstrates the general purposeness of the library since the DNA
+sequences are internally represented as shown below - i.e. not as strings.
 
 ```C++
 enum class nucleobase
