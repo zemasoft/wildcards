@@ -5,7 +5,6 @@
 ```batch
 $ git clone https://github.com/zemasoft/wildcards
 $ cd wildcards
-$ git submodule update --init --recursive
 ```
 
 ## How to build tests
@@ -22,15 +21,22 @@ $ cd build
 $ ctest
 ```
 
-## How to build tests
+## How to build examples
 
 ```batch
 $ cmake . -Bbuild -DCMAKE_BUILD_TYPE=Release -DWILDCARDS_BUILD_EXAMPLES=ON
 $ cmake --build build
 ```
 
-## How to find examples
+## How to find the examples
 
 ```batch
 $ ls build/example/example*
+```
+
+## How to build all
+
+```batch
+$ cmake . -Bbuild -DCMAKE_BUILD_TYPE=Debug -DWILDCARDS_BUILD_TESTS=ON -DWILDCARDS_BUILD_EXAMPLES=ON
+$ cmake --build build
 ```
