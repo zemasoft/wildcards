@@ -45,19 +45,19 @@ install:
   #######################
 
   - ps: |
-      if ("$env:GENERATOR" -match "Visual Studio") {
-        if ("$env:PLATFORM" -eq "x64") {
-          $env:GENERATOR="$env:GENERATOR Win64"
+      if ($env:GENERATOR -match "Visual Studio") {
+        if ($env:PLATFORM -eq "x64") {
+          $env:GENERATOR+=" Win64"
         }
-      } elseif ("$env:GENERATOR" -eq "MinGW Makefiles") {
-        if ("$env:PLATFORM" -eq "x32") {
-          $env:MINGW_PATH="$env:MINGW_PATH"\mingw32\bin
-        } elseif ("$env:PLATFORM" -eq "x64") {
-          $env:MINGW_PATH="$env:MINGW_PATH"\mingw64\bin
+      } elseif ($env:GENERATOR -eq "MinGW Makefiles") {
+        if ($env:PLATFORM -eq "x64") {
+          $env:MINGW_PATH+="\mingw64\bin"
+        } else {
+          $env:MINGW_PATH+="\mingw32\bin"
         }
-        # git bash conflicts with MinGW makefiles
-        $env:PATH = $env:PATH.replace("C:\Program Files\Git\usr\bin;", "")
-        $env:PATH += ";$env:MINGW_PATH"
+        # git bash conflicts with MinGW Makefiles
+        $env:PATH=$env:PATH.replace("C:\Program Files\Git\usr\bin;", "")
+        $env:PATH+=";$env:MINGW_PATH"
       }
   - echo %GENERATOR%
 
