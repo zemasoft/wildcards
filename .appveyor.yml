@@ -7,9 +7,27 @@ image:
 
 environment:
   matrix:
-    - CXX_STANDARD: 11
-    - CXX_STANDARD: 14
-    - CXX_STANDARD: 17
+    - compiler: Visual Studio 14 2015
+      GENERATOR: "Visual Studio 14 2015"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    - compiler: Visual Studio 15 2017
+      GENERATOR: "Visual Studio 15 2017"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+
+    - compiler: MinGW 5
+      GENERATOR: "MinGW Makefiles"
+      MINGW_PATH: C:\mingw-w64\i686-5.3.0-posix-dwarf-rt_v4-rev0
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    - compiler: MinGW 6
+      GENERATOR: "MinGW Makefiles"
+      MINGW_PATH: C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    #- CXX_STANDARD: 11
+    #- CXX_STANDARD: 14
+    #- CXX_STANDARD: 17
 
 platform:
   - x32
@@ -26,21 +44,26 @@ install:
   # CMake generator setup
   #######################
 
-  - set GENERATOR=Unknown
   - ps: |
-      if ("$env:APPVEYOR_JOB_NAME" -match "Image: Visual Studio 2015") {
-        $env:GENERATOR="Visual Studio 14 2015"
-      } else {
-        $env:GENERATOR="Visual Studio 15 2017"
-      }
-      if ("$env:PLATFORM" -eq "x64") {
-        $env:GENERATOR="$env:GENERATOR Win64"
+      if ("$env:GENERATOR" -match "Visual Studio") {
+        if ("$env:PLATFORM" -eq "x64") {
+          $env:GENERATOR="$env:GENERATOR Win64"
+        }
+      } elseif ("$env:GENERATOR" -eq "MinGW Makefiles") {
+        if ("$env:PLATFORM" -eq "x32") {
+          $env:MINGW_PATH="$env:MINGW_PATH"\mingw32\bin
+        } elseif ("$env:PLATFORM" -eq "x64") {
+          $env:MINGW_PATH="$env:MINGW_PATH"\mingw64\bin
+        }
+        # git bash conflicts with MinGW makefiles
+        $env:PATH = $env:PATH.replace("C:\Program Files\Git\usr\bin;", "")
+        $env:PATH += ";$env:MINGW_PATH"
       }
   - echo %GENERATOR%
 
 before_build:
   - cd %APPVEYOR_BUILD_FOLDER%
-  - cmake . -Bbuild -G "%GENERATOR%" -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_CXX_STANDARD=%CXX_STANDARD%
+  - cmake . -Bbuild -G "%GENERATOR%" -DWILDCARDS_BUILD_EXAMPLES=ON #-DWILDCARDS_CXX_STANDARD=%CXX_STANDARD%
 
 build_script:
   - cmake --build build --config %CONFIGURATION% -- /m /v:minimal
