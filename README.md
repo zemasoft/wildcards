@@ -74,6 +74,9 @@ and [Appveyor CI][appveyor.url].
 | GCC                 | 8.1     | Ubuntu 14.04 LTS    | C++11/14/17 |
 | Visual Studio       | 14 2015 | Windows Server 2016 | C++11/14/17 |
 | Visual Studio       | 15 2017 | Windows Server 2016 | C++11/14/17 |
+| MinGW               | 6.3     | Windows Server 2016 | C++11/14/17 |
+| MinGW               | 7.2     | Windows Server 2016 | C++11/14/17 |
+| MinGW               | 7.3     | Windows Server 2016 | C++11/14/17 |
 
 ## License
 
