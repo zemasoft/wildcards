@@ -196,7 +196,7 @@ install:
 before_build:
   - ps: |
       cd $env:APPVEYOR_BUILD_FOLDER
-      & cmake . -Bbuild -G "$env:generator" -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_CXX_STANDARD=$evn:CXX_STANDARD
+      & cmake . -Bbuild -G "$env:generator" -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_CXX_STANDARD=$env:CXX_STANDARD
       if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
       }
