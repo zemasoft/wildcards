@@ -5,50 +5,178 @@ init:
 
 environment:
   matrix:
+
+    #######################
+    # Visual Studio 14 2015
+    #######################
+
+    # 32-bit
+
     - compiler: Visual Studio 14 2015
       generator: "Visual Studio 14 2015"
+      CXX_STANDARD: 11
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    - compiler: Visual Studio 14 2015
+      generator: "Visual Studio 14 2015"
+      CXX_STANDARD: 14
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    - compiler: Visual Studio 14 2015
+      generator: "Visual Studio 14 2015"
+      CXX_STANDARD: 17
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    # 64-bit
+
+    - compiler: Visual Studio 14 2015
+      generator: "Visual Studio 14 2015 Win64"
+      CXX_STANDARD: 11
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 
     - compiler: Visual Studio 14 2015
       generator: "Visual Studio 14 2015 Win64"
+      CXX_STANDARD: 14
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    - compiler: Visual Studio 14 2015
+      generator: "Visual Studio 14 2015 Win64"
+      CXX_STANDARD: 17
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    #######################
+    # Visual Studio 15 2017
+    #######################
+
+    # 32-bit
 
     - compiler: Visual Studio 15 2017
       generator: "Visual Studio 15 2017"
+      CXX_STANDARD: 11
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+
+    - compiler: Visual Studio 15 2017
+      generator: "Visual Studio 15 2017"
+      CXX_STANDARD: 14
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+
+    - compiler: Visual Studio 15 2017
+      generator: "Visual Studio 15 2017"
+      CXX_STANDARD: 17
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+
+    # 64-bit
+
+    - compiler: Visual Studio 15 2017
+      generator: "Visual Studio 15 2017 Win64"
+      CXX_STANDARD: 11
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 
     - compiler: Visual Studio 15 2017
       generator: "Visual Studio 15 2017 Win64"
+      CXX_STANDARD: 14
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+
+    - compiler: Visual Studio 15 2017
+      generator: "Visual Studio 15 2017 Win64"
+      CXX_STANDARD: 17
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+
+    ###########
+    # MinGW 6.3
+    ###########
+
+    # 32-bit
 
     - compiler: MinGW 6.3
       generator: "MinGW Makefiles"
       mingw_path: C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32\bin
+      CXX_STANDARD: 11
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    - compiler: MinGW 6.3
+      generator: "MinGW Makefiles"
+      mingw_path: C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32\bin
+      CXX_STANDARD: 14
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    - compiler: MinGW 6.3
+      generator: "MinGW Makefiles"
+      mingw_path: C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32\bin
+      CXX_STANDARD: 17
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    # 64-bit
+
+    - compiler: MinGW 6.3
+      generator: "MinGW Makefiles"
+      mingw_path: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
+      CXX_STANDARD: 11
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 
     - compiler: MinGW 6.3
       generator: "MinGW Makefiles"
       mingw_path: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
+      CXX_STANDARD: 14
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    - compiler: MinGW 6.3
+      generator: "MinGW Makefiles"
+      mingw_path: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
+      CXX_STANDARD: 17
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    ###########
+    # MinGW 7.2
+    ###########
+
+    # 64-bit
+
+    - compiler: MinGW 7.2
+      generator: "MinGW Makefiles"
+      mingw_path: C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin
+      CXX_STANDARD: 11
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 
     - compiler: MinGW 7.2
       generator: "MinGW Makefiles"
       mingw_path: C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin
+      CXX_STANDARD: 14
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    - compiler: MinGW 7.2
+      generator: "MinGW Makefiles"
+      mingw_path: C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin
+      CXX_STANDARD: 17
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    ###########
+    # MinGW 7.3
+    ###########
+
+    # 64-bit
+
+    - compiler: MinGW 7.3
+      generator: "MinGW Makefiles"
+      mingw_path: C:\mingw-w64\x86_64-7.3.0-posix-seh-rt_v5-rev0\mingw64\bin
+      CXX_STANDARD: 11
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 
     - compiler: MinGW 7.3
       generator: "MinGW Makefiles"
       mingw_path: C:\mingw-w64\x86_64-7.3.0-posix-seh-rt_v5-rev0\mingw64\bin
+      CXX_STANDARD: 14
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    - compiler: MinGW 7.3
+      generator: "MinGW Makefiles"
+      mingw_path: C:\mingw-w64\x86_64-7.3.0-posix-seh-rt_v5-rev0\mingw64\bin
+      CXX_STANDARD: 17
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 
 configuration:
   - Debug
   - Release
-
-CXX_STANDARD:
-  - 11
-  - 14
-  - 17
 
 install:
   - cmake --version
