@@ -1,3 +1,5 @@
+version: 1.3.0.{build}
+
 init:
   - git config --global core.autocrlf true
 
@@ -35,6 +37,8 @@ configuration:
 
 install:
   - cmake --version
+  - dir C:\mingw*
+  - dir C:\mingw-w64
 
   #######################
   # CMake generator setup
@@ -58,14 +62,25 @@ install:
   - echo %GENERATOR%
 
 before_build:
-  - cd %APPVEYOR_BUILD_FOLDER%
-  - cmake . -Bbuild -G "%GENERATOR%" -DWILDCARDS_BUILD_EXAMPLES=ON #-DWILDCARDS_CXX_STANDARD=%CXX_STANDARD%
+  - ps: |
+      cd $env:APPVEYOR_BUILD_FOLDER
+      & cmake . -Bbuild -G "$env:GENERATOR" -DWILDCARDS_BUILD_EXAMPLES=ON #-DWILDCARDS_CXX_STANDARD=%CXX_STANDARD%
+      if ($LastExitCode -ne 0) {
+        throw "Exec: $ErrorMessage"
+      }
 
 build_script:
   - ps: |
       $cmake_parallel = if ($env:GENERATOR -eq "MinGW Makefiles") {"-j2"} else {"/m"}
       cmake --build build --config $env:CONFIGURATION -- $cmake_parallel
+      if ($LastExitCode -ne 0) {
+        throw "Exec: $ErrorMessage"
+      }
 
 test_script:
-  - cd build
-  - ctest --output-on-failure --build-config %CONFIGURATION%
+  - ps: |
+      cd build
+      & ctest --output-on-failure --build-config $env:CONFIGURATION
+      if ($LastExitCode -ne 0) {
+        throw "Exec: $ErrorMessage"
+      }
