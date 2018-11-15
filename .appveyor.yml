@@ -41,13 +41,14 @@ environment:
       mingw_path: C:\mingw-w64\x86_64-7.3.0-posix-seh-rt_v5-rev0\mingw64\bin
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 
-    #- CXX_STANDARD: 11
-    #- CXX_STANDARD: 14
-    #- CXX_STANDARD: 17
-
 configuration:
   - Debug
   - Release
+
+CXX_STANDARD:
+  - 11
+  - 14
+  - 17
 
 install:
   - cmake --version
@@ -67,7 +68,7 @@ install:
 before_build:
   - ps: |
       cd $env:APPVEYOR_BUILD_FOLDER
-      & cmake . -Bbuild -G "$env:generator" -DWILDCARDS_BUILD_EXAMPLES=ON #-DWILDCARDS_CXX_STANDARD=%CXX_STANDARD%
+      & cmake . -Bbuild -G "$env:generator" -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_CXX_STANDARD=$evn:CXX_STANDARD
       if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
       }
@@ -75,7 +76,7 @@ before_build:
 build_script:
   - ps: |
       $cmake_parallel = if ($env:generator -eq "MinGW Makefiles") {"-j2"} else {"/m"}
-      cmake --build build --config $env:CONFIGURATION -- $cmake_parallel
+      cmake --build build --config $env:configuration -- $cmake_parallel
       if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
       }
