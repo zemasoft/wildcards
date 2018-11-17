@@ -10,34 +10,42 @@ environment:
     # Visual Studio 14 2015
     #######################
 
-    # 32-bit
+    # 32-bit, C++11
 
     - compiler: Visual Studio 14 2015
       generator: "Visual Studio 14 2015"
       CXX_STANDARD: 11
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 
+    # 32-bit, C++14
+
     - compiler: Visual Studio 14 2015
       generator: "Visual Studio 14 2015"
       CXX_STANDARD: 14
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    # 32-bit, C++17
 
     - compiler: Visual Studio 14 2015
       generator: "Visual Studio 14 2015"
       CXX_STANDARD: 17
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 
-    # 64-bit
+    # 64-bit, C++11
 
     - compiler: Visual Studio 14 2015
       generator: "Visual Studio 14 2015 Win64"
       CXX_STANDARD: 11
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 
+    # 64-bit, C++14
+
     - compiler: Visual Studio 14 2015
       generator: "Visual Studio 14 2015 Win64"
       CXX_STANDARD: 14
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    # 64-bit, C++17
 
     - compiler: Visual Studio 14 2015
       generator: "Visual Studio 14 2015 Win64"
@@ -48,34 +56,42 @@ environment:
     # Visual Studio 15 2017
     #######################
 
-    # 32-bit
+    # 32-bit, C++11
 
     - compiler: Visual Studio 15 2017
       generator: "Visual Studio 15 2017"
       CXX_STANDARD: 11
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 
+    # 32-bit, C++14
+
     - compiler: Visual Studio 15 2017
       generator: "Visual Studio 15 2017"
       CXX_STANDARD: 14
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+
+    # 32-bit, C++17
 
     - compiler: Visual Studio 15 2017
       generator: "Visual Studio 15 2017"
       CXX_STANDARD: 17
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 
-    # 64-bit
+    # 64-bit, C++11
 
     - compiler: Visual Studio 15 2017
       generator: "Visual Studio 15 2017 Win64"
       CXX_STANDARD: 11
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 
+    # 64-bit, C++14
+
     - compiler: Visual Studio 15 2017
       generator: "Visual Studio 15 2017 Win64"
       CXX_STANDARD: 14
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+
+    # 64-bit, C++17
 
     - compiler: Visual Studio 15 2017
       generator: "Visual Studio 15 2017 Win64"
@@ -86,7 +102,7 @@ environment:
     # MinGW 6.3
     ###########
 
-    # 32-bit
+    # 32-bit, C++11
 
     - compiler: MinGW 6.3
       generator: "MinGW Makefiles"
@@ -94,11 +110,15 @@ environment:
       CXX_STANDARD: 11
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 
+    # 32-bit, C++14
+
     - compiler: MinGW 6.3
       generator: "MinGW Makefiles"
       mingw_path: C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32\bin
       CXX_STANDARD: 14
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    # 32-bit, C++17
 
     - compiler: MinGW 6.3
       generator: "MinGW Makefiles"
@@ -106,7 +126,7 @@ environment:
       CXX_STANDARD: 17
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 
-    # 64-bit
+    # 64-bit, C++11
 
     - compiler: MinGW 6.3
       generator: "MinGW Makefiles"
@@ -114,11 +134,15 @@ environment:
       CXX_STANDARD: 11
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 
+    # 64-bit, C++14
+
     - compiler: MinGW 6.3
       generator: "MinGW Makefiles"
       mingw_path: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
       CXX_STANDARD: 14
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    # 64-bit, C++17
 
     - compiler: MinGW 6.3
       generator: "MinGW Makefiles"
@@ -130,7 +154,7 @@ environment:
     # MinGW 7.2
     ###########
 
-    # 64-bit
+    # 64-bit, C++11
 
     - compiler: MinGW 7.2
       generator: "MinGW Makefiles"
@@ -138,11 +162,15 @@ environment:
       CXX_STANDARD: 11
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 
+    # 64-bit, C++14
+
     - compiler: MinGW 7.2
       generator: "MinGW Makefiles"
       mingw_path: C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin
       CXX_STANDARD: 14
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    # 64-bit, C++17
 
     - compiler: MinGW 7.2
       generator: "MinGW Makefiles"
@@ -154,7 +182,7 @@ environment:
     # MinGW 7.3
     ###########
 
-    # 64-bit
+    # 64-bit, C++11
 
     - compiler: MinGW 7.3
       generator: "MinGW Makefiles"
@@ -162,11 +190,15 @@ environment:
       CXX_STANDARD: 11
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 
+    # 64-bit, C++14
+
     - compiler: MinGW 7.3
       generator: "MinGW Makefiles"
       mingw_path: C:\mingw-w64\x86_64-7.3.0-posix-seh-rt_v5-rev0\mingw64\bin
       CXX_STANDARD: 14
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+
+    # 64-bit, C++17
 
     - compiler: MinGW 7.3
       generator: "MinGW Makefiles"
@@ -191,7 +223,7 @@ install:
 before_build:
   - ps: |
       cd $env:APPVEYOR_BUILD_FOLDER
-      & cmake . -Bbuild -G "$env:generator" -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_CXX_STANDARD="$env:CXX_STANDARD"
+      & cmake . -Bbuild -G $env:generator -DWILDCARDS_BUILD_EXAMPLES=ON -DWILDCARDS_CXX_STANDARD="$env:CXX_STANDARD"
       if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
       }
@@ -207,7 +239,7 @@ build_script:
 test_script:
   - ps: |
       cd build
-      & ctest --output-on-failure --build-config $env:CONFIGURATION
+      & ctest --output-on-failure --build-config $env:configuration
       if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
       }
