@@ -61,22 +61,23 @@ dependencies.
 The following compilers are continuously tested at [Travis CI][travis.url]
 and [Appveyor CI][appveyor.url].
 
-| Compiler            | Version | Operating System    | Notes       |
-|---------------------|---------|---------------------|-------------|
-| Xcode               | 9.0     | OS X 10.12          | C++11/14/17 |
-| Clang (with libcxx) | 3.9     | Ubuntu 14.04 LTS    | C++14/17    |
-| Clang (with libcxx) | 4.0     | Ubuntu 14.04 LTS    | C++11/14/17 |
-| Clang (with libcxx) | 5.0     | Ubuntu 14.04 LTS    | C++11/14/17 |
-| Clang (with libcxx) | 6.0     | Ubuntu 14.04 LTS    | C++11/14/17 |
-| GCC                 | 5.5     | Ubuntu 14.04 LTS    | C++11/14/17 |
-| GCC                 | 6.4     | Ubuntu 14.04 LTS    | C++11/14/17 |
-| GCC                 | 7.3     | Ubuntu 14.04 LTS    | C++11/14/17 |
-| GCC                 | 8.1     | Ubuntu 14.04 LTS    | C++11/14/17 |
-| Visual Studio       | 14 2015 | Windows Server 2016 | C++11/14/17 |
-| Visual Studio       | 15 2017 | Windows Server 2016 | C++11/14/17 |
-| MinGW               | 6.3     | Windows Server 2016 | C++11/14/17 |
-| MinGW               | 7.2     | Windows Server 2016 | C++11/14/17 |
-| MinGW               | 7.3     | Windows Server 2016 | C++11/14/17 |
+| Compiler            | Version | Operating System    | Notes                   |
+|---------------------|---------|---------------------|-------------------------|
+| Xcode               | 9.0     | OS X 10.12          | C++11/14/17             |
+| Clang (with libcxx) | 3.9     | Ubuntu 14.04 LTS    | C++14/17                |
+| Clang (with libcxx) | 4.0     | Ubuntu 14.04 LTS    | C++11/14/17             |
+| Clang (with libcxx) | 5.0     | Ubuntu 14.04 LTS    | C++11/14/17             |
+| Clang (with libcxx) | 6.0     | Ubuntu 14.04 LTS    | C++11/14/17             |
+| GCC                 | 5.5     | Ubuntu 14.04 LTS    | C++11/14/17             |
+| GCC                 | 6.4     | Ubuntu 14.04 LTS    | C++11/14/17             |
+| GCC                 | 7.3     | Ubuntu 14.04 LTS    | C++11/14/17             |
+| GCC                 | 8.1     | Ubuntu 14.04 LTS    | C++11/14/17             |
+| DJGPP               | 7.2     | Ubuntu 14.04 LTS    | C++11/14/17, build only |
+| Visual Studio       | 14 2015 | Windows Server 2016 | C++11/14/17             |
+| Visual Studio       | 15 2017 | Windows Server 2016 | C++11/14/17             |
+| MinGW               | 6.3     | Windows Server 2016 | C++11/14/17             |
+| MinGW               | 7.2     | Windows Server 2016 | C++11/14/17             |
+| MinGW               | 7.3     | Windows Server 2016 | C++11/14/17             |
 
 ## License
 
