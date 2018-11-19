@@ -342,32 +342,26 @@ matrix:
     # DJGPP 7, Debug, C++11
 
     - env: COMPILER=i586-pc-msdosdjgpp-g++ BUILD_TYPE=Debug CXX_STANDARD=11
-      addons: &djgpp7
 
     # DJGPP 7, Debug, C++14
 
     - env: COMPILER=i586-pc-msdosdjgpp-g++ BUILD_TYPE=Debug CXX_STANDARD=14
-      addons: *djgpp7
 
     # DJGPP 7, Debug, C++17
 
     - env: COMPILER=i586-pc-msdosdjgpp-g++ BUILD_TYPE=Debug CXX_STANDARD=17
-      addons: *djgpp7
 
     # DJGPP 7, Release, C++11
 
     - env: COMPILER=i586-pc-msdosdjgpp-g++ BUILD_TYPE=Release CXX_STANDARD=11
-      addons: *djgpp7
 
     # DJGPP 7, Release, C++14
 
     - env: COMPILER=i586-pc-msdosdjgpp-g++ BUILD_TYPE=Release CXX_STANDARD=14
-      addons: *djgpp7
 
     # DJGPP 7, Release, C++17
 
     - env: COMPILER=i586-pc-msdosdjgpp-g++ BUILD_TYPE=Release CXX_STANDARD=17
-      addons: *djgpp7
 
 install:
   - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
