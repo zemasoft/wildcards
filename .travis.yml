@@ -17,31 +17,42 @@ matrix:
     # Clang on OSX
     ##############
 
-    # XCode 9
+    # XCode 9, Debug, C++11
+
     - env: COMPILER=clang++ BUILD_TYPE=Debug CXX_STANDARD=11
       os: osx
       osx_image: xcode9
       compiler: clang
+
+    # XCode 9, Debug, C++14
 
     - env: COMPILER=clang++ BUILD_TYPE=Debug CXX_STANDARD=14
       os: osx
       osx_image: xcode9
       compiler: clang
 
+    # XCode 9, Debug, C++17
+
     - env: COMPILER=clang++ BUILD_TYPE=Debug CXX_STANDARD=17
       os: osx
       osx_image: xcode9
       compiler: clang
+
+    # XCode 9, Release, C++11
 
     - env: COMPILER=clang++ BUILD_TYPE=Release CXX_STANDARD=11
       os: osx
       osx_image: xcode9
       compiler: clang
 
+    # XCode 9, Release, C++14
+
     - env: COMPILER=clang++ BUILD_TYPE=Release CXX_STANDARD=14
       os: osx
       osx_image: xcode9
       compiler: clang
+
+    # XCode 9, Release, C++17
 
     - env: COMPILER=clang++ BUILD_TYPE=Release CXX_STANDARD=17
       os: osx
@@ -52,7 +63,8 @@ matrix:
     # Clang on Linux
     ################
 
-    # Clang 3.9
+    # Clang 3.9, Debug, C++14
+
     - env: COMPILER=clang++-3.9 BUILD_TYPE=Debug CXX_STANDARD=14
       addons: &clang39
         apt:
@@ -61,16 +73,23 @@ matrix:
           sources:
             - llvm-toolchain-trusty-3.9
 
+    # Clang 3.9, Debug, C++17
+
     - env: COMPILER=clang++-3.9 BUILD_TYPE=Debug CXX_STANDARD=17
       addons: *clang39
+
+    # Clang 3.9, Release, C++14
 
     - env: COMPILER=clang++-3.9 BUILD_TYPE=Release CXX_STANDARD=14
       addons: *clang39
 
+    # Clang 3.9, Release, C++17
+
     - env: COMPILER=clang++-3.9 BUILD_TYPE=Release CXX_STANDARD=17
       addons: *clang39
 
-    # Clang 4.0
+    # Clang 4.0, Debug, C++11
+
     - env: COMPILER=clang++-4.0 BUILD_TYPE=Debug CXX_STANDARD=11
       addons: &clang40
         apt:
@@ -79,22 +98,33 @@ matrix:
           sources:
             - llvm-toolchain-trusty-4.0
 
+    # Clang 4.0, Debug, C++14
+
     - env: COMPILER=clang++-4.0 BUILD_TYPE=Debug CXX_STANDARD=14
       addons: *clang40
+
+    # Clang 4.0, Debug, C++17
 
     - env: COMPILER=clang++-4.0 BUILD_TYPE=Debug CXX_STANDARD=17
       addons: *clang40
 
+    # Clang 4.0, Release, C++11
+
     - env: COMPILER=clang++-4.0 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *clang40
+
+    # Clang 4.0, Release, C++14
 
     - env: COMPILER=clang++-4.0 BUILD_TYPE=Release CXX_STANDARD=14
       addons: *clang40
 
+    # Clang 4.0, Release, C++17
+
     - env: COMPILER=clang++-4.0 BUILD_TYPE=Release CXX_STANDARD=17
       addons: *clang40
 
-    # Clang 5.0
+    # Clang 5.0, Debug, C++11
+
     - env: COMPILER=clang++-5.0 BUILD_TYPE=Debug CXX_STANDARD=11
       addons: &clang50
         apt:
@@ -103,22 +133,33 @@ matrix:
           sources:
             - llvm-toolchain-trusty-5.0
 
+    # Clang 5.0, Debug, C++14
+
     - env: COMPILER=clang++-5.0 BUILD_TYPE=Debug CXX_STANDARD=14
       addons: *clang50
+
+    # Clang 5.0, Debug, C++17
 
     - env: COMPILER=clang++-5.0 BUILD_TYPE=Debug CXX_STANDARD=17
       addons: *clang50
 
+    # Clang 5.0, Release, C++11
+
     - env: COMPILER=clang++-5.0 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *clang50
+
+    # Clang 5.0, Release, C++14
 
     - env: COMPILER=clang++-5.0 BUILD_TYPE=Release CXX_STANDARD=14
       addons: *clang50
 
+    # Clang 5.0, Release, C++17
+
     - env: COMPILER=clang++-5.0 BUILD_TYPE=Release CXX_STANDARD=17
       addons: *clang50
 
-    # Clang 6.0
+    # Clang 6.0, Debug, C++11
+
     - env: COMPILER=clang++-6.0 BUILD_TYPE=Debug CXX_STANDARD=11
       addons: &clang60
         apt:
@@ -128,17 +169,27 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-6.0
 
+    # Clang 6.0, Debug, C++14
+
     - env: COMPILER=clang++-6.0 BUILD_TYPE=Debug CXX_STANDARD=14
       addons: *clang60
+
+    # Clang 6.0, Debug, C++17
 
     - env: COMPILER=clang++-6.0 BUILD_TYPE=Debug CXX_STANDARD=17
       addons: *clang60
 
+    # Clang 6.0, Release, C++11
+
     - env: COMPILER=clang++-6.0 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *clang60
 
+    # Clang 6.0, Release, C++14
+
     - env: COMPILER=clang++-6.0 BUILD_TYPE=Release CXX_STANDARD=14
       addons: *clang60
+
+    # Clang 6.0, Release, C++17
 
     - env: COMPILER=clang++-6.0 BUILD_TYPE=Release CXX_STANDARD=17
       addons: *clang60
@@ -147,7 +198,8 @@ matrix:
     # GCC on Linux
     ##############
 
-    # GCC 5
+    # GCC 5, Debug, C++11
+
     - env: COMPILER=g++-5 BUILD_TYPE=Debug CXX_STANDARD=11
       addons: &gcc5
         apt:
@@ -156,22 +208,33 @@ matrix:
           sources: &sources
             - ubuntu-toolchain-r-test
 
+    # GCC 5, Debug, C++14
+
     - env: COMPILER=g++-5 BUILD_TYPE=Debug CXX_STANDARD=14
       addons: *gcc5
+
+    # GCC 5, Debug, C++17
 
     - env: COMPILER=g++-5 BUILD_TYPE=Debug CXX_STANDARD=17
       addons: *gcc5
 
+    # GCC 5, Release, C++11
+
     - env: COMPILER=g++-5 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *gcc5
+
+    # GCC 5, Release, C++14
 
     - env: COMPILER=g++-5 BUILD_TYPE=Release CXX_STANDARD=14
       addons: *gcc5
 
+    # GCC 5, Release, C++17
+
     - env: COMPILER=g++-5 BUILD_TYPE=Release CXX_STANDARD=17
       addons: *gcc5
 
-    # GCC 6
+    # GCC 6, Debug, C++11
+
     - env: COMPILER=g++-6 BUILD_TYPE=Debug CXX_STANDARD=11
       addons: &gcc6
         apt:
@@ -179,22 +242,33 @@ matrix:
             - g++-6
           sources: *sources
 
+    # GCC 6, Debug, C++14
+
     - env: COMPILER=g++-6 BUILD_TYPE=Debug CXX_STANDARD=14
       addons: *gcc6
+
+    # GCC 6, Debug, C++17
 
     - env: COMPILER=g++-6 BUILD_TYPE=Debug CXX_STANDARD=17
       addons: *gcc6
 
+    # GCC 6, Release, C++11
+
     - env: COMPILER=g++-6 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *gcc6
+
+    # GCC 6, Release, C++14
 
     - env: COMPILER=g++-6 BUILD_TYPE=Release CXX_STANDARD=14
       addons: *gcc6
 
+    # GCC 6, Release, C++17
+
     - env: COMPILER=g++-6 BUILD_TYPE=Release CXX_STANDARD=17
       addons: *gcc6
 
-    # GCC 7
+    # GCC 7, Debug, C++11
+
     - env: COMPILER=g++-7 BUILD_TYPE=Debug CXX_STANDARD=11
       addons: &gcc7
         apt:
@@ -202,22 +276,33 @@ matrix:
             - g++-7
           sources: *sources
 
+    # GCC 7, Debug, C++14
+
     - env: COMPILER=g++-7 BUILD_TYPE=Debug CXX_STANDARD=14
       addons: *gcc7
+
+    # GCC 7, Debug, C++17
 
     - env: COMPILER=g++-7 BUILD_TYPE=Debug CXX_STANDARD=17
       addons: *gcc7
 
+    # GCC 7, Release, C++11
+
     - env: COMPILER=g++-7 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *gcc7
+
+    # GCC 7, Release, C++14
 
     - env: COMPILER=g++-7 BUILD_TYPE=Release CXX_STANDARD=14
       addons: *gcc7
 
+    # GCC 7, Release, C++17
+
     - env: COMPILER=g++-7 BUILD_TYPE=Release CXX_STANDARD=17
       addons: *gcc7
 
-    # GCC 8
+    # GCC 8, Debug, C++11
+
     - env: COMPILER=g++-8 BUILD_TYPE=Debug CXX_STANDARD=11
       addons: &gcc8
         apt:
@@ -225,27 +310,66 @@ matrix:
             - g++-8
           sources: *sources
 
+    # GCC 8, Debug, C++14
+
     - env: COMPILER=g++-8 BUILD_TYPE=Debug CXX_STANDARD=14
       addons: *gcc8
+
+    # GCC 8, Debug, C++17
 
     - env: COMPILER=g++-8 BUILD_TYPE=Debug CXX_STANDARD=17
       addons: *gcc8
 
+    # GCC 8, Release, C++11
+
     - env: COMPILER=g++-8 BUILD_TYPE=Release CXX_STANDARD=11
       addons: *gcc8
+
+    # GCC 8, Release, C++14
 
     - env: COMPILER=g++-8 BUILD_TYPE=Release CXX_STANDARD=14
       addons: *gcc8
 
+    # GCC 8, Release, C++17
+
     - env: COMPILER=g++-8 BUILD_TYPE=Release CXX_STANDARD=17
       addons: *gcc8
 
+    ################
+    # DJGPP on Linux
+    ################
+
+    # DJGPP 7, Debug, C++11
+
+    - env: COMPILER=i586-pc-msdosdjgpp-g++ BUILD_TYPE=Debug CXX_STANDARD=11
+      addons: &djgpp7
+
+    # DJGPP 7, Debug, C++14
+
+    - env: COMPILER=i586-pc-msdosdjgpp-g++ BUILD_TYPE=Debug CXX_STANDARD=14
+      addons: *djgpp7
+
+    # DJGPP 7, Debug, C++17
+
+    - env: COMPILER=i586-pc-msdosdjgpp-g++ BUILD_TYPE=Debug CXX_STANDARD=17
+      addons: *djgpp7
+
+    # DJGPP 7, Release, C++11
+
+    - env: COMPILER=i586-pc-msdosdjgpp-g++ BUILD_TYPE=Release CXX_STANDARD=11
+      addons: *djgpp7
+
+    # DJGPP 7, Release, C++14
+
+    - env: COMPILER=i586-pc-msdosdjgpp-g++ BUILD_TYPE=Release CXX_STANDARD=14
+      addons: *djgpp7
+
+    # DJGPP 7, Release, C++17
+
+    - env: COMPILER=i586-pc-msdosdjgpp-g++ BUILD_TYPE=Release CXX_STANDARD=17
+      addons: *djgpp7
+
 install:
-  - export CXX=${COMPILER}
-  - ${CXX} --version
-
-  - cmake --version
-
   - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
   - mkdir -p ${DEPS_DIR}
   - cd ${DEPS_DIR}
@@ -257,14 +381,14 @@ install:
   #############################################
 
   - |
-    if [[ "${TRAVIS_OS_NAME}" == "linux" && "${CXX%%+*}" == "clang" ]]; then
+    if [[ "${TRAVIS_OS_NAME}" == "linux" && "${COMPILER%%+*}" == "clang" ]]; then
       LLVM_INSTALL=${DEPS_DIR}/llvm/install
       if [[ -z "$(ls -A ${LLVM_INSTALL})" ]]; then
-        if   [[ "${CXX}" == "clang++-3.8" ]]; then LLVM_VERSION=3.8.1;
-        elif [[ "${CXX}" == "clang++-3.9" ]]; then LLVM_VERSION=3.9.1;
-        elif [[ "${CXX}" == "clang++-4.0" ]]; then LLVM_VERSION=4.0.1;
-        elif [[ "${CXX}" == "clang++-5.0" ]]; then LLVM_VERSION=5.0.2;
-        elif [[ "${CXX}" == "clang++-6.0" ]]; then LLVM_VERSION=6.0.1;
+        if   [[ "${COMPILER}" == "clang++-3.8" ]]; then LLVM_VERSION=3.8.1;
+        elif [[ "${COMPILER}" == "clang++-3.9" ]]; then LLVM_VERSION=3.9.1;
+        elif [[ "${COMPILER}" == "clang++-4.0" ]]; then LLVM_VERSION=4.0.1;
+        elif [[ "${COMPILER}" == "clang++-5.0" ]]; then LLVM_VERSION=5.0.2;
+        elif [[ "${COMPILER}" == "clang++-6.0" ]]; then LLVM_VERSION=6.0.1;
         fi
         LLVM_URL=http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.xz
         LIBCXX_URL=http://llvm.org/releases/${LLVM_VERSION}/libcxx-${LLVM_VERSION}.src.tar.xz
@@ -282,6 +406,32 @@ install:
       export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LLVM_INSTALL}/lib
     fi
 
+  #######################
+  # [linux] Install DJGPP
+  #######################
+
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" && "${COMPILER}" =~ "djgpp" ]]; then
+      DJGPP_INSTALL=${DEPS_DIR}/djgpp
+      if [[ -z "$(ls -A ${DJGPP_INSTALL})" ]]; then
+        DJGPP_URL=https://github.com/andrewwutw/build-djgpp/releases/download/v2.8/djgpp-linux64-gcc720.tar.bz2
+        mkdir -p djgpp
+        travis_retry wget -O - ${DJGPP_URL} | tar --strip-components=1 -xj -C djgpp
+      fi
+      export PATH=${DJGPP_INSTALL}/i586-pc-msdosdjgpp/bin/:${DJGPP_INSTALL}/bin/:$PATH
+      export GCC_EXEC_PREFIX=${DJGPP_INSTALL}/lib/gcc/
+      export DJDIR=${DJGPP_INSTALL}/i586-pc-msdosdjgpp
+    fi
+
+  ################
+  # Print versions
+  ################
+
+  - export CXX=${COMPILER}
+  - ${CXX} --version
+
+  - cmake --version
+
 before_script:
   - |
     cd ${TRAVIS_BUILD_DIR}
@@ -290,5 +440,7 @@ before_script:
 
 script:
   - |
-    cd build
-    ctest --output-on-failure -j${JOBS}
+    if [[ ! "${COMPILER}" =~ "djgpp" ]]; then
+      cd build
+      ctest --output-on-failure -j${JOBS}
+    fi
