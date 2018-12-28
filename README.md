@@ -107,7 +107,7 @@ This project is licensed under the [Boost 1.0][license.url].
 * *Wildcards* depends on two components which originate from external sources
   and were made part of the repository:
   * [`cpp_feature.hpp`](include/cpp_feature.hpp) taken from
-    [here](https://github.com/ned14/quickcpplib/blob/master/include/cpp_feature.h).
+    [here](https://github.com/ned14/quickcpplib/blob/master/include/cpp_feature.h),
   * [`catch.hpp`](test/include/catch.hpp) taken from
     [here](https://github.com/catchorg/Catch2/releases/download/v2.4.2/catch.hpp).
 
