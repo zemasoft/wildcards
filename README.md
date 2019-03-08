@@ -62,8 +62,8 @@ int main()
 }
 ```
 
-See more useful and complex [examples](examples) and try them online! See also
-[test/src/wildcards](the tests) to learn more.
+See more useful and complex [examples](example) and try them online! See also
+[the tests](test/src/wildcards) to learn more.
 
 ## Demonstration on Compiler Explorer
 
