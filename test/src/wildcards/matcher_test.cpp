@@ -84,7 +84,11 @@ TEST_CASE("wildcards::matcher is compliant", "[wildcards::matcher]")
 
     constexpr auto pattern = u"H?llo,*W*!"_wc;
 
+#if defined(_MSC_VER) && _MSC_VER <= 1900  // VS2015
+    REQUIRE(pattern.matches(u"Hello, World!"));
+#else
     static_assert(pattern.matches(u"Hello, World!"), "");
+#endif
   }
 
   SECTION(R"(matching U"H?llo,*W*!")")
@@ -93,7 +97,11 @@ TEST_CASE("wildcards::matcher is compliant", "[wildcards::matcher]")
 
     constexpr auto pattern = U"H?llo,*W*!"_wc;
 
+#if defined(_MSC_VER) && _MSC_VER <= 1900  // VS2015
+    REQUIRE(pattern.matches(U"Hello, World!"));
+#else
     static_assert(pattern.matches(U"Hello, World!"), "");
+#endif
   }
 
   SECTION(R"(matching L"H?llo,*W*!")")
@@ -102,6 +110,10 @@ TEST_CASE("wildcards::matcher is compliant", "[wildcards::matcher]")
 
     constexpr auto pattern = L"H?llo,*W*!"_wc;
 
+#if defined(_MSC_VER) && _MSC_VER <= 1900  // VS2015
+    REQUIRE(pattern.matches(L"Hello, World!"));
+#else
     static_assert(pattern.matches(L"Hello, World!"), "");
+#endif
   }
 }
