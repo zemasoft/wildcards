@@ -2,21 +2,74 @@
 
 # Wildcards
 
-## Overview
-
 *Wildcards* is a simple C++ header-only template library which implements
 a general purpose algorithm for matching using wildcards. It supports both
 runtime and compile time execution.
 
+## Basic usage
+
+The following examples of the basic usage are functionaly equivalent.
+
 ```C++
 #include <wildcards.hpp>
+
+{
+  using wildcards::match;
+
+  static_assert(match("Hello, World!", "H*World?"), "");
+}
+
+{
+  using wildcards::make_matcher;
+
+  static_assert(make_matcher("H*World?").matches("Hello, World!"), "");
+}
+
+{
+  using namespace wildcards::literals;
+
+  static_assert("H*World?"_wc.matches("Hello, World!"), "");
+}
+```
+
+## Advanced usage
+
+The following examples of the advanced usage are functionaly equivalent.
+
+```C++
+#include <wildcards.hpp>
+
+{
+  using wildcards::match;
+
+  static_assert(match("Hello, World!", "H%World_", {'%', '_', '\\'}), "");
+}
+
+{
+  using wildcards::make_matcher;
+
+  static_assert(make_matcher("H%World_", {'%', '_', '\\'}).matches("Hello, World!"), "");
+}
+```
+
+See more useful and complex [examples](examples) and try them online! See also
+[tests/src/wildcards](the tests) to learn more.
+
+## Demonstration on Compiler Explorer
+
+Check compilers output of the following example on [Compiler Explorer][godbolt.url].
+
+```C++
+#include <wildcards.hpp>
+
+using namespace wildcards::literals;
+
+constexpr auto pattern = "*.[hc](pp|)"_wc;
 
 // returns true
 bool test1()
 {
-  using namespace wildcards;
-
-  constexpr auto res = match("source.c", "*.[hc](pp|)");
+  constexpr auto res = pattern.matches("source.c");
 
   static_assert(res, "must be true");
 
@@ -26,9 +79,7 @@ bool test1()
 // returns false
 bool test2()
 {
-  using namespace wildcards;
-
-  constexpr auto res = match("source.cc", "*.[hc](pp|)");
+  constexpr auto res = pattern.matches("source.cc");
 
   static_assert(!res, "must be false");
 
@@ -36,22 +87,21 @@ bool test2()
 }
 ```
 
-Check compilers output on [Compiler Explorer][godbolt.url]. See also more useful
-and complex [examples](example) and try them online!
-
-## Quick Start
+## Integration
 
 1. Single-header approach
    * Copy [`wildcards.hpp`](single_include/wildcards.hpp) from
      [`single_include`](single_include) directory to your project's header
      search path.
    * Add `#include <wildcards.hpp>` to your source file.
-   * Use `wildcards::match()`.
+   * Use `wildcards::match()` or `wildcards::make_matcher()`. You can also use
+     operator `""_wc` from `wildcards::literals` namespace.
 
 2. Multi-header approach
    * Add [`include`](include) directory to your project's header search path.
    * Add `#include <wildcards.hpp>` to your source file.
-   * Use `wildcards::match()`.
+   * Use `wildcards::match()` or `wildcards::make_matcher()`. You can also use
+     operator `""_wc` from `wildcards::literals` namespace.
 
 ## Portability
 
@@ -73,7 +123,7 @@ and [Appveyor CI][appveyor.url].
 | GCC                 | 7.3     | Ubuntu 14.04 LTS    | C++11/14/17             |
 | GCC                 | 8.1     | Ubuntu 14.04 LTS    | C++11/14/17             |
 | DJGPP               | 7.2     | Ubuntu 14.04 LTS    | C++11/14/17, build only |
-| Visual Studio       | 14 2015 | Windows Server 2016 | C++11/14/17             |
+| Visual Studio       | 14 2015 | Windows Server 2016 | C++11/14/17, limited    |
 | Visual Studio       | 15 2017 | Windows Server 2016 | C++11/14/17             |
 | MinGW               | 6.3     | Windows Server 2016 | C++11/14/17             |
 | MinGW               | 7.2     | Windows Server 2016 | C++11/14/17             |
@@ -148,7 +198,7 @@ This project is licensed under the [Boost 1.0][license.url].
 [release.url]:    https://github.com/zemasoft/wildcards/releases
 [release.badge]:  https://img.shields.io/github/release/zemasoft/wildcards.svg
 
-[godbolt.url]:    https://godbolt.org/z/5k2_qU
+[godbolt.url]:    https://godbolt.org/z/nPr4h7
 [godbolt.badge]:  https://img.shields.io/badge/try%20it-on%20godbolt-blue.svg
 
 [wandbox.url]:    https://github.com/zemasoft/wildcards/tree/master/example
