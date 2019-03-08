@@ -13,22 +13,27 @@ The following examples of the basic usage are functionaly equivalent.
 ```C++
 #include <wildcards.hpp>
 
+int main()
 {
-  using wildcards::match;
+  {
+    using wildcards::match;
 
-  static_assert(match("Hello, World!", "H*World?"), "");
-}
+    static_assert(match("Hello, World!", "H*World?"), "");
+  }
 
-{
-  using wildcards::make_matcher;
+  {
+    using wildcards::make_matcher;
 
-  static_assert(make_matcher("H*World?").matches("Hello, World!"), "");
-}
+    static_assert(make_matcher("H*World?").matches("Hello, World!"), "");
+  }
 
-{
-  using namespace wildcards::literals;
+  {
+    using namespace wildcards::literals;
 
-  static_assert("H*World?"_wc.matches("Hello, World!"), "");
+    static_assert("H*World?"_wc.matches("Hello, World!"), "");
+  }
+
+  return 0;
 }
 ```
 
@@ -39,21 +44,26 @@ The following examples of the advanced usage are functionaly equivalent.
 ```C++
 #include <wildcards.hpp>
 
+int main()
 {
-  using wildcards::match;
+  {
+    using wildcards::match;
 
-  static_assert(match("Hello, World!", "H%World_", {'%', '_', '\\'}), "");
-}
+    static_assert(match("Hello, World!", "H%World_", {'%', '_', '\\'}), "");
+  }
 
-{
-  using wildcards::make_matcher;
+  {
+    using wildcards::make_matcher;
 
-  static_assert(make_matcher("H%World_", {'%', '_', '\\'}).matches("Hello, World!"), "");
+    static_assert(make_matcher("H%World_", {'%', '_', '\\'}).matches("Hello, World!"), "");
+  }
+
+  return 0;
 }
 ```
 
 See more useful and complex [examples](examples) and try them online! See also
-[tests/src/wildcards](the tests) to learn more.
+[test/src/wildcards](the tests) to learn more.
 
 ## Demonstration on Compiler Explorer
 
