@@ -1,12 +1,14 @@
 # Examples
 
-## Example 1 [![wandbox.badge]](https://wandbox.org/permlink/T6Qv5sOl6QUJ6VyV)
+## Example 1a [![wandbox.badge]](https://wandbox.org/permlink/4FF2LSXeDkXw1diP)
+## Example 1b [![wandbox.badge]](https://wandbox.org/permlink/41riIYcZbYz8hjKG)
+## Example 1c [![wandbox.badge]](https://wandbox.org/permlink/QE3g7YXo7whlv1fg)
 
 Compile time matching only.
 
 Does nothing at runtime.
 
-## Example 2 [![wandbox.badge]](https://wandbox.org/permlink/XkNbL0hhNtsyYiw4)
+## Example 2 [![wandbox.badge]](https://wandbox.org/permlink/jrmfdK9w4R8tBHPY)
 
 Compile time and runtime check of string ID's validity using a pattern.
 
@@ -38,7 +40,7 @@ Valid ID: Test_something_else
 Invalid ID
 ```
 
-## Example 3 [![wandbox.badge]](https://wandbox.org/permlink/spKqol6XGDoofKOR)
+## Example 3 [![wandbox.badge]](https://wandbox.org/permlink/AX6LkvFR3wz4bPON)
 
 Example 2 extended with a default pattern and with a user-defined string
 literal.
@@ -68,7 +70,7 @@ Valid ID: Test_something_else
 Invalid ID
 ```
 
-## Example 4 [![wandbox.badge]](https://wandbox.org/permlink/HJyg1oN0mVCHyYK4)
+## Example 4 [![wandbox.badge]](https://wandbox.org/permlink/5VoOQqA6DVmYKmlh)
 
 Matching of command line arguments.
 
@@ -101,7 +103,7 @@ $ echo $?
 1
 ```
 
-## Example 5 [![wandbox.badge]](https://wandbox.org/permlink/MDMhlO92AFaoHofS)
+## Example 5 [![wandbox.badge]](https://wandbox.org/permlink/NLY0d4zXZNP4Dv1A)
 
 List files on a given path which match a given pattern.
 
@@ -127,7 +129,7 @@ test/src/cx/string_view_test.cpp
 test/include/catch.hpp
 ```
 
-## Example 6 [![wandbox.badge]](https://wandbox.org/permlink/6kGAZcI67Ani20b9)
+## Example 6 [![wandbox.badge]](https://wandbox.org/permlink/Fwm46McV1qEciPdu)
 
 Matching of generated DNA sequences.
 

@@ -1,5 +1,5 @@
 // THIS FILE HAS BEEN GENERATED AUTOMATICALLY. DO NOT EDIT DIRECTLY.
-// Generated: 2018-11-13 13:16:24.488943895
+// Generated: 2019-03-08 09:59:35.958950200
 // Copyright Tomas Zeman 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -7,7 +7,7 @@
 #ifndef WILDCARDS_HPP
 #define WILDCARDS_HPP 
 #define WILDCARDS_VERSION_MAJOR 1
-#define WILDCARDS_VERSION_MINOR 4
+#define WILDCARDS_VERSION_MINOR 5
 #define WILDCARDS_VERSION_PATCH 0
 #ifndef WILDCARDS_CARDS_HPP
 #define WILDCARDS_CARDS_HPP 
@@ -1623,6 +1623,210 @@ Sequence&& sequence, Pattern&& pattern, const EqualTo& equal_to)
 {
 return match(std::forward<Sequence>(sequence), std::forward<Pattern>(pattern),
 cards<container_item_t<Pattern>>(), equal_to);
+}
+}
+#endif
+#ifndef WILDCARDS_MATCHER_HPP
+#define WILDCARDS_MATCHER_HPP 
+#include <cstddef>
+#include <type_traits>
+#include <utility>
+#ifndef CX_STRING_VIEW_HPP
+#define CX_STRING_VIEW_HPP 
+#include <cstddef>
+#include <ostream>
+#ifndef CX_ALGORITHM_HPP
+#define CX_ALGORITHM_HPP 
+namespace cx
+{
+template <typename Iterator1, typename Iterator2>
+constexpr bool equal(Iterator1 first1, Iterator1 last1, Iterator2 first2, Iterator2 last2)
+{
+#if cfg_HAS_CONSTEXPR14
+while (first1 != last1 && first2 != last2 && *first1 == *first2)
+{
+++first1, ++first2;
+}
+return first1 == last1 && first2 == last2;
+#else
+return first1 != last1 && first2 != last2 && *first1 == *first2
+? equal(first1 + 1, last1, first2 + 1, last2)
+: first1 == last1 && first2 == last2;
+#endif
+}
+}
+#endif
+namespace cx
+{
+template <typename T>
+class basic_string_view
+{
+public:
+using value_type = T;
+constexpr basic_string_view() = default;
+template <std::size_t N>
+constexpr basic_string_view(const T (&str)[N]) : data_{&str[0]}, size_{N - 1}
+{
+}
+constexpr basic_string_view(const T* str, std::size_t s) : data_{str}, size_{s}
+{
+}
+constexpr const T* data() const
+{
+return data_;
+}
+constexpr std::size_t size() const
+{
+return size_;
+}
+constexpr bool empty() const
+{
+return size() == 0;
+}
+constexpr const T* begin() const
+{
+return data_;
+}
+constexpr const T* cbegin() const
+{
+return begin();
+}
+constexpr const T* end() const
+{
+return data_ + size_;
+}
+constexpr const T* cend() const
+{
+return end();
+}
+private:
+const T* data_{nullptr};
+std::size_t size_{0};
+};
+template <typename T>
+constexpr bool operator==(const basic_string_view<T>& lhs, const basic_string_view<T>& rhs)
+{
+return equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+}
+template <typename T>
+constexpr bool operator!=(const basic_string_view<T>& lhs, const basic_string_view<T>& rhs)
+{
+return !(lhs == rhs);
+}
+template <typename T>
+std::basic_ostream<T>& operator<<(std::basic_ostream<T>& o, const basic_string_view<T>& s)
+{
+o << s.data();
+return o;
+}
+template <typename T, std::size_t N>
+constexpr basic_string_view<T> make_string_view(const T (&str)[N])
+{
+return {str, N - 1};
+}
+template <typename T>
+constexpr basic_string_view<T> make_string_view(const T* str, std::size_t s)
+{
+return {str, s};
+}
+using string_view = basic_string_view<char>;
+using u16string_view = basic_string_view<char16_t>;
+using u32string_view = basic_string_view<char32_t>;
+using wstring_view = basic_string_view<wchar_t>;
+namespace literals
+{
+constexpr string_view operator"" _sv(const char* str, std::size_t s)
+{
+return {str, s};
+}
+constexpr u16string_view operator"" _sv(const char16_t* str, std::size_t s)
+{
+return {str, s};
+}
+constexpr u32string_view operator"" _sv(const char32_t* str, std::size_t s)
+{
+return {str, s};
+}
+constexpr wstring_view operator"" _sv(const wchar_t* str, std::size_t s)
+{
+return {str, s};
+}
+}
+}
+#endif
+namespace wildcards
+{
+template <typename Pattern, typename EqualTo = cx::equal_to<void>>
+class matcher
+{
+public:
+constexpr explicit matcher(Pattern&& pattern, const cards<container_item_t<Pattern>>& c =
+cards<container_item_t<Pattern>>(),
+const EqualTo& equal_to = EqualTo())
+: p_{cx::cbegin(pattern)},
+pend_{cx::cend(std::forward<Pattern>(pattern))},
+c_{c},
+equal_to_{equal_to}
+{
+}
+constexpr matcher(Pattern&& pattern, const EqualTo& equal_to)
+: p_{cx::cbegin(pattern)},
+pend_{cx::cend(std::forward<Pattern>(pattern))},
+c_{cards<container_item_t<Pattern>>()},
+equal_to_{equal_to}
+{
+}
+template <typename Sequence>
+constexpr full_match_result<const_iterator_t<Sequence>, const_iterator_t<Pattern>> matches(
+Sequence&& sequence) const
+{
+return detail::make_full_match_result(
+cx::cbegin(sequence), cx::cend(sequence), p_, pend_,
+detail::match(cx::cbegin(sequence), cx::cend(std::forward<Sequence>(sequence)), p_, pend_,
+c_, equal_to_));
+}
+private:
+const_iterator_t<Pattern> p_;
+const_iterator_t<Pattern> pend_;
+cards<container_item_t<Pattern>> c_;
+EqualTo equal_to_;
+};
+template <typename Pattern, typename EqualTo = cx::equal_to<void>>
+constexpr matcher<Pattern, EqualTo> make_matcher(
+Pattern&& pattern,
+const cards<container_item_t<Pattern>>& c = cards<container_item_t<Pattern>>(),
+const EqualTo& equal_to = EqualTo())
+{
+return matcher<Pattern, EqualTo>{std::forward<Pattern>(pattern), c, equal_to};
+}
+template <typename Pattern, typename EqualTo = cx::equal_to<void>,
+typename = typename std::enable_if<!std::is_same<EqualTo, cards_type>::value>::type>
+constexpr matcher<Pattern, EqualTo> make_matcher(Pattern&& pattern, const EqualTo& equal_to)
+{
+return make_matcher(std::forward<Pattern>(pattern), cards<container_item_t<Pattern>>(), equal_to);
+}
+namespace literals
+{
+constexpr auto operator"" _wc(const char* str, std::size_t s)
+-> decltype(make_matcher(cx::make_string_view(str, s + 1)))
+{
+return make_matcher(cx::make_string_view(str, s + 1));
+}
+constexpr auto operator"" _wc(const char16_t* str, std::size_t s)
+-> decltype(make_matcher(cx::make_string_view(str, s + 1)))
+{
+return make_matcher(cx::make_string_view(str, s + 1));
+}
+constexpr auto operator"" _wc(const char32_t* str, std::size_t s)
+-> decltype(make_matcher(cx::make_string_view(str, s + 1)))
+{
+return make_matcher(cx::make_string_view(str, s + 1));
+}
+constexpr auto operator"" _wc(const wchar_t* str, std::size_t s)
+-> decltype(make_matcher(cx::make_string_view(str, s + 1)))
+{
+return make_matcher(cx::make_string_view(str, s + 1));
+}
 }
 }
 #endif

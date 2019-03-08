@@ -68,7 +68,9 @@ macro(add_example target file_name)
   endif()
 endmacro()
 
-add_example(example01 example01.cpp)
+add_example(example01a example01a.cpp)
+add_example(example01b example01b.cpp)
+add_example(example01c example01c.cpp)
 add_example(example02 example02.cpp)
 add_example(example03 example03.cpp)
 add_example(example04 example04.cpp)
@@ -90,7 +92,9 @@ add_example(example06 example06.cpp)
 if(CLANGFORMAT)
   include(ClangFormat)
 
-  set(clangformat_srcs example01.cpp
+  set(clangformat_srcs example01a.cpp
+                       example01b.cpp
+                       example01c.cpp
                        example02.cpp
                        example03.cpp
                        example04.cpp

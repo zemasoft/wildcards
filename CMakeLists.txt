@@ -4,7 +4,7 @@ if(NOT DEFINED PROJECT_NAME)
   set(NOT_SUBPROJECT ON)
 endif()
 
-project(Wildcards LANGUAGES CXX VERSION 1.4.0)
+project(Wildcards LANGUAGES CXX VERSION 1.5.0)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -48,6 +48,7 @@ if(WILDCARDS_CLANGFORMAT)
                        include/cx/utility.hpp
                        include/wildcards/cards.hpp
                        include/wildcards/match.hpp
+                       include/wildcards/matcher.hpp
                        include/wildcards/utility.hpp)
 
   clangformat_setup("${clangformat_srcs}")
