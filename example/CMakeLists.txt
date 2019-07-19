@@ -78,7 +78,7 @@ function(add_example target file_name)
       target_compile_options(${target} PRIVATE /WX)
     endif()
   endif()
-endmacro()
+endfunction()
 
 add_example(example01a example01a.cpp)
 add_example(example01b example01b.cpp)
